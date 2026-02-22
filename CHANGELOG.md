@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.0] - 2026-02-22
+
+### Added
+- **Frontend**: Implemented SaaS landing page, docs layout, and dynamic sticky navbar (v0.2.0)
+  - Responsive SaaS-style landing page with hero, features, architecture, and CTA sections
+  - Scroll-reactive navbar (absolute → fixed with blur, border, and shadow)
+  - Reusable components: `Navbar`, `Footer`, `FeatureCard`, `DocsSidebar`
+  - Documentation page with fixed sidebar and anchor-based navigation
+  - Styled placeholders for `/dashboard` and `/login` routes
+  - Dark theme design system with gradient text and glow utilities
+  - Consistent container layout (`max-w-7xl`, `mx-auto`, `px-6`)
+  - Smooth transitions, hover effects, and scroll-margin adjustments
+
 ## [0.2.0] - 2026-02-22
+
 
 ### Added
 - **Backend**: Core ingestion layer with Supabase integration

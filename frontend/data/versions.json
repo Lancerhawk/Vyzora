@@ -1,0 +1,98 @@
+[
+    {
+        "version": "0.3.0",
+        "date": "2026-02-22",
+        "tag": "feat",
+        "title": "SaaS Landing Page & Docs",
+        "summary": "Transformed Vyzora from a backend-only engine into a complete SaaS product with a premium landing page, reactive documentation, and a cohesive design system.",
+        "whatsIncluded": [
+            {
+                "headline": "Responsive SaaS Landing Page",
+                "detail": "Implemented a high-conversion hero section, interactive feature cards, and architectural pipeline visualization. Powered by a custom particle background system."
+            },
+            {
+                "headline": "Dynamic Sticky Navbar",
+                "detail": "Built a scroll-reactive navigation system that transitions from floating to fixed with backdrop-blur, subtle borders, and shadow depth."
+            },
+            {
+                "headline": "Developer Documentation System",
+                "detail": "Created a dedicated docs layout with a sticky sidebar, anchor-based navigation, and comprehensive guides for SDK usage and API reference."
+            },
+            {
+                "headline": "Design System & Utilities",
+                "detail": "Established a dark-theme design system using Tailwind 4, featuring indigo/purple gradients, glassmorphism, and responsive container layouts."
+            }
+        ],
+        "stack": [
+            "Next.js 15",
+            "Tailwind 4",
+            "TypeScript",
+            "Framer Motion",
+            "Lucide React"
+        ]
+    },
+    {
+        "version": "0.2.0",
+        "date": "2026-02-22",
+        "tag": "feat",
+        "title": "Core Ingestion Layer",
+        "summary": "Built the full event ingestion pipeline from SDK to database. Every event is validated, batched, and written to Supabase Postgres with composite indexing for fast time-range queries.",
+        "whatsIncluded": [
+            {
+                "headline": "PostgreSQL schema — User, Project, Event",
+                "detail": "Three relational models with UUID primary keys, VarChar constraints, and cascade deletes. Composite index on (projectId, createdAt) for time-range analytics."
+            },
+            {
+                "headline": "Secure API key generation",
+                "detail": "64-character hex keys generated with crypto.randomBytes(32). Each project gets a unique key — invalid keys are rejected before hitting the database."
+            },
+            {
+                "headline": "Bulk ingest with createMany",
+                "detail": "Events are batched and written in a single Prisma createMany call. A 1mb body guard prevents oversized payloads."
+            },
+            {
+                "headline": "Strict Zod validation",
+                "detail": "Every field length matches the DB schema: sessionId/visitorId ≤128, eventType ≤64, path ≤512. Validation errors return structured 400 responses."
+            }
+        ],
+        "stack": [
+            "Express 5",
+            "Prisma 7",
+            "Supabase Postgres",
+            "Zod 4",
+            "TypeScript"
+        ]
+    },
+    {
+        "version": "0.1.0",
+        "date": "2026-02-22",
+        "tag": "init",
+        "title": "Project Scaffold",
+        "summary": "Initialised the Vyzora monorepo with separate workspaces for the backend API, Next.js dashboard, and TypeScript runtime SDK. Established the base configuration for all three packages.",
+        "whatsIncluded": [
+            {
+                "headline": "Backend scaffold — Express + Prisma",
+                "detail": "Node.js 18 + TypeScript server with route, controller, service, and config layers. Prisma configured for PostgreSQL with a prisma.config.ts entry point."
+            },
+            {
+                "headline": "Frontend scaffold — Next.js 15",
+                "detail": "App Router with dark theme Tailwind config, route stubs for /dashboard and /login, and globals.css design tokens."
+            },
+            {
+                "headline": "Runtime SDK scaffold",
+                "detail": "TypeScript package with tsup for ESM + CJS dual output. Modules: tracker.ts, session.ts, batch.ts."
+            },
+            {
+                "headline": "Documentation stubs",
+                "detail": "architecture.md, api-spec.md, and sdk-design.md in the /docs workspace."
+            }
+        ],
+        "stack": [
+            "Node.js 18",
+            "Next.js 15",
+            "TypeScript",
+            "tsup",
+            "Prisma"
+        ]
+    }
+]
