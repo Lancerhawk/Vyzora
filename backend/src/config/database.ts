@@ -1,23 +1,18 @@
-
-
-const globalForPrisma = globalThis as unknown as {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    prisma: any;
-};
-
-function createPrismaClient() {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-    const { PrismaClient } = require('@prisma/client') as any;
-    return new PrismaClient({
-        log:
-            process.env.NODE_ENV === 'development'
-                ? ['query', 'error', 'warn']
-                : ['error'],
-    });
-}
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const prisma: any = globalForPrisma.prisma ?? createPrismaClient();
+const globalForPrisma = globalThis as unknown as { prisma: any };
+
+function createPrismaClient(): PrismaClient {
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+    const adapter = new PrismaPg(pool);
+    return new PrismaClient({ adapter });
+}
+
+export const prisma: PrismaClient = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
     globalForPrisma.prisma = prisma;

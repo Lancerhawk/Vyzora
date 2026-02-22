@@ -4,5 +4,47 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique @db.VarChar(255)
+  name      String?
+  githubId  String    @unique @db.VarChar(255)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+}
+
+model Project {
+  id        String   @id @default(uuid())
+  name      String
+  apiKey    String   @unique @db.VarChar(128)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  events    Event[]
+
+  @@index([userId])
+}
+
+model Event {
+  id         String   @id @default(uuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sessionId  String   @db.VarChar(128)
+  visitorId  String   @db.VarChar(128)
+  eventType  String   @db.VarChar(64)
+  path       String   @db.VarChar(512)
+  metadata   Json?
+  ipAddress  String?  @db.VarChar(64)
+  userAgent  String?  @db.VarChar(512)
+  createdAt  DateTime @default(now())
+
+  @@index([projectId])
+  @@index([createdAt])
+  @@index([sessionId])
+  @@index([visitorId])
+  @@index([projectId, createdAt])
 }

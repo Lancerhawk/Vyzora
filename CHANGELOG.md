@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2026-02-22
+
+### Added
+- **Backend**: Core ingestion layer with Supabase integration
+  - Implemented PostgreSQL schema models: `User`, `Project`, `Event`
+  - Added model-level and composite indexing for high-performance time-range queries
+  - Integrated Supabase via `DATABASE_URL` (Prisma PostgreSQL adapter)
+  - Implemented secure 64-character hex API key generation
+  - Added `ProjectService` (create, list, validate) and `IngestService` (bulk insertion)
+  - Enforced strict Zod validation matching database schema constraints
+  - Added request body size guard (1mb)
+  - Added seeding and API verification scripts
+- **Prisma**: Configured `prisma.config.ts` for Prisma 7 compatibility and migrations
+
 ## [0.1.0] - 2026-02-22
 
 ### Added
