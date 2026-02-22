@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import versions from '../data/versions.json';
 
@@ -24,8 +25,11 @@ const TAG_STYLES: Record<string, string> = {
 const ALL = versions as VersionEntry[];
 
 export default function ChangelogButton() {
+    const pathname = usePathname();
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(0);
+
+    if (pathname?.startsWith('/dashboard')) return null;
 
     const current = ALL[selected];
 

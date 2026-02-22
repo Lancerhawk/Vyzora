@@ -1,7 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 const sections = [
     { label: 'Overview', href: '#overview' },
@@ -14,7 +14,29 @@ const sections = [
 ];
 
 export default function DocsSidebar() {
-    const pathname = usePathname();
+    const [activeId, setActiveId] = useState('');
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visible = entries.find((e) => e.isIntersecting);
+                if (visible) {
+                    setActiveId(`#${visible.target.id}`);
+                }
+            },
+            {
+                rootMargin: '-100px 0px -60% 0px', // Trigger when section is near top
+                threshold: 0,
+            }
+        );
+
+        sections.forEach((s) => {
+            const el = document.getElementById(s.href.replace('#', ''));
+            if (el) observer.observe(el);
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <aside className="sticky top-28 w-64 shrink-0 self-start hidden lg:block">
@@ -24,16 +46,15 @@ export default function DocsSidebar() {
                 </p>
                 <ul className="space-y-1">
                     {sections.map((s) => {
-                        const isActive = pathname === '/docs' && typeof window !== 'undefined' &&
-                            window.location.hash === s.href;
+                        const isActive = activeId === s.href;
                         return (
                             <li key={s.href}>
                                 <Link
                                     href={`/docs${s.href}`}
                                     className={[
-                                        'flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors duration-200',
+                                        'flex items-center px-4 py-2 rounded-lg text-sm transition-all duration-200',
                                         isActive
-                                            ? 'text-indigo-400 bg-indigo-500/10 border-l-2 border-indigo-400'
+                                            ? 'text-indigo-400 bg-indigo-500/10 font-medium'
                                             : 'text-gray-400 hover:text-white hover:bg-white/5',
                                     ].join(' ')}
                                 >

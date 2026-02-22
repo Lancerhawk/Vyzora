@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-02-22
+
+### Added
+- **Backend (v0.3.0)**:
+  - Implemented full GitHub OAuth flow with JWT (HttpOnly cookie)
+  - Added authentication middleware (cookie-based verification)
+  - Added project CRUD with ownership validation
+  - Introduced rate limiting (auth, project creation, ingest, metrics)
+  - Enforced 50-project lifetime cap per user
+  - Replaced distinct findMany metrics with optimized raw SQL aggregation
+  - Implemented secure API key validation for ingest
+- **Frontend (v0.3.0)**:
+  - Integrated full auth flow (GitHub login + session context)
+  - Implemented protected dashboard routing
+  - Connected dashboard to real backend APIs
+  - Added project creation + deletion UI
+  - Implemented live metrics fetching (events, visitors, sessions, pageviews)
+  - Established end-to-end ingestion → metrics → UI pipeline
+
+
 ## [0.3.0] - 2026-02-22
 
 ### Added

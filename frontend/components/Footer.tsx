@@ -1,3 +1,6 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 const links = {
@@ -19,6 +22,8 @@ const links = {
 };
 
 export default function Footer() {
+    const pathname = usePathname();
+    if (pathname?.startsWith('/dashboard')) return null;
     return (
         <footer className="border-t border-white/10 bg-[#030712] mt-24">
             <div className="max-w-7xl mx-auto px-6 py-16">
@@ -59,7 +64,7 @@ export default function Footer() {
                     <p className="text-xs text-gray-600">
                         © {new Date().getFullYear()} Vyzora. All rights reserved.
                     </p>
-                    <p className="text-xs text-gray-700">v0.2.0</p>
+                    {/* <p className="text-xs text-gray-700 font-medium">v0.4.0</p> */}
                 </div>
             </div>
         </footer>

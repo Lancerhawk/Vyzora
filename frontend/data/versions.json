@@ -1,5 +1,36 @@
 [
     {
+        "version": "0.4.0",
+        "date": "2026-02-22",
+        "tag": "feat",
+        "title": "Auth, Projects & Analytics Core",
+        "summary": "This release establishes Vyzora as a functional end-to-end analytics platform. It introduces secure GitHub authentication, self-serve project management, and a high-performance DB-backed metrics pipeline.",
+        "whatsIncluded": [
+            {
+                "headline": "GitHub OAuth & Secure Sessions",
+                "detail": "Implemented professional-grade authentication using GitHub OAuth and HttpOnly JWT cookies for tamper-proof session management."
+            },
+            {
+                "headline": "Project Management & Rate Limiting",
+                "detail": "Users can now create, list, and delete projects directly from the dashboard, protected by per-user ceilings and hourly rate limits."
+            },
+            {
+                "headline": "Optimized Analytics Pipeline",
+                "detail": "Replaced in-memory data processing with raw SQL aggregation and composite indexing, enabling fast sub-second metrics in the dashboard."
+            },
+            {
+                "headline": "Fully Wired Dashboard",
+                "detail": "The dashboard is now 100% connected to the backend, displaying real-time events, unique visitors, and session counts from the database."
+            }
+        ],
+        "stack": [
+            "GitHub OAuth",
+            "JWT (HttpOnly)",
+            "Prisma SQL",
+            "Next.js App Router"
+        ]
+    },
+    {
         "version": "0.3.0",
         "date": "2026-02-22",
         "tag": "feat",
