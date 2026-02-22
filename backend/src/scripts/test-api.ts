@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import 'dotenv/config';
 
 const BASE_URL = 'http://localhost:3001';
@@ -8,8 +8,12 @@ async function testHealth() {
     try {
         const res = await axios.get(`${BASE_URL}/health`);
         console.log('✅ Health check pass:', res.data);
-    } catch (e: any) {
-        console.error('❌ Health check fail:', e.response?.data || e.message);
+    } catch (e: unknown) {
+        if (e instanceof AxiosError) {
+            console.error('❌ Health check fail:', e.response?.data || e.message);
+        } else {
+            console.error('❌ Health check fail:', e);
+        }
     }
 }
 
@@ -26,8 +30,12 @@ async function testIngestInvalid() {
             }]
         });
         console.log('❌ Should have failed with 401');
-    } catch (e: any) {
-        console.log('✅ Correctly failed:', e.response?.status, e.response?.data);
+    } catch (e: unknown) {
+        if (e instanceof AxiosError) {
+            console.log('✅ Correctly failed:', e.response?.status, e.response?.data);
+        } else {
+            console.error('❌ Unexpected error:', e);
+        }
     }
 }
 
@@ -36,8 +44,12 @@ async function testIngestMissingData() {
     try {
         await axios.post(`${BASE_URL}/api/ingest`, {});
         console.log('❌ Should have failed with 400');
-    } catch (e: any) {
-        console.log('✅ Correctly failed:', e.response?.status, e.response?.data);
+    } catch (e: unknown) {
+        if (e instanceof AxiosError) {
+            console.log('✅ Correctly failed:', e.response?.status, e.response?.data);
+        } else {
+            console.error('❌ Unexpected error:', e);
+        }
     }
 }
 
@@ -65,8 +77,12 @@ async function testIngestSuccess(apiKey: string) {
             }]
         });
         console.log('✅ Ingest Success:', res.data);
-    } catch (e: any) {
-        console.error('❌ Ingest Success fail:', e.response?.data || e.message);
+    } catch (e: unknown) {
+        if (e instanceof AxiosError) {
+            console.error('❌ Ingest Success fail:', e.response?.data || e.message);
+        } else {
+            console.error('❌ Ingest Success fail:', e);
+        }
     }
 }
 
