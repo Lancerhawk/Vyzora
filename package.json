@@ -1,0 +1,25 @@
+{
+    "name": "vyzora",
+    "version": "0.1.0",
+    "private": true,
+    "workspaces": [
+        "backend",
+        "frontend",
+        "runtime-sdk"
+    ],
+    "scripts": {
+        "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
+        "dev:backend": "npm run dev --workspace=backend",
+        "dev:frontend": "npm run dev --workspace=frontend",
+        "dev:sdk": "npm run dev --workspace=runtime-sdk",
+        "build": "npm run build --workspaces --if-present",
+        "lint": "npm run lint --workspaces --if-present",
+        "lint:backend": "npm run lint --workspace=backend",
+        "lint:frontend": "npm run lint --workspace=frontend",
+        "lint:sdk": "npm run lint --workspace=runtime-sdk",
+        "typecheck": "npm run typecheck --workspace=runtime-sdk"
+    },
+    "devDependencies": {
+        "concurrently": "^9.0.0"
+    }
+}

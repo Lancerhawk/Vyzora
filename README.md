@@ -150,16 +150,3 @@ cd ../runtime-sdk
 npm install
 npm run build
 ```
-
----
-
-## Future Roadmap
-
-- [ ] Real-time event stream via WebSockets
-- [ ] Funnel analysis and user path tracking
-- [ ] Custom event properties and filtering
-- [ ] Team management and role-based access
-- [ ] Data export (CSV, JSON)
-- [ ] Alerting and anomaly detection
-- [ ] Self-hosted deployment (Docker Compose)
-- [ ] Public SDK on npm as `@vyzora/sdk`

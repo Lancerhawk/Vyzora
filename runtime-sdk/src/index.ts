@@ -26,7 +26,7 @@ export function init(config: VyzoraConfig): void {
     }
 
     initialised = true;
-    console.info('[Vyzora] SDK initialised.');
+    console.warn('[Vyzora] SDK initialised.');
 }
 
 export function destroy(): void {

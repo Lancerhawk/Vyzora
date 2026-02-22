@@ -1,0 +1,65 @@
+name: "✨ Feature Request"
+description: "Suggest a new feature or enhancement for Vyzora"
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please describe it clearly so we can evaluate and prioritize it.
+
+  - type: input
+    id: summary
+    attributes:
+      label: "Feature Summary"
+      description: "A short, clear title for this feature"
+      placeholder: "e.g. Add CSV export for event data"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: "Relevant Component"
+      options:
+        - "Backend API"
+        - "Frontend Dashboard"
+        - "Runtime SDK"
+        - "Documentation"
+        - "Infrastructure / DevOps"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem / Motivation"
+      description: "What problem does this feature solve? Why is it needed?"
+      placeholder: "Currently there's no way to export analytics data. Users need to manually query the database..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Proposed Solution"
+      description: "Describe your preferred solution in detail"
+      placeholder: "Add a `GET /api/projects/:id/export?format=csv` endpoint that streams event data as CSV..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives Considered"
+      description: "Any alternative approaches you've thought about?"
+      placeholder: "Could use a background job + download link instead of streaming..."
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "I have searched existing issues to make sure this is not a duplicate"
+          required: true
+        - label: "I am willing to help implement this feature"

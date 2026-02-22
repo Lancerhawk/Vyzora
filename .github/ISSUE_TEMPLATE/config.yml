@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/Lancerhawk/Vyzora/discussions
+    about: For general questions, ideas, and community discussion
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/Lancerhawk/Vyzora/security/advisories/new
+    about: Report a security vulnerability privately
