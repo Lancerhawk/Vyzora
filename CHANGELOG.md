@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.1] - 2026-02-23
+
+### Added
+- **Frontend (v0.4.1)**:
+  - Built a professional preloader animation for the homepage — logo fade-in, brand name reveal, gradient progress bar fill, and curtain-lift exit (`translateY(-100%)`)
+  - Preloader now only fires on the homepage (`/`) and only once per real browser page load (module-level flag prevents duplicate triggers on client-side navigation)
+  - Fixed Next.js hydration mismatch caused by `typeof window` in SSR — preloader now activates exclusively via `useEffect`, ensuring server/client render parity
+  - Updated browser tab title and meta description to professional engineering-focused copy
+  - Updated favicon to use `logo.svg`
+  - Refined Footer brand description copy
+
+---
+
 ## [0.5.0] - 2026-02-23
+
 
 ### Added
 - **Backend (v0.4.0)**:

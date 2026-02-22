@@ -83,7 +83,7 @@ export default function Navbar() {
                     ) : user ? (
                         <div className="relative" ref={dropdownRef}>
                             <button id="user-menu-btn" onClick={() => setDropdownOpen((v) => !v)}
-                                className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-white/10 hover:bg-white/[0.05] transition-all duration-200">
+                                className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-white/[0.05] transition-all duration-200">
                                 {user.githubId ? (
                                     <Image
                                         src={`https://avatars.githubusercontent.com/u/${user.githubId}?v=4&s=56`}

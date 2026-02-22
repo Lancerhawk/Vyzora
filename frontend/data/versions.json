@@ -1,5 +1,36 @@
 [
     {
+        "version": "0.5.1",
+        "date": "2026-02-23",
+        "tag": "polish",
+        "title": "Preloader & Branding Polish",
+        "summary": "Focused polish release. Introduces a premium homepage preloader animation and fixes a React hydration mismatch, alongside branding and metadata refinements across the frontend.",
+        "whatsIncluded": [
+            {
+                "headline": "Executive-Style Preloader Animation",
+                "detail": "Built a multi-phase homepage preloader: logo and brand name fade in, a gradient indigo-to-purple progress bar fills across the bottom, then the entire screen slides upward like a curtain lift to reveal the application."
+            },
+            {
+                "headline": "Smart Preloader Guard",
+                "detail": "The preloader activates only on the homepage and only once per real browser page load. A module-level flag prevents it from re-triggering on client-side navigation, eliminating the flash-of-content bug."
+            },
+            {
+                "headline": "Hydration Error Fix",
+                "detail": "Resolved a Next.js SSR hydration mismatch caused by accessing `window` during the synchronous render phase. The preloader now activates via `useEffect`, ensuring server and client render identical initial HTML."
+            },
+            {
+                "headline": "Branding & Metadata Refinements",
+                "detail": "Updated browser tab title, meta description, favicon (now SVG), and Footer copy to professional engineering-focused language."
+            }
+        ],
+        "stack": [
+            "Next.js App Router",
+            "CSS Keyframes",
+            "React useEffect",
+            "TypeScript"
+        ]
+    },
+    {
         "version": "0.5.0",
         "date": "2026-02-23",
         "tag": "feat",

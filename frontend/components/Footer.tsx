@@ -32,9 +32,8 @@ export default function Footer() {
                     <div className="col-span-2 md:col-span-1">
                         <span className="text-xl font-bold gradient-text">Vyzora</span>
                         <p className="mt-3 text-sm text-gray-500 leading-relaxed">
-                            Analytics for developers and founders.
-                            Track events, analyse sessions, and visualise
-                            your product metrics.
+                            High-performance event analytics for engineering and product teams.
+                            Turn raw behavioral data into actionable growth insights.
                         </p>
                     </div>
 
@@ -64,7 +63,6 @@ export default function Footer() {
                     <p className="text-xs text-gray-600">
                         © {new Date().getFullYear()} Vyzora. All rights reserved.
                     </p>
-                    <p className="text-xs text-gray-700 font-medium">v0.5.0</p>
                 </div>
             </div>
         </footer>
