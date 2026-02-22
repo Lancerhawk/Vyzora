@@ -97,3 +97,103 @@ export async function getMetrics(
         pageviews: metrics.pageviews || 0,
     };
 }
+
+// ─── Advanced Analytics ────────────────────────────────────────────────────────
+
+interface TimeSeriesRow { date: Date; events: number; visitors: number; sessions: number; }
+interface TopPageRow { path: string; views: number; }
+interface TopEventRow { eventType: string; count: number; }
+interface SessionRow { sessionId: string; startTime: Date; endTime: Date; eventCount: number; }
+interface BrowserRow { browser: string; count: number; }
+
+async function ownerCheck(projectId: string, userId: string): Promise<boolean> {
+    const p = await prisma.project.findFirst({ where: { id: projectId, userId } });
+    return p !== null;
+}
+
+export async function getTimeSeries(projectId: string, userId: string, range: MetricsRange) {
+    if (!await ownerCheck(projectId, userId)) return null;
+    const start = new Date();
+    start.setDate(start.getDate() - RANGE_DAYS[range]);
+    return prisma.$queryRaw<TimeSeriesRow[]>(Prisma.sql`
+        SELECT
+            DATE_TRUNC('day', "createdAt") AS date,
+            COUNT(*)::int AS events,
+            COUNT(DISTINCT "visitorId")::int AS visitors,
+            COUNT(DISTINCT "sessionId")::int AS sessions
+        FROM "Event"
+        WHERE "projectId" = ${projectId} AND "createdAt" >= ${start}
+        GROUP BY date
+        ORDER BY date ASC
+    `);
+}
+
+export async function getTopPages(projectId: string, userId: string, range: MetricsRange) {
+    if (!await ownerCheck(projectId, userId)) return null;
+    const start = new Date();
+    start.setDate(start.getDate() - RANGE_DAYS[range]);
+    return prisma.$queryRaw<TopPageRow[]>(Prisma.sql`
+        SELECT
+            "path",
+            COUNT(*)::int AS views
+        FROM "Event"
+        WHERE "projectId" = ${projectId}
+          AND "eventType" = 'pageview'
+          AND "createdAt" >= ${start}
+        GROUP BY "path"
+        ORDER BY views DESC
+        LIMIT 10
+    `);
+}
+
+export async function getTopEvents(projectId: string, userId: string, range: MetricsRange) {
+    if (!await ownerCheck(projectId, userId)) return null;
+    const start = new Date();
+    start.setDate(start.getDate() - RANGE_DAYS[range]);
+    return prisma.$queryRaw<TopEventRow[]>(Prisma.sql`
+        SELECT
+            "eventType",
+            COUNT(*)::int AS count
+        FROM "Event"
+        WHERE "projectId" = ${projectId} AND "createdAt" >= ${start}
+        GROUP BY "eventType"
+        ORDER BY count DESC
+        LIMIT 10
+    `);
+}
+
+export async function getSessions(projectId: string, userId: string, range: MetricsRange) {
+    if (!await ownerCheck(projectId, userId)) return null;
+    const start = new Date();
+    start.setDate(start.getDate() - RANGE_DAYS[range]);
+    return prisma.$queryRaw<SessionRow[]>(Prisma.sql`
+        SELECT
+            "sessionId",
+            MIN("createdAt") AS "startTime",
+            MAX("createdAt") AS "endTime",
+            COUNT(*)::int AS "eventCount"
+        FROM "Event"
+        WHERE "projectId" = ${projectId} AND "createdAt" >= ${start}
+        GROUP BY "sessionId"
+        ORDER BY "startTime" DESC
+        LIMIT 50
+    `);
+}
+
+export async function getBrowsers(projectId: string, userId: string, range: MetricsRange) {
+    if (!await ownerCheck(projectId, userId)) return null;
+    const start = new Date();
+    start.setDate(start.getDate() - RANGE_DAYS[range]);
+    return prisma.$queryRaw<BrowserRow[]>(Prisma.sql`
+        SELECT
+            metadata->>'browser' AS browser,
+            COUNT(*)::int AS count
+        FROM "Event"
+        WHERE "projectId" = ${projectId}
+          AND "createdAt" >= ${start}
+          AND metadata->>'browser' IS NOT NULL
+        GROUP BY browser
+        ORDER BY count DESC
+    `);
+}
+

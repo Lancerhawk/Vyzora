@@ -64,7 +64,7 @@ export default function Footer() {
                     <p className="text-xs text-gray-600">
                         © {new Date().getFullYear()} Vyzora. All rights reserved.
                     </p>
-                    {/* <p className="text-xs text-gray-700 font-medium">v0.4.0</p> */}
+                    <p className="text-xs text-gray-700 font-medium">v0.5.0</p>
                 </div>
             </div>
         </footer>

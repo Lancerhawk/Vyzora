@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-02-23
+
+### Added
+- **Backend (v0.4.0)**:
+  - Added time-series analytics endpoint (events, visitors, sessions by day)
+  - Added top pages aggregation
+  - Added top events aggregation
+  - Added session explorer endpoint with duration calculation
+  - Added browser distribution analytics from metadata
+  - Optimized DB queries using raw SQL and `COUNT(DISTINCT)`
+  - Enforced strict ownership validation before analytics queries
+  - Maintained rate limiting and project caps
+- **Frontend (v0.4.0)**:
+  - Implemented full analytics dashboard layout
+  - Added Events Over Time line chart
+  - Added Top Pages and Top Events tables
+  - Implemented Session Explorer UI
+  - Added Browser Distribution pie chart
+  - Integrated all new backend analytics endpoints
+  - Improved loading and empty states
+- **System**:
+  - Verified complete ingestion → aggregation → visualization pipeline
+  - Dashboard now reflects real behavioral analytics, not just counters
+
+
 ## [0.4.0] - 2026-02-22
 
 ### Added

@@ -1,5 +1,36 @@
 [
     {
+        "version": "0.5.0",
+        "date": "2026-02-23",
+        "tag": "feat",
+        "title": "Advanced Analytics & Aggregation",
+        "summary": "This milestone adds a complete behavioral analytics layer. Vyzora now transforms raw events into actionable insights with time-series charts, session exploration, and geographic/browser distribution.",
+        "whatsIncluded": [
+            {
+                "headline": "Real-time Aggregation Engine",
+                "detail": "Engineered high-performance SQL aggregation logic for daily time-series, top-performing pages, and event frequency analysis."
+            },
+            {
+                "headline": "Full Analytics Dashboard",
+                "detail": "Launched a comprehensive dashboard featuring Recharts-powered time-series, interactive tables, and donut charts for browser distribution."
+            },
+            {
+                "headline": "Session Explorer UI",
+                "detail": "Introduced a deep-dive session table with automatic duration calculation and event density tracking per user session."
+            },
+            {
+                "headline": "Optimized Ownership Guard",
+                "detail": "All analytics queries are now protected by a hardened ownership validation layer ensuring strict data privacy across projects."
+            }
+        ],
+        "stack": [
+            "Recharts",
+            "SQL Aggregation",
+            "Prisma 7",
+            "Next.js App Router"
+        ]
+    },
+    {
         "version": "0.4.0",
         "date": "2026-02-22",
         "tag": "feat",
