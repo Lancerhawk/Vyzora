@@ -1,0 +1,12 @@
+export const config = {
+    port: parseInt(process.env.PORT || '3001', 10),
+    nodeEnv: process.env.NODE_ENV || 'development',
+    jwtSecret: process.env.JWT_SECRET || 'change_me_in_production',
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+    github: {
+        clientId: process.env.GITHUB_CLIENT_ID || '',
+        clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+        callbackUrl: process.env.GITHUB_CALLBACK_URL || 'http://localhost:3001/auth/github/callback',
+    },
+} as const;
