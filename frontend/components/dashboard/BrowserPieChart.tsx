@@ -2,18 +2,23 @@
 
 import { useState } from 'react';
 import { Panel } from './Panel';
-import { PieChart, Pie, Cell, Sector, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Sector, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface BrowserRow { browser: string; count: number; }
 
 const COLORS = ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 
+interface ActiveSliceProps {
+    cx?: number; cy?: number; innerRadius?: number; outerRadius?: number;
+    startAngle?: number; endAngle?: number; fill?: string;
+}
+
 // Expanded active slice — replaces tooltip overlay
-function ActiveSlice(props: Record<string, unknown>) {
-    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props as {
-        cx: number; cy: number; innerRadius: number; outerRadius: number;
-        startAngle: number; endAngle: number; fill: string;
-    };
+function ActiveSlice(props: ActiveSliceProps) {
+    const {
+        cx = 0, cy = 0, innerRadius = 0, outerRadius = 0,
+        startAngle = 0, endAngle = 0, fill = '#fff'
+    } = props;
     return (
         <g>
             <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius + 7}
@@ -40,6 +45,7 @@ export function BrowserPieChart({ data, loading }: { data: BrowserRow[]; loading
                 <div className="relative shrink-0">
                     <ResponsiveContainer width={200} height={200}>
                         <PieChart>
+                            <Tooltip content={() => null} />
                             <Pie
                                 data={data}
                                 dataKey="count"
@@ -51,7 +57,6 @@ export function BrowserPieChart({ data, loading }: { data: BrowserRow[]; loading
                                 paddingAngle={3}
                                 strokeWidth={0}
                                 isAnimationActive={false}
-                                activeIndex={activeIndex}
                                 activeShape={ActiveSlice}
                                 onMouseEnter={(_, index) => setActiveIndex(index)}
                                 onMouseLeave={() => setActiveIndex(undefined)}

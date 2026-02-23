@@ -17,13 +17,15 @@ const METRIC_CONFIG: Record<Metric, { label: string; color: string; gradient: [s
     sessions: { label: 'Sessions', color: '#06b6d4', gradient: ['#06b6d4', '#22d3ee'] },
 };
 
-// ─── Tooltip ──────────────────────────────────────────────────────────────────
-function CustomTooltip({ active, payload, label }: {
+interface CustomTooltipProps {
     active?: boolean;
-    payload?: { value: number }[];
+    payload?: Array<{ value: number; dataKey: Metric; name: string; color: string; }>;
     label?: string;
     metric?: Metric;
-}) {
+}
+
+// ─── Tooltip ──────────────────────────────────────────────────────────────────
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
     if (!active || !payload?.length) return null;
     return (
         <div style={{
@@ -45,8 +47,14 @@ function CustomTooltip({ active, payload, label }: {
     );
 }
 
+interface CustomCursorProps {
+    x?: number;
+    y?: number;
+    height?: number;
+}
+
 // ─── Custom cursor ─────────────────────────────────────────────────────────────
-function CustomCursor({ x, y, height }: { x?: number; y?: number; height?: number }) {
+function CustomCursor({ x, y, height }: CustomCursorProps) {
     if (x === undefined || y === undefined) return null;
     return (
         <line
