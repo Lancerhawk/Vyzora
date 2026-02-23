@@ -17,30 +17,41 @@ const COOKIE_OPTIONS = {
 };
 
 export async function githubRedirect(_req: Request, res: Response): Promise<void> {
+    console.log('[Auth] Initiating GitHub redirect...');
     const params = new URLSearchParams({
         client_id: process.env.GITHUB_CLIENT_ID || '',
         scope: 'user:email',
         redirect_uri: `${process.env.BACKEND_URL}/api/auth/github/callback`,
     });
-    res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
+    const url = `https://github.com/login/oauth/authorize?${params.toString()}`;
+    console.log('[Auth] Redirecting to:', url);
+    res.redirect(url);
 }
 
 export async function githubCallback(req: Request, res: Response): Promise<void> {
+    console.log('[Auth] GitHub callback received');
     try {
         const code = req.query.code as string;
 
         if (!code) {
+            console.error('[Auth] OAuth error: Missing code in query');
             res.status(400).json({ success: false, message: 'Missing OAuth code' });
             return;
         }
 
+        console.log('[Auth] Exchanging code for token...');
         const accessToken = await exchangeCodeForToken(code);
+        console.log('[Auth] Access token received. Fetching profile and email...');
+
         const [profile, email] = await Promise.all([
             fetchGithubProfile(accessToken),
             fetchGithubEmail(accessToken),
         ]);
 
+        console.log('[Auth] Profile fetched:', { login: profile.login, email });
+
         if (!email) {
+            console.error('[Auth] Error: No verified email found');
             res.status(400).json({
                 success: false,
                 message: 'No verified primary email found on your GitHub account.',
@@ -54,15 +65,25 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
             githubId: String(profile.id),
         });
 
+        console.log('[Auth] User upserted:', user.id);
+
         const token = jwt.sign(
             { userId: user.id },
             process.env.JWT_SECRET || 'secret',
             { expiresIn: '7d' }
         );
 
+        console.log('[Auth] Token signed. Setting cookie...');
         res.cookie('vyzora_token', token, COOKIE_OPTIONS);
-        res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
-    } catch {
+
+        const redirectUrl = `${process.env.FRONTEND_URL}/dashboard`;
+        console.log('[Auth] Success. Redirecting to frontend:', redirectUrl);
+        res.redirect(redirectUrl);
+    } catch (err: any) {
+        console.error('[Auth] OAuth exception:', err.message);
+        if (err.response) {
+            console.error('[Auth] GitHub API Error Response:', err.response.data);
+        }
         res.redirect(`${process.env.FRONTEND_URL}/login?error=oauth_failed`);
     }
 }

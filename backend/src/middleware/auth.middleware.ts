@@ -7,7 +7,7 @@ export interface AuthenticatedRequest extends Request {
 
 const COOKIE_OPTIONS = {
     httpOnly: true,
-    sameSite: 'lax' as const,
+    sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
     secure: process.env.NODE_ENV === 'production',
 };
 
@@ -19,6 +19,7 @@ export function authenticate(
     const token = req.cookies?.vyzora_token;
 
     if (!token) {
+        console.warn(`[Auth] No token found in cookies for ${req.method} ${req.originalUrl}`);
         res.status(401).json({ success: false, message: 'Unauthorized' });
         return;
     }
@@ -30,7 +31,8 @@ export function authenticate(
         ) as { userId: string };
         req.authUser = { id: payload.userId };
         next();
-    } catch {
+    } catch (err: any) {
+        console.error('[Auth] Token verification failed:', err.message);
         // Clear the stuck invalid token before returning 401
         res.clearCookie('vyzora_token', COOKIE_OPTIONS);
         res.status(401).json({ success: false, message: 'Invalid or expired token' });

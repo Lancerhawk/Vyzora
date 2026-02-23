@@ -17,6 +17,16 @@ const PORT = process.env.PORT || 3001;
 // Trust proxy — required for correct IP resolution behind Vercel/Fly/Render
 app.set('trust proxy', 1);
 
+// Custom request logger
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+        const duration = Date.now() - start;
+        console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} ${res.statusCode} (${duration}ms)`);
+    });
+    next();
+});
+
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
