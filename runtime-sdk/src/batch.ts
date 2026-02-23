@@ -1,7 +1,7 @@
 import type { VyzoraEvent } from './tracker';
 
-const MAX_BATCH_SIZE = 10;
-const FLUSH_INTERVAL_MS = 5000;
+const MAX_BATCH_SIZE = 20;
+const FLUSH_INTERVAL_MS = 10000;
 
 let queue: VyzoraEvent[] = [];
 let flushTimer: ReturnType<typeof setInterval> | null = null;
@@ -13,7 +13,9 @@ export function initBatch(ingestEndpoint: string, key: string): void {
     apiKey = key;
 
     if (typeof window !== 'undefined') {
-        flushTimer = setInterval(flush, FLUSH_INTERVAL_MS);
+        if (!flushTimer) {
+            flushTimer = setInterval(flush, FLUSH_INTERVAL_MS);
+        }
 
         window.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') flush(true);

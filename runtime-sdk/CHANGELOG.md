@@ -2,6 +2,17 @@
 
 All notable changes to the Vyzora SDK will be documented in this file.
 
+## [0.1.1] - 2026-02-23
+
+### Fixed
+- **Stability**: Prevented duplicate interval creation for auto-flushing.
+- **Reliability**: Confirmed `visibilitychange` and `pagehide` flush handling.
+- **Lifecycle**: Stabilized batching and interval lifecycle management.
+
+### Changed
+- Increased default `batchSize` to 20.
+- Increased default `flushInterval` to 10 seconds (10000ms).
+
 ## [0.1.0] - 2026-02-23
 
 ### Added

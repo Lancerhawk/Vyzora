@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.6.1",
+        "date": "2026-02-23",
+        "tag": "feat",
+        "title": "SDK Stabilization & v0.6.1 Release",
+        "summary": "This release stabilizes the Vyzora Analytics SDK (v0.1.1) with improved batching, interval management, and increased default throughput settings. It also synchronizes versions across the monorepo.",
+        "whatsIncluded": [
+            {
+                "headline": "SDK Batching Stabilization",
+                "detail": "Increased default batch size to 20 and flush interval to 10s. Fixed duplicate interval creation bugs and confirmed reliable flusing on page visibility changes."
+            },
+            {
+                "headline": "System-wide Version Sync",
+                "detail": "Coordinated release across Root (v0.6.1), Frontend (v0.4.2), and SDK (v0.1.1) to ensure full compatibility and consistent documentation."
+            },
+            {
+                "headline": "Improved Build Injection",
+                "detail": "Finalized the build-time URL injection mechanism, allowing the SDK endpoint to be configured via environmental variables during production builds."
+            }
+        ],
+        "stack": [
+            "TypeScript",
+            "tsup",
+            "dotenv",
+            "Next.js"
+        ]
+    },
+    {
         "version": "0.6.0",
         "date": "2026-02-23",
         "tag": "feat",

@@ -5,9 +5,10 @@ import { getSessionId, resetSession } from './session';
 import { collectMetadata } from './metadata';
 import { Logger } from './logger';
 
-const DEFAULT_ENDPOINT = 'https://api.vyzora.io/api/ingest';
+// @ts-expect-error - __VYZORA_API_URL__ is injected by tsup at build-time
+const DEFAULT_ENDPOINT = __VYZORA_API_URL__;
 const DEFAULT_BATCH_SIZE = 20;
-const DEFAULT_FLUSH_INTERVAL = 5000;
+const DEFAULT_FLUSH_INTERVAL = 10000;
 
 export class Vyzora {
     private readonly apiKey: string;

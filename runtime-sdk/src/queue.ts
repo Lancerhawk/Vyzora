@@ -31,6 +31,7 @@ export class Queue {
     start(): void {
         if (this.timer !== null) return;
         this.timer = setInterval(() => {
+            // console.warn("INTERVAL TRIGGERED");
             this.logger.log('Auto-flush triggered');
             void this.flush();
         }, this.flushInterval);
@@ -45,6 +46,8 @@ export class Queue {
 
     push(event: InternalEvent): void {
         this.events.push(event);
+        // console.warn("EVENT PUSHED. Queue length:", this.events.length);
+
         this.logger.log(`Event queued: ${event.eventType} (queue=${this.events.length})`);
         if (this.events.length >= this.batchSize) {
             void this.flush();
@@ -59,6 +62,8 @@ export class Queue {
     }
 
     destroy(): void {
+        // console.warn("⚠️ SDK QUEUE DESTROY CALLED");
+
         if (this.timer !== null) {
             clearInterval(this.timer);
             this.timer = null;
@@ -73,12 +78,15 @@ export class Queue {
     }
 
     private handleVisibility = (): void => {
+        // console.warn("VISIBILITY CHANGE:", document.visibilityState);
+
         if (document.visibilityState === 'hidden') {
             void this.flush();
         }
     };
 
     private handlePageHide = (): void => {
+        // console.warn("PAGEHIDE FLUSH");
         void this.flush();
     };
 }

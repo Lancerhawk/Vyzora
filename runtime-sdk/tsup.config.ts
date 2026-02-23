@@ -1,4 +1,9 @@
 import { defineConfig } from 'tsup';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+const apiUrl = process.env.VYZORA_API_URL || 'http://localhost:3001/api/ingest';
 
 export default defineConfig({
     entry: ['src/index.ts'],
@@ -13,6 +18,9 @@ export default defineConfig({
     target: 'es2017',      // Broad browser support
     globalName: 'Vyzora',  // Browser global for script tag usage
     platform: 'browser',
+    define: {
+        __VYZORA_API_URL__: JSON.stringify(apiUrl),
+    },
     banner: {
         js: '/* @vyzora/sdk - lightweight analytics - MIT license */',
     },

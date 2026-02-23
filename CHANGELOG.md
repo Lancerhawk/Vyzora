@@ -7,10 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.1] - 2026-02-23
+
+### Added
+- **Production-Grade Analytics SDK (v0.1.1)**:
+  - Stabilized batching logic and interval-based flush cycles
+  - Increased default batch size to 20 and flush interval to 10 seconds for reduced network overhead
+  - Prevented duplicate interval creation for a cleaner singleton footprint
+  - Verified reliable data delivery during `visibilitychange` and `pagehide` events
+- **Frontend (v0.4.2)**:
+  - Re-implemented SDK integration using the new `@vyzora/sdk` v0.1.1
+  - Added build-time environmental variable injection for default ingest endpoints
+
+---
+
 ## [0.6.0] - 2026-02-23
 
 ### Added
-- **Production-Grade Analytics SDK (v0.1.0)**:
+- **Production-Grade Analytics SDK (v0.1.0) Initial Release**:
   - Launched a lightweight (< 7KB) TypeScript SDK for reliable event tracking
   - Built-in batched event delivery system with `sendBeacon` resilience
   - Automatic environment metadata collection (Browser, OS, Screen, etc.)

@@ -65,7 +65,7 @@ vyzora.identify('user_123456');
 | `enabled` | `boolean` | `false` | Must be `true` to active the SDK. |
 | `endpoint` | `string` | `https://api.vyzora.io/api/ingest` | Backend ingest URL. |
 | `batchSize` | `number` | `20` | Max events per batch before flushing. |
-| `flushInterval`| `number` | `5000` | Auto-flush interval in milliseconds. |
+| `flushInterval`| `number` | `10000` | Auto-flush interval in milliseconds. |
 | `debug` | `boolean` | `false` | Enable console logging for help in development. |
 
 ## License
