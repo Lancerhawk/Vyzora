@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.2] - 2026-02-23
+
+### Added
+- **Backend (v0.5.0)**: Integrated a request logger for API health monitoring and detailed trace logs for the GitHub OAuth flow.
+
+### Fixed
+- **Backend (v0.5.0)**: Resolved cross-domain authentication failures by enabling `SameSite=None` and `Secure` cookie session persistence for production deployments (Vercel to EC2/OCI).
+
+---
+
 ## [0.7.1] - 2026-02-23
 
 ### Fixed

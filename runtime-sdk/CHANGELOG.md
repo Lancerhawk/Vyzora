@@ -3,6 +3,12 @@
 All notable changes to the Vyzora SDK will be documented in this file.
 
 
+## [0.2.2] - 2026-02-23
+
+### Changed
+- **Internal Optimization**: Internal updates to ensure compatibility with production deployment of the Vyzora platform.
+
+
 ## [0.2.1] - 2026-02-23
 
 ### Fixed

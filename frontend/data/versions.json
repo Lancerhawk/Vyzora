@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.7.2",
+        "date": "2026-02-23",
+        "tag": "fix",
+        "title": "Cross-Domain Auth Fix & Backend Logging",
+        "summary": "This release resolves critical cross-domain authentication issues and introduces high-detail diagnostic logging to the backend infrastructure.",
+        "whatsIncluded": [
+            {
+                "headline": "Cross-Domain Auth Fix",
+                "detail": "Enabled 'SameSite=None' and 'Secure' for authentication cookies in production. This allows session persistence when the frontend (Vercel) and backend (EC2/OCI) are on different domains."
+            },
+            {
+                "headline": "Diagnostic Ingestion Logging",
+                "detail": "Implemented a request logger in the main entry point and granular trace logs in the GitHub OAuth flow to provide full visibility into ingestion health and auth success."
+            },
+            {
+                "headline": "Version Synchronization",
+                "detail": "Updated backend to v0.5.0 and SDK to v0.2.2 with synchronized metadata across the workspace."
+            }
+        ],
+        "stack": [
+            "Express 5",
+            "Cookie Persistence",
+            "Diagnostic Logging",
+            "CORS"
+        ]
+    },
+    {
         "version": "0.7.1",
         "date": "2026-02-23",
         "tag": "fix",
