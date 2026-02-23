@@ -12,7 +12,7 @@ import 'dotenv/config';
  *   npm run seed:events
  */
 
-const API_KEY = 'f11806c50774c63900245e29ff75bcea5cb04b123123edb4c48d88931b8fab64';
+const API_KEY = 'a8c8811ee1d3b44d53f9ebcf80c126a7dba9286f61ac12b4c7821dd8c30e561c';
 const DAYS_BACK = 30;
 
 // ── Data pools ────────────────────────────────────────────────────────────────

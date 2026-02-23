@@ -2,11 +2,11 @@
 
 > Self-hosted, open-source analytics for developers. Track events, reconstruct sessions, and query aggregated metrics — without sending data to a third party.
 
-[![Version](https://img.shields.io/badge/version-v0.8.0-indigo)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.9.0-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Backend](https://img.shields.io/badge/backend-v0.5.0-blue)](backend/package.json)
 [![SDK](https://img.shields.io/badge/sdk-v0.2.2-violet)](runtime-sdk/package.json)
-[![Frontend](https://img.shields.io/badge/frontend-v0.5.0-purple)](frontend/package.json)
+[![Frontend](https://img.shields.io/badge/frontend-v0.6.0-purple)](frontend/package.json)
 
 ---
 

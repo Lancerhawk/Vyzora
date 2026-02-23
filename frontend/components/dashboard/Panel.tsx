@@ -1,5 +1,33 @@
 'use client';
 
+import { AreaChart, Area, ResponsiveContainer } from 'recharts';
+
+// ─── Sparkline ────────────────────────────────────────────────────────────────
+function SparkLine({ data, color }: { data: number[]; color: string }) {
+    const points = data.map((v, i) => ({ v, i }));
+    return (
+        <ResponsiveContainer width="100%" height={40}>
+            <AreaChart data={points} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                <defs>
+                    <linearGradient id={`spark-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+                        <stop offset="100%" stopColor={color} stopOpacity={0} />
+                    </linearGradient>
+                </defs>
+                <Area
+                    type="monotone"
+                    dataKey="v"
+                    stroke={color}
+                    strokeWidth={1.5}
+                    fill={`url(#spark-${color.replace('#', '')})`}
+                    dot={false}
+                    isAnimationActive={false}
+                />
+            </AreaChart>
+        </ResponsiveContainer>
+    );
+}
+
 // ─── Shared Panel wrapper ─────────────────────────────────────────────────────
 export function Panel({
     title,
@@ -15,7 +43,7 @@ export function Panel({
     children: React.ReactNode;
 }) {
     return (
-        <div className="bg-[#080f1d] border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="bg-[#080f1d] border border-white/[0.06] rounded-xl overflow-hidden flex flex-col h-full">
             {/* Header */}
             <div className="flex items-start justify-between px-6 py-5 border-b border-white/[0.05]">
                 <div>
@@ -24,8 +52,8 @@ export function Panel({
                 </div>
             </div>
 
-            {/* Body — NO horizontal padding here; each child controls its own */}
-            <div className="py-3">
+            {/* Body */}
+            <div className="py-3 flex-1">
                 {loading ? (
                     <div className="space-y-2.5 px-6 py-3">
                         {[100, 85, 70, 55].map((w, i) => (
@@ -49,12 +77,17 @@ export function Panel({
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 export function StatCard({
-    label, value, loading, icon,
+    label, value, loading, icon, sparkData, sparkColor,
 }: {
-    label: string; value: number | undefined; loading: boolean; icon?: React.ReactNode;
+    label: string;
+    value: number | undefined;
+    loading: boolean;
+    icon?: React.ReactNode;
+    sparkData?: number[];
+    sparkColor?: string;
 }) {
     return (
-        <div className="bg-[#080f1d] border border-white/[0.06] rounded-xl p-6 flex flex-col gap-4 hover:border-indigo-500/20 hover:bg-[#0a1426] transition-all duration-300 group">
+        <div className="bg-[#080f1d] border border-white/[0.06] rounded-xl p-5 flex flex-col gap-3 hover:border-indigo-500/20 hover:bg-[#0a1426] transition-all duration-300 group">
             <div className="flex items-center justify-between">
                 <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest">{label}</p>
                 {icon && (
@@ -62,11 +95,17 @@ export function StatCard({
                 )}
             </div>
             {loading ? (
-                <div className="h-9 w-24 bg-white/[0.04] rounded-lg animate-pulse" />
+                <div className="h-8 w-20 bg-white/[0.04] rounded-lg animate-pulse" />
             ) : (
-                <p className="text-[2.4rem] font-bold text-white leading-none tabular-nums tracking-tighter">
+                <p className="text-[2rem] font-bold text-white leading-none tabular-nums tracking-tighter">
                     {(value ?? 0).toLocaleString()}
                 </p>
+            )}
+            {/* Sparkline */}
+            {!loading && sparkData && sparkData.length > 1 && (
+                <div className="-mx-1 mt-1">
+                    <SparkLine data={sparkData} color={sparkColor ?? '#6366f1'} />
+                </div>
             )}
         </div>
     );

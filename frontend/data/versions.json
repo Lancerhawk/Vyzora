@@ -1,5 +1,41 @@
 [
     {
+        "version": "0.9.0",
+        "date": "2026-02-24",
+        "tag": "feat",
+        "title": "Dashboard Redesign & Sparklines",
+        "summary": "Major dashboard layout overhaul. Introduced a two-column structure with a dedicated right-side metrics panel, integrated live sparkline trend graphs, and optimized the chart layout for better data density and readability.",
+        "whatsIncluded": [
+            {
+                "headline": "Dashboard Layout Redesign",
+                "detail": "New two-column layout: main content area for charts and tables on the left, fixed vertical stats panel on the right. Side-by-side grid for Activity and Browser charts."
+            },
+            {
+                "headline": "Live Sparkline Trends",
+                "detail": "Integrated mini-trend charts (sparklines) into all core stat cards, providing instant visual context for Pageviews, Visitors, Sessions, and Events over time."
+            },
+            {
+                "headline": "UI Alignment & Polish",
+                "detail": "Perfect height alignment across all panel rows and improved vertical centering for charts. Enhanced responsiveness for browser distribution legend with hover-to-show scrolling."
+            },
+            {
+                "headline": "Enhanced Code Blocks",
+                "detail": "Implemented a custom CodeBlock component for /docs with syntax highlighting and copy-to-clipboard support, improving accessibility and developer experience."
+            },
+            {
+                "headline": "Version Synchronization",
+                "detail": "Frontend bumped to v0.6.0 and Root bumped to v0.9.0 to coordinate the dashboard milestone release."
+            }
+        ],
+        "stack": [
+            "Next.js 16",
+            "Recharts (AreaChart)",
+            "Tailwind CSS v4",
+            "Flexbox Layout",
+            "TypeScript"
+        ]
+    },
+    {
         "version": "0.8.0",
         "date": "2026-02-24",
         "tag": "feat",

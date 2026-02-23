@@ -40,84 +40,86 @@ export function BrowserPieChart({ data, loading }: { data: BrowserRow[]; loading
             loading={loading}
             empty={data.length === 0}
         >
-            <div className="flex flex-col lg:flex-row items-center gap-6 px-6 pb-3">
-                {/* Donut */}
-                <div className="relative shrink-0">
-                    <ResponsiveContainer width={200} height={200}>
-                        <PieChart>
-                            <Tooltip content={() => null} />
-                            <Pie
-                                data={data}
-                                dataKey="count"
-                                nameKey="browser"
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={84}
-                                paddingAngle={3}
-                                strokeWidth={0}
-                                isAnimationActive={false}
-                                activeShape={ActiveSlice}
-                                onMouseEnter={(_, index) => setActiveIndex(index)}
-                                onMouseLeave={() => setActiveIndex(undefined)}
-                            >
-                                {data.map((_, i) => (
-                                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                                ))}
-                            </Pie>
-                        </PieChart>
-                    </ResponsiveContainer>
+            <div className="flex-1 flex flex-col justify-center">
+                <div className="flex flex-col sm:flex-row lg:flex-col min-[1400px]:flex-row items-center gap-4 sm:gap-6 px-4 pb-3">
+                    {/* Donut */}
+                    <div className="relative shrink-0">
+                        <ResponsiveContainer width={180} height={180}>
+                            <PieChart>
+                                <Tooltip content={() => null} />
+                                <Pie
+                                    data={data}
+                                    dataKey="count"
+                                    nameKey="browser"
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={54}
+                                    outerRadius={76}
+                                    paddingAngle={3}
+                                    strokeWidth={0}
+                                    isAnimationActive={false}
+                                    activeShape={ActiveSlice}
+                                    onMouseEnter={(_, index) => setActiveIndex(index)}
+                                    onMouseLeave={() => setActiveIndex(undefined)}
+                                >
+                                    {data.map((_, i) => (
+                                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                            </PieChart>
+                        </ResponsiveContainer>
 
-                    {/* Centre label */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        {activeIndex !== undefined ? (
-                            <>
-                                <span className="text-[11px] font-semibold text-gray-400 truncate max-w-[80px] text-center leading-tight">
-                                    {data[activeIndex]?.browser}
-                                </span>
-                                <span className="text-[16px] font-bold tabular-nums" style={{ color: COLORS[activeIndex % COLORS.length] }}>
-                                    {data[activeIndex]?.count.toLocaleString()}
-                                </span>
-                            </>
-                        ) : (
-                            <>
-                                <span className="text-[10px] text-gray-600 font-semibold uppercase tracking-wider">Total</span>
-                                <span className="text-[18px] font-bold text-white tabular-nums">{total.toLocaleString()}</span>
-                            </>
-                        )}
+                        {/* Centre label */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            {activeIndex !== undefined ? (
+                                <>
+                                    <span className="text-[10px] font-semibold text-gray-400 truncate max-w-[70px] text-center leading-tight">
+                                        {data[activeIndex]?.browser}
+                                    </span>
+                                    <span className="text-[14px] font-bold tabular-nums" style={{ color: COLORS[activeIndex % COLORS.length] }}>
+                                        {data[activeIndex]?.count.toLocaleString()}
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="text-[9px] text-gray-600 font-semibold uppercase tracking-wider">Total</span>
+                                    <span className="text-[16px] font-bold text-white tabular-nums">{total.toLocaleString()}</span>
+                                </>
+                            )}
+                        </div>
                     </div>
-                </div>
 
-                {/* Legend rows */}
-                <div className="flex-1 w-full space-y-2.5">
-                    {data.map((b, i) => {
-                        const pct = total > 0 ? Math.round((b.count / total) * 100) : 0;
-                        const isActive = activeIndex === i;
-                        return (
-                            <div key={i}
-                                className="cursor-default"
-                                onMouseEnter={() => setActiveIndex(i)}
-                                onMouseLeave={() => setActiveIndex(undefined)}
-                            >
-                                <div className={`flex items-center gap-2.5 mb-1.5 transition-opacity duration-150 ${activeIndex !== undefined && !isActive ? 'opacity-40' : 'opacity-100'}`}>
-                                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
-                                    <span className="text-[12px] font-medium text-gray-300 flex-1">{b.browser}</span>
-                                    <span className="text-[11px] text-gray-600 tabular-nums">{pct}%</span>
-                                    <span className="text-[12px] font-bold text-white tabular-nums w-10 text-right">{b.count.toLocaleString()}</span>
+                    {/* Legend rows */}
+                    <div className="flex-1 w-full space-y-2 max-h-[160px] overflow-y-auto pr-2 scrollbar-hide hover:scrollbar-default transition-all duration-300">
+                        {data.map((b, i) => {
+                            const pct = total > 0 ? Math.round((b.count / total) * 100) : 0;
+                            const isActive = activeIndex === i;
+                            return (
+                                <div key={i}
+                                    className="cursor-default"
+                                    onMouseEnter={() => setActiveIndex(i)}
+                                    onMouseLeave={() => setActiveIndex(undefined)}
+                                >
+                                    <div className={`flex items-center gap-2 mb-1 transition-opacity duration-150 ${activeIndex !== undefined && !isActive ? 'opacity-40' : 'opacity-100'}`}>
+                                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+                                        <span className="text-[11px] font-medium text-gray-300 flex-1 truncate">{b.browser}</span>
+                                        <span className="text-[10px] text-gray-600 tabular-nums">{pct}%</span>
+                                        <span className="text-[11px] font-bold text-white tabular-nums w-8 text-right">{b.count.toLocaleString()}</span>
+                                    </div>
+                                    <div className="h-[2px] w-full bg-white/[0.04] rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full rounded-full transition-all duration-500"
+                                            style={{
+                                                width: `${pct}%`,
+                                                background: COLORS[i % COLORS.length],
+                                                opacity: activeIndex !== undefined && !isActive ? 0.3 : 1,
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="h-[2px] w-full bg-white/[0.04] rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full rounded-full transition-all duration-500"
-                                        style={{
-                                            width: `${pct}%`,
-                                            background: COLORS[i % COLORS.length],
-                                            opacity: activeIndex !== undefined && !isActive ? 0.3 : 1,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
         </Panel>

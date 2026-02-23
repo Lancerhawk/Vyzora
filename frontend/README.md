@@ -1,6 +1,6 @@
 # Vyzora — Frontend
 
-[![Version](https://img.shields.io/badge/version-v0.5.0-purple)](package.json)
+[![Version](https://img.shields.io/badge/version-v0.6.0-purple)](package.json)
 
 The Next.js 16 App Router frontend for Vyzora. Serves both the public-facing marketing site (homepage, docs) and the authenticated analytics dashboard.
 
@@ -14,7 +14,7 @@ The Next.js 16 App Router frontend for Vyzora. Serves both the public-facing mar
 | `/docs` | SDK documentation (17 sections, mobile responsive) |
 | `/login` | GitHub OAuth entry point |
 | `/dashboard` | Project list (authenticated) |
-| `/dashboard/[projectId]` | Analytics dashboard — pageviews, sessions, events, trends |
+| `/dashboard` | Analytics dashboard — pageviews, sessions, events, trends |
 
 ---
 
@@ -26,9 +26,14 @@ The Next.js 16 App Router frontend for Vyzora. Serves both the public-facing mar
 | `ChangelogButton.tsx` | Floating changelog modal with version history (mobile responsive) |
 | `DocsSidebar.tsx` | Scrollspy sidebar with IntersectionObserver active section highlight |
 | `ParticleField.tsx` | Animated hero background |
-| `dashboard/MetricCard.tsx` | Stat tile for pageviews, sessions, etc. |
-| `dashboard/TrendChart.tsx` | Daily trend bar chart (Recharts) |
-| `dashboard/EventTable.tsx` | Top events table |
+| `dashboard/Panel.tsx` | Base panel component with `SparkLine` and `StatCard` integration |
+| `dashboard/AnalyticsPanel.tsx` | Main dashboard grid orchestrator |
+| `dashboard/TimeSeriesChart.tsx` | Scalable activity chart (Recharts) |
+| `dashboard/BrowserPieChart.tsx` | Donut chart with flex-scrolling legend |
+| `dashboard/SessionExplorer.tsx` | Pagination-enabled session history table |
+| `dashboard/TopPagesTable.tsx` | Top-performing path aggregation table |
+| `dashboard/TopEventsTable.tsx` | Custom event frequency table |
+| `CodeBlock.tsx` | Enhanced code component with highlighting and copy to clipboard |
 
 ---
 

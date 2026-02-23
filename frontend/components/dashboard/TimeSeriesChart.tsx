@@ -108,80 +108,82 @@ export function TimeSeriesChart({ data, loading }: { data: TimePoint[]; loading:
             loading={loading}
             empty={data.length === 0}
         >
-            {/* Metric selector pills */}
-            <div style={{ display: 'flex', gap: 8, padding: '4px 20px 16px' }}>
-                {(Object.keys(METRIC_CONFIG) as Metric[]).map((m) => (
-                    <Pill
-                        key={m}
-                        label={METRIC_CONFIG[m].label}
-                        value={totals[m]}
-                        color={METRIC_CONFIG[m].color}
-                        active={metric === m}
-                        onClick={() => setMetric(m)}
-                    />
-                ))}
-            </div>
-
-            {/* Chart */}
-            <div style={{ padding: '0 12px 16px' }}>
-                <ResponsiveContainer width="100%" height={220}>
-                    <AreaChart
-                        data={data}
-                        margin={{ top: 4, right: 4, bottom: 0, left: 0 }}
-                        style={{ outline: 'none' }}
-                    >
-                        <defs>
-                            <linearGradient id={`grad-${metric}`} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor={cfg.color} stopOpacity={0.35} />
-                                <stop offset="100%" stopColor={cfg.color} stopOpacity={0} />
-                            </linearGradient>
-                        </defs>
-
-                        <CartesianGrid
-                            horizontal vertical={false}
-                            stroke="rgba(255,255,255,0.03)"
-                            strokeDasharray="0"
+            <div className="flex-1 flex flex-col justify-center">
+                {/* Metric selector pills */}
+                <div style={{ display: 'flex', gap: 8, padding: '4px 20px 16px' }}>
+                    {(Object.keys(METRIC_CONFIG) as Metric[]).map((m) => (
+                        <Pill
+                            key={m}
+                            label={METRIC_CONFIG[m].label}
+                            value={totals[m]}
+                            color={METRIC_CONFIG[m].color}
+                            active={metric === m}
+                            onClick={() => setMetric(m)}
                         />
+                    ))}
+                </div>
 
-                        <XAxis
-                            dataKey="date"
-                            tick={{ fill: '#374151', fontSize: 10, fontWeight: 500 }}
-                            axisLine={false}
-                            tickLine={false}
-                            dy={10}
-                            interval={Math.max(0, Math.ceil(data.length / 6) - 1)}
-                        />
-                        <YAxis
-                            tick={{ fill: '#374151', fontSize: 10 }}
-                            axisLine={false}
-                            tickLine={false}
-                            allowDecimals={false}
-                            domain={[0, 'auto']}
-                            tickCount={4}
-                            width={28}
-                        />
+                {/* Chart */}
+                <div style={{ padding: '0 12px 16px' }}>
+                    <ResponsiveContainer width="100%" height={220}>
+                        <AreaChart
+                            data={data}
+                            margin={{ top: 4, right: 4, bottom: 0, left: 0 }}
+                            style={{ outline: 'none' }}
+                        >
+                            <defs>
+                                <linearGradient id={`grad-${metric}`} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor={cfg.color} stopOpacity={0.35} />
+                                    <stop offset="100%" stopColor={cfg.color} stopOpacity={0} />
+                                </linearGradient>
+                            </defs>
 
-                        <Tooltip
-                            content={<CustomTooltip metric={metric} />}
-                            cursor={<CustomCursor />}
-                            animationDuration={80}
-                        />
+                            <CartesianGrid
+                                horizontal vertical={false}
+                                stroke="rgba(255,255,255,0.03)"
+                                strokeDasharray="0"
+                            />
 
-                        <Area
-                            key={metric}
-                            type="monotone"
-                            dataKey={metric}
-                            stroke={cfg.color}
-                            strokeWidth={2}
-                            fill={`url(#grad-${metric})`}
-                            dot={false}
-                            isAnimationActive={true}
-                            animationDuration={400}
-                            animationEasing="ease-out"
-                            activeDot={{ r: 4, fill: cfg.color, stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2 }}
-                        />
-                    </AreaChart>
-                </ResponsiveContainer>
+                            <XAxis
+                                dataKey="date"
+                                tick={{ fill: '#374151', fontSize: 10, fontWeight: 500 }}
+                                axisLine={false}
+                                tickLine={false}
+                                dy={10}
+                                interval={Math.max(0, Math.ceil(data.length / 6) - 1)}
+                            />
+                            <YAxis
+                                tick={{ fill: '#374151', fontSize: 10 }}
+                                axisLine={false}
+                                tickLine={false}
+                                allowDecimals={false}
+                                domain={[0, 'auto']}
+                                tickCount={4}
+                                width={28}
+                            />
+
+                            <Tooltip
+                                content={<CustomTooltip metric={metric} />}
+                                cursor={<CustomCursor />}
+                                animationDuration={80}
+                            />
+
+                            <Area
+                                key={metric}
+                                type="monotone"
+                                dataKey={metric}
+                                stroke={cfg.color}
+                                strokeWidth={2}
+                                fill={`url(#grad-${metric})`}
+                                dot={false}
+                                isAnimationActive={true}
+                                animationDuration={400}
+                                animationEasing="ease-out"
+                                activeDot={{ r: 4, fill: cfg.color, stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2 }}
+                            />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
         </Panel>
     );

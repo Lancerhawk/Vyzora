@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
 import { StatCard } from '../../components/dashboard/Panel';
-import { AnalyticsPanel } from '../../components/dashboard/AnalyticsPanel';
+import { AnalyticsPanel, SparkData } from '../../components/dashboard/AnalyticsPanel';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Project { id: string; name: string; apiKey: string; createdAt: string; }
@@ -124,6 +124,7 @@ export default function DashboardPage() {
     const [newApiKey, setNewApiKey] = useState('');
     const [idCopied, setIdCopied] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sparkData, setSparkData] = useState<SparkData | null>(null);
 
     useEffect(() => { if (!loading && !user) router.replace('/login'); }, [user, loading, router]);
 
@@ -297,64 +298,109 @@ export default function DashboardPage() {
                 </div>
 
                 {selected ? (
-                    <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-14 py-10 lg:py-12">
+                    <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-10 py-8 lg:py-10">
 
-                        {/* ── Page header ── */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
-                            <div>
-                                <div className="flex items-center gap-3 mb-1.5">
-                                    <h1 className="text-[22px] font-bold text-white tracking-tight">{selected.name}</h1>
-                                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Live</span>
+                        {/* Two-column: main content + right stats panel */}
+                        <div className="flex flex-col xl:flex-row gap-6">
+
+                            {/* ── LEFT: Header + Charts ── */}
+                            <div className="flex-1 min-w-0">
+
+                                {/* Page header */}
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-1.5">
+                                            <h1 className="text-[20px] font-bold text-white tracking-tight">{selected.name}</h1>
+                                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Live</span>
+                                            </div>
+                                        </div>
+                                        <p className="text-[13px] text-gray-600">Since {new Date(selected.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                                    </div>
+
+                                    {/* Range selector */}
+                                    <div className="flex items-center bg-white/[0.03] border border-white/[0.07] rounded-lg overflow-hidden self-start">
+                                        {(['7d', '30d', '90d'] as MetricsRange[]).map((r) => (
+                                            <button key={r} onClick={() => setRange(r)}
+                                                className={`px-5 py-2.5 text-xs font-semibold transition-all duration-200 border-r border-white/[0.07] last:border-r-0 ${range === r ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'}`}>
+                                                {r}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
-                                <p className="text-[13px] text-gray-600">Since {new Date(selected.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                            </div>
 
-                            {/* Range selector */}
-                            <div className="flex items-center bg-white/[0.03] border border-white/[0.07] rounded-lg overflow-hidden self-start">
-                                {(['7d', '30d', '90d'] as MetricsRange[]).map((r) => (
-                                    <button key={r} onClick={() => setRange(r)}
-                                        className={`px-5 py-2.5 text-xs font-semibold transition-all duration-200 border-r border-white/[0.07] last:border-r-0 ${range === r ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'}`}>
-                                        {r}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                                {/* Charts */}
+                                <AnalyticsPanel
+                                    key={`${selected.id}-${range}`}
+                                    projectId={selected.id}
+                                    range={range}
+                                    onSparkData={setSparkData}
+                                />
 
-                        {/* ── Stat cards ── */}
-                        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-                            <StatCard label="Pageviews" value={metrics?.pageviews} loading={metricsLoading} icon={<IconPageview />} />
-                            <StatCard label="Unique Visitors" value={metrics?.uniqueVisitors} loading={metricsLoading} icon={<IconVisitor />} />
-                            <StatCard label="Sessions" value={metrics?.totalSessions} loading={metricsLoading} icon={<IconSession />} />
-                            <StatCard label="Events" value={metrics?.totalEvents} loading={metricsLoading} icon={<IconEvent />} />
-                        </div>
-
-                        {/* ── Analytics panels ── */}
-                        <AnalyticsPanel key={`${selected.id}-${range}`} projectId={selected.id} range={range} />
-
-                        {/* ── Credentials ── */}
-                        <div className="mt-8 bg-[#080f1d] border border-white/[0.06] rounded-xl overflow-hidden">
-                            <div className="px-7 py-5 border-b border-white/[0.05]">
-                                <h2 className="text-[13px] font-semibold text-white">Project Credentials</h2>
-                                <p className="text-[11px] text-gray-600 mt-0.5">Use these values in your SDK configuration.</p>
-                            </div>
-                            <div className="divide-y divide-white/[0.04]">
-                                <div className="flex flex-col sm:flex-row sm:items-center px-7 py-5 gap-4">
-                                    <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider sm:w-24 shrink-0">Project ID</span>
-                                    <span className="font-mono text-[12px] sm:text-[13px] text-gray-400 truncate flex-1">{selected.id}</span>
-                                    <button onClick={() => { navigator.clipboard.writeText(selected.id); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
-                                        className={`shrink-0 flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 border rounded-lg transition-colors ${idCopied ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/5' : 'text-gray-600 border-white/[0.08] hover:text-white hover:bg-white/[0.04]'}`}>
-                                        {idCopied ? '✓ Copied' : 'Copy'}
-                                    </button>
-                                </div>
-                                <div className="flex flex-col sm:flex-row sm:items-center px-7 py-5 gap-4">
-                                    <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider sm:w-24 shrink-0">API Key</span>
-                                    <span className="font-mono text-[13px] text-gray-700 tracking-[0.3em] flex-1">••••••••••••••••••••••••</span>
-                                    <span className="text-[11px] font-medium text-amber-600/70 shrink-0">Shown once at creation</span>
+                                {/* Credentials */}
+                                <div className="mt-6 bg-[#080f1d] border border-white/[0.06] rounded-xl overflow-hidden">
+                                    <div className="px-7 py-5 border-b border-white/[0.05]">
+                                        <h2 className="text-[13px] font-semibold text-white">Project Credentials</h2>
+                                        <p className="text-[11px] text-gray-600 mt-0.5">Use these values in your SDK configuration.</p>
+                                    </div>
+                                    <div className="divide-y divide-white/[0.04]">
+                                        <div className="flex flex-col sm:flex-row sm:items-center px-7 py-5 gap-4">
+                                            <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider sm:w-24 shrink-0">Project ID</span>
+                                            <span className="font-mono text-[12px] sm:text-[13px] text-gray-400 truncate flex-1">{selected.id}</span>
+                                            <button onClick={() => { navigator.clipboard.writeText(selected.id); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
+                                                className={`shrink-0 flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 border rounded-lg transition-colors ${idCopied ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/5' : 'text-gray-600 border-white/[0.08] hover:text-white hover:bg-white/[0.04]'}`}>
+                                                {idCopied ? '✓ Copied' : 'Copy'}
+                                            </button>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row sm:items-center px-7 py-5 gap-4">
+                                            <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider sm:w-24 shrink-0">API Key</span>
+                                            <span className="font-mono text-[13px] text-gray-700 tracking-[0.3em] flex-1">••••••••••••••••••••••••</span>
+                                            <span className="text-[11px] font-medium text-amber-600/70 shrink-0">Shown once at creation</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* ── RIGHT: Stat cards panel ── */}
+                            <div className="xl:w-64 xl:shrink-0">
+                                {/* Mobile: 2x2 grid. xl+: vertical stack */}
+                                <div className="grid grid-cols-2 xl:grid-cols-1 gap-4">
+                                    <StatCard
+                                        label="Pageviews"
+                                        value={metrics?.pageviews}
+                                        loading={metricsLoading}
+                                        icon={<IconPageview />}
+                                        sparkData={sparkData?.pageviews}
+                                        sparkColor="#6366f1"
+                                    />
+                                    <StatCard
+                                        label="Unique Visitors"
+                                        value={metrics?.uniqueVisitors}
+                                        loading={metricsLoading}
+                                        icon={<IconVisitor />}
+                                        sparkData={sparkData?.visitors}
+                                        sparkColor="#8b5cf6"
+                                    />
+                                    <StatCard
+                                        label="Sessions"
+                                        value={metrics?.totalSessions}
+                                        loading={metricsLoading}
+                                        icon={<IconSession />}
+                                        sparkData={sparkData?.sessions}
+                                        sparkColor="#06b6d4"
+                                    />
+                                    <StatCard
+                                        label="Events"
+                                        value={metrics?.totalEvents}
+                                        loading={metricsLoading}
+                                        icon={<IconEvent />}
+                                        sparkData={sparkData?.events}
+                                        sparkColor="#10b981"
+                                    />
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 ) : (

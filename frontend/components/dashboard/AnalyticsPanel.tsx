@@ -14,13 +14,28 @@ interface TopEvent { eventType: string; count: number; }
 interface SessionRow { sessionId: string; startTime: string; endTime: string; eventCount: number; }
 interface BrowserRow { browser: string; count: number; }
 
+export interface SparkData {
+    pageviews: number[];
+    visitors: number[];
+    sessions: number[];
+    events: number[];
+}
+
 type Range = '7d' | '30d' | '90d';
 
 function fmtDate(iso: string) {
     return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-export function AnalyticsPanel({ projectId, range }: { projectId: string; range: Range }) {
+export function AnalyticsPanel({
+    projectId,
+    range,
+    onSparkData,
+}: {
+    projectId: string;
+    range: Range;
+    onSparkData?: (data: SparkData) => void;
+}) {
     const [timeSeries, setTimeSeries] = useState<TimePoint[]>([]);
     const [topPages, setTopPages] = useState<TopPage[]>([]);
     const [topEvents, setTopEvents] = useState<TopEvent[]>([]);
@@ -43,11 +58,22 @@ export function AnalyticsPanel({ projectId, range }: { projectId: string; range:
             api.get<{ data: BrowserRow[] }>(`${base}/browsers?${q}`),
         ]).then(([ts, tp, te, se, br]) => {
             if (cancelled) return;
-            setTimeSeries(ts.data.data.map(d => ({ ...d, date: fmtDate(String(d.date)) })));
+            const mapped = ts.data.data.map(d => ({ ...d, date: fmtDate(String(d.date)) }));
+            setTimeSeries(mapped);
             setTopPages(tp.data.data);
             setTopEvents(te.data.data);
             setSessions(se.data.data);
             setBrowsers(br.data.data);
+
+            // Lift sparkline arrays up to parent for stat cards
+            if (onSparkData) {
+                onSparkData({
+                    pageviews: mapped.map(d => d.visitors), // pageviews = visitors tracking
+                    visitors: mapped.map(d => d.visitors),
+                    sessions: mapped.map(d => d.sessions),
+                    events: mapped.map(d => d.events),
+                });
+            }
         }).catch(() => {
             if (!cancelled) {
                 setTimeSeries([]); setTopPages([]);
@@ -56,24 +82,32 @@ export function AnalyticsPanel({ projectId, range }: { projectId: string; range:
         }).finally(() => { if (!cancelled) setLoading(false); });
 
         return () => { cancelled = true; };
-    }, [projectId, range]);
+    }, [projectId, range, onSparkData]);
 
     return (
         <div className="space-y-6">
-            {/* Time Series — full width */}
-            <TimeSeriesChart data={timeSeries} loading={loading} />
-
-            {/* Top Pages + Top Events — side by side */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <TopPagesTable data={topPages} loading={loading} />
-                <TopEventsTable data={topEvents} loading={loading} />
+            {/* Row 1: Activity chart (60%) + Browser distribution (40%) */}
+            <div className="grid grid-cols-1 xl:grid-cols-5 gap-6 items-stretch">
+                <div className="xl:col-span-3">
+                    <TimeSeriesChart data={timeSeries} loading={loading} />
+                </div>
+                <div className="xl:col-span-2">
+                    <BrowserPieChart data={browsers} loading={loading} />
+                </div>
             </div>
 
-            {/* Session Explorer — full width */}
-            <SessionExplorer data={sessions} loading={loading} />
+            {/* Row 2: Top Pages + Top Events side-by-side */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+                <div className="h-full">
+                    <TopPagesTable data={topPages} loading={loading} />
+                </div>
+                <div className="h-full">
+                    <TopEventsTable data={topEvents} loading={loading} />
+                </div>
+            </div>
 
-            {/* Browser Distribution — full width */}
-            <BrowserPieChart data={browsers} loading={loading} />
+            {/* Row 3: Session Explorer */}
+            <SessionExplorer data={sessions} loading={loading} />
         </div>
     );
 }

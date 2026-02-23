@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.0] - 2026-02-24
+
+### Added
+- **Frontend (v0.6.0) — Dashboard Redesign**: Completely overhauled the dashboard layout to a modern two-column structure. Added a dedicated right-side panel for core project statistics.
+- **Frontend (v0.6.0) — Sparklines**: Integrated live trend sparklines into `StatCard` components using Recharts `AreaChart`, providing instant visual context for metrics like Pageviews and Unique Visitors.
+- **Frontend (v0.6.0) — Side-by-Side Charts**: Reconfigured the main dashboard view to display "Activity Over Time" (60%) and "Browser Distribution" (40%) side-by-side in a responsive grid.
+- **Frontend (v0.6.0) — Enhanced Code Blocks**: Introduced a `CodeBlock` component with manual regex-based syntax highlighting and copy-to-clipboard functionality for a premium documentation experience.
+
+### Changed
+- **Frontend (v0.6.0) — UI Polish & Alignment**: 
+  - Implemented flex-based height equalization for all side-by-side dashboard panels.
+  - Added vertical centering for chart contents to ensure visual balance.
+  - Improved `BrowserPieChart` responsiveness: legend now supports vertical scrolling with a "hide-until-hover" custom scrollbar to prevent height overflow.
+  - Refined table layouts for Top Pages and Top Events to wrap correctly on smaller viewports.
+
+---
+
 ## [0.8.0] - 2026-02-24
 
 ### Changed

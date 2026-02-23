@@ -37,6 +37,24 @@ body {
   border-radius: 3px;
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-default::-webkit-scrollbar {
+  display: block;
+}
+
+.scrollbar-default {
+  -ms-overflow-style: auto;
+  scrollbar-width: auto;
+}
+
 /* ── Gradient text ────────────────────────────────────────── */
 .gradient-text {
   background: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);

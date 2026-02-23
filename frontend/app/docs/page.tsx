@@ -1,4 +1,5 @@
 import DocsSidebar from '../../components/DocsSidebar';
+import CodeBlock from '../../components/CodeBlock';
 
 // Shared style helpers — keep layout identical to original
 const code = 'bg-white/10 px-1.5 py-0.5 rounded text-indigo-300 text-xs';
@@ -6,7 +7,6 @@ const h2 = 'text-xl md:text-2xl font-bold text-white mb-4';
 const h3 = 'text-sm md:text-base font-semibold text-white mb-2 mt-6';
 const p = 'text-gray-400 leading-relaxed mb-4 text-sm';
 const card = 'rounded-2xl border border-white/10 bg-[#0d1117] p-6 mb-4';
-const pre = 'code-block mb-4';
 
 export default function DocsPage() {
     return (
@@ -55,18 +55,18 @@ export default function DocsPage() {
                         <p className={p}>Minimum working setup in three steps.</p>
 
                         <h3 className={h3}>1. Install</h3>
-                        <pre className={pre}>npm install vyzora-sdk</pre>
+                        <CodeBlock>npm install vyzora-sdk</CodeBlock>
 
                         <h3 className={h3}>2. Initialize</h3>
-                        <pre className={pre}>{`import { Vyzora } from 'vyzora-sdk';
+                        <CodeBlock>{`import { Vyzora } from 'vyzora-sdk';
 
 new Vyzora({
   apiKey: 'your_project_api_key',
   enabled: true,
-});`}</pre>
+});`}</CodeBlock>
 
                         <h3 className={h3}>3. Track</h3>
-                        <pre className={pre}>{`vyzora.track('button_click', { plan: 'pro' });`}</pre>
+                        <CodeBlock>{`vyzora.track('button_click', { plan: 'pro' });`}</CodeBlock>
 
                         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm text-amber-300">
                             <strong>Critical:</strong> If <code className={code}>enabled</code> is{' '}
@@ -80,12 +80,12 @@ new Vyzora({
                         <h2 className={h2}>Installation</h2>
 
                         <h3 className={h3}>npm / yarn / pnpm</h3>
-                        <pre className={pre}>{`npm install vyzora-sdk
+                        <CodeBlock>{`npm install vyzora-sdk
 yarn add vyzora-sdk
-pnpm add vyzora-sdk`}</pre>
+pnpm add vyzora-sdk`}</CodeBlock>
 
                         <h3 className={h3}>Next.js (App Router)</h3>
-                        <pre className={pre}>{`// components/VyzoraProvider.tsx
+                        <CodeBlock>{`// components/VyzoraProvider.tsx
 'use client';
 import { useEffect } from 'react';
 import { Vyzora } from 'vyzora-sdk';
@@ -104,18 +104,18 @@ export default function VyzoraProvider() {
 import VyzoraProvider from '@/components/VyzoraProvider';
 export default function RootLayout({ children }) {
   return <html><body><VyzoraProvider />{children}</body></html>;
-}`}</pre>
+}`}</CodeBlock>
 
                         <h3 className={h3}>React (Vite / CRA)</h3>
-                        <pre className={pre}>{`// src/main.tsx
+                        <CodeBlock>{`// src/main.tsx
 import { Vyzora } from 'vyzora-sdk';
-new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</pre>
+new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</CodeBlock>
 
                         <h3 className={h3}>Vanilla JS</h3>
-                        <pre className={pre}>{`<script type="module">
+                        <CodeBlock>{`<script type="module">
   import { Vyzora } from 'https://cdn.jsdelivr.net/npm/vyzora-sdk/dist/index.mjs';
   new Vyzora({ apiKey: 'your_key', enabled: true });
-</script>`}</pre>
+</script>`}</CodeBlock>
 
                         <p className={p}>
                             The SDK must run in the browser. It guards against{' '}
@@ -131,14 +131,14 @@ new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</pre>
                             The <code className={code}>Vyzora</code> constructor accepts a config object.
                             Only <code className={code}>apiKey</code> is required.
                         </p>
-                        <pre className={pre}>{`const vyzora = new Vyzora({
+                        <CodeBlock>{`const vyzora = new Vyzora({
   apiKey: 'your_project_api_key',   // Required
   enabled: true,                    // Default: false
   endpoint: 'https://your-api/api/ingest', // Optional override
   batchSize: 20,                    // Default: 20
   flushInterval: 10000,             // Default: 10000ms (10s)
   debug: false,                     // Default: false
-});`}</pre>
+});`}</CodeBlock>
                         <p className={p}>
                             If <code className={code}>apiKey</code> is missing, the constructor throws synchronously:{' '}
                             <code className={code}>[Vyzora] apiKey is required.</code> — catch this at your
@@ -156,7 +156,7 @@ new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</pre>
                     <section id="tracking-events" className="scroll-mt-24 md:scroll-mt-28 mb-12 md:mb-16">
                         <h2 className={h2}>Tracking Events</h2>
 
-                        <pre className={pre}>{`vyzora.track('button_click', { plan: 'pro', source: 'hero' });`}</pre>
+                        <CodeBlock>{`vyzora.track('button_click', { plan: 'pro', source: 'hero' });`}</CodeBlock>
 
                         <p className={p}>
                             <code className={code}>track(eventType, metadata?)</code> builds an event and
@@ -239,8 +239,8 @@ new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</pre>
                         </p>
 
                         <h3 className={h3}>Manual override</h3>
-                        <pre className={pre}>{`vyzora.pageview('/custom-path'); // explicit path
-vyzora.pageview();               // defaults to current pathname + search`}</pre>
+                        <CodeBlock>{`vyzora.pageview('/custom-path'); // explicit path
+vyzora.pageview();               // defaults to current pathname + search`}</CodeBlock>
                     </section>
 
                     {/* ── 7. Visitor & Session Model ──────────────── */}
@@ -283,7 +283,7 @@ vyzora.pageview();               // defaults to current pathname + search`}</pre
                         </div>
 
                         <h3 className={h3}>identify()</h3>
-                        <pre className={pre}>{`vyzora.identify('user_db_id_123');`}</pre>
+                        <CodeBlock>{`vyzora.identify('user_db_id_123');`}</CodeBlock>
                         <p className={p}>
                             Overrides the auto-generated visitor ID with a known user identity for all
                             subsequent events. Does not modify <code className={code}>localStorage</code>. The
@@ -494,7 +494,7 @@ vyzora.pageview();               // defaults to current pathname + search`}</pre
                             This is the exact shape the backend expects:
                         </p>
 
-                        <pre className={pre}>{`// POST /api/ingest
+                        <CodeBlock>{`// POST /api/ingest
 // Content-Type: application/json
 
 {
@@ -518,7 +518,7 @@ vyzora.pageview();               // defaults to current pathname + search`}</pre
       }
     }
   ]
-}`}</pre>
+}`}</CodeBlock>
 
                         <div className={card}>
                             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Field constraints (Zod validated)</p>
@@ -571,26 +571,26 @@ vyzora.pageview();               // defaults to current pathname + search`}</pre
                     <section id="local-dev" className="scroll-mt-24 md:scroll-mt-28 mb-12 md:mb-16">
                         <h2 className={h2}>Local Development</h2>
 
-                        <pre className={pre}>{`# From monorepo root
-npm run dev   # starts backend on :3001 and frontend on :3000 concurrently`}</pre>
+                        <CodeBlock>{`# From monorepo root
+npm run dev   # starts backend on :3001 and frontend on :3000 concurrently`}</CodeBlock>
 
                         <h3 className={h3}>Backend environment</h3>
-                        <pre className={pre}>{`# backend/.env
+                        <CodeBlock>{`# backend/.env
 DATABASE_URL=postgresql://user:password@host:5432/vyzora
 GITHUB_CLIENT_ID=your_github_app_client_id
 GITHUB_CLIENT_SECRET=your_github_app_client_secret
 JWT_SECRET=a_long_random_string
 FRONTEND_URL=http://localhost:3000
 BACKEND_URL=http://localhost:3001
-NODE_ENV=development`}</pre>
+NODE_ENV=development`}</CodeBlock>
 
                         <h3 className={h3}>Frontend environment</h3>
-                        <pre className={pre}>{`# frontend/.env.local
-NEXT_PUBLIC_API_URL=http://localhost:3001`}</pre>
+                        <CodeBlock>{`# frontend/.env.local
+NEXT_PUBLIC_API_URL=http://localhost:3001`}</CodeBlock>
 
                         <h3 className={h3}>SDK endpoint for local testing</h3>
-                        <pre className={pre}>{`# runtime-sdk/.env
-VYZORA_API_URL=http://localhost:3001/api/ingest`}</pre>
+                        <CodeBlock>{`# runtime-sdk/.env
+VYZORA_API_URL=http://localhost:3001/api/ingest`}</CodeBlock>
                         <p className={p}>
                             Rebuild the SDK after changing this value: <code className={code}>npm run build --workspace=runtime-sdk</code>.
                             The URL is baked into the bundle at compile time.
