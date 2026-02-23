@@ -2,7 +2,7 @@
 
 > Modern analytics SaaS platform for developers and founders — track events, analyze sessions, and visualize your product metrics.
 
-[![Version](https://img.shields.io/badge/version-0.7.0-blue)](CHANGELOG.md)
+[![Vyzora Version](https://img.shields.io/badge/version-v0.7.1-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ---

@@ -1,7 +1,7 @@
 import Navbar from '../../components/Navbar';
 
 export const metadata = {
-    title: 'Docs — Vyzora',
+    title: 'Documentations: Vyzora',
     description: 'Vyzora developer documentation: installation, SDK usage, and API reference.',
 };
 

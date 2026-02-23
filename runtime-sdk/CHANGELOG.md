@@ -2,6 +2,12 @@
 
 All notable changes to the Vyzora SDK will be documented in this file.
 
+
+## [0.2.1] - 2026-02-23
+
+### Fixed
+- **Package Distribution**: Corrected `package.json` entry point paths (`main`, `module`, `exports`) to match actual `dist` filenames (`index.js` for CJS, `index.mjs` for ESM). Fixes "Module not found" errors in some bundlers.
+
 ## [0.2.0] - 2026-02-23
 
 ### Added

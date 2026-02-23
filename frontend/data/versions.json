@@ -1,5 +1,27 @@
 [
     {
+        "version": "0.7.1",
+        "date": "2026-02-23",
+        "tag": "fix",
+        "title": "Analytics SDK Distribution Fix",
+        "summary": "This release includes critical distribution fixes for the Vyzora Analytics SDK (v0.2.1), ensuring valid package mapping for both ESM and CommonJS bundlers.",
+        "whatsIncluded": [
+            {
+                "headline": "SDK Entry Point Fix",
+                "detail": "Corrected package.json paths to match dist/index.js (CJS) and dist/index.mjs (ESM). This resolves 'Module not found' errors in Next.js and other modern build environments."
+            },
+            {
+                "headline": "Version Synchronization",
+                "detail": "Synchronized project versioning across the workspace to reflect the latest SDK hardening pass and distribution correction."
+            }
+        ],
+        "stack": [
+            "TypeScript",
+            "tsup",
+            "npm distribution"
+        ]
+    },
+    {
         "version": "0.7.0",
         "date": "2026-02-23",
         "tag": "security",
