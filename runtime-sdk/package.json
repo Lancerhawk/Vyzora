@@ -1,7 +1,7 @@
 {
   "name": "@vyzora/sdk",
   "version": "0.1.0",
-  "description": "Vyzora analytics runtime SDK — lightweight client-side event tracking",
+  "description": "Vyzora Analytics SDK — lightweight, framework-agnostic client-side event tracking",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,8 +13,10 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
+  "sideEffects": false,
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -24,10 +26,12 @@
   "keywords": [
     "analytics",
     "tracking",
+    "pageview",
     "vyzora",
-    "sdk"
+    "sdk",
+    "lightweight"
   ],
-  "author": "",
+  "author": "Vyzora",
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.0.0",

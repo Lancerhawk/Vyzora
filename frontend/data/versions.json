@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.6.0",
+        "date": "2026-02-23",
+        "tag": "feat",
+        "title": "Production Analytics SDK & Polish",
+        "summary": "This release launches the official Vyzora Analytics SDK (v0.1.0), a lightweight, production-grade tracking library. It also consolidates recent frontend refinements, including the premium preloader and hydration fixes.",
+        "whatsIncluded": [
+            {
+                "headline": "Official Analytics SDK (v0.1.0)",
+                "detail": "Launched the framework-agnostic Vyzora SDK. Features include batched event ingestion, navigator.sendBeacon reliability, automatic metadata collection, and intelligent 30-minute session management."
+            },
+            {
+                "headline": "Premium Preloader Animation",
+                "detail": "Implemented a brand-focused intro sequence with logo fade-ins and a curtain-lift transition to reveal the dashboard."
+            },
+            {
+                "headline": "Hydration & Navigation Fixes",
+                "detail": "Resolved Next.js SSR hydration mismatches and fixed a flash-of-content bug by using module-level guards for the preloader."
+            }
+        ],
+        "stack": [
+            "TypeScript",
+            "tsup",
+            "Next.js App Router",
+            "Beacons API"
+        ]
+    },
+    {
         "version": "0.5.1",
         "date": "2026-02-23",
         "tag": "polish",

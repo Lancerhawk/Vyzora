@@ -6,9 +6,14 @@ export default defineConfig({
     dts: true,
     sourcemap: true,
     clean: true,
-    minify: false,
+    minify: true,          // Keep bundle < 10kb
     splitting: false,
     treeshake: true,
     outDir: 'dist',
-    globalName: 'Vyzora',
+    target: 'es2017',      // Broad browser support
+    globalName: 'Vyzora',  // Browser global for script tag usage
+    platform: 'browser',
+    banner: {
+        js: '/* @vyzora/sdk - lightweight analytics - MIT license */',
+    },
 });

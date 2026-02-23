@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-02-23
+
+### Added
+- **Production-Grade Analytics SDK (v0.1.0)**:
+  - Launched a lightweight (< 7KB) TypeScript SDK for reliable event tracking
+  - Built-in batched event delivery system with `sendBeacon` resilience
+  - Automatic environment metadata collection (Browser, OS, Screen, etc.)
+  - Intelligent SPA pageview tracking supporting React, Next.js, and Vanilla JS
+  - 30-minute inactivity-based session management
+  - Explicit opt-in architecture for zero-cost performance when disabled
+  - Resilient single-retry transport layer for high data durability
+  - Comprehensive documentation and usage guides for developers
+
+---
+
 ## [0.5.1] - 2026-02-23
 
 ### Added
