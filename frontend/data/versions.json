@@ -1,5 +1,37 @@
 [
     {
+        "version": "0.8.0",
+        "date": "2026-02-24",
+        "tag": "feat",
+        "title": "Homepage & Docs Overhaul + Mobile Fix",
+        "summary": "Complete rewrite of the homepage and documentation. The homepage is now technically accurate with an SDK code preview, SVG feature cards, and a tech stack section. The docs cover 17 sections derived directly from source code. All mobile responsiveness issues in docs and the changelog modal have been resolved.",
+        "whatsIncluded": [
+            {
+                "headline": "Homepage Rewrite",
+                "detail": "New SDK code preview panel with syntax highlighting, 2x2 SVG feature cards with per-card gradient accents, tech stack grid with 6 components, and copy that references real code behavior instead of marketing language."
+            },
+            {
+                "headline": "Documentation (17 Sections)",
+                "detail": "Full /docs rewrite: Introduction, Quick Start, Installation, Initialization, Tracking Events, Pageview Tracking, Visitor & Session Model, Batching & Delivery, Reliability Guarantees, Configuration Options, API Reference, Backend Ingestion Format, Security & Validation, Local Dev, Production Deployment, FAQ, and Troubleshooting."
+            },
+            {
+                "headline": "Docs Mobile Responsiveness",
+                "detail": "Fixed horizontal overflow from code blocks (max-width: 100% on .code-block). Fixed-width flex rows in metadata and API reference cards now stack vertically on mobile with flex-col sm:flex-row."
+            },
+            {
+                "headline": "Changelog Modal Mobile Fix",
+                "detail": "Modal height now uses min(600px, 100vh - 2rem). On mobile, the version sidebar becomes a horizontal scrollable pill row. Desktop two-column layout is fully preserved."
+            }
+        ],
+        "stack": [
+            "Next.js 16",
+            "Tailwind CSS v4",
+            "TypeScript",
+            "Responsive Layout",
+            "SVG Icons"
+        ]
+    },
+    {
         "version": "0.7.2",
         "date": "2026-02-23",
         "tag": "fix",

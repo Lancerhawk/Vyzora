@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vyzora — Frontend
 
-## Getting Started
+[![Version](https://img.shields.io/badge/version-v0.5.0-purple)](package.json)
 
-First, run the development server:
+The Next.js 16 App Router frontend for Vyzora. Serves both the public-facing marketing site (homepage, docs) and the authenticated analytics dashboard.
+
+---
+
+## What's in here
+
+| Route | Description |
+|---|---|
+| `/` | Homepage — SDK overview, features, architecture, code preview |
+| `/docs` | SDK documentation (17 sections, mobile responsive) |
+| `/login` | GitHub OAuth entry point |
+| `/dashboard` | Project list (authenticated) |
+| `/dashboard/[projectId]` | Analytics dashboard — pageviews, sessions, events, trends |
+
+---
+
+## Key Components
+
+| Component | Description |
+|---|---|
+| `Navbar.tsx` | Sticky navbar with scroll-triggered border, auth-aware |
+| `ChangelogButton.tsx` | Floating changelog modal with version history (mobile responsive) |
+| `DocsSidebar.tsx` | Scrollspy sidebar with IntersectionObserver active section highlight |
+| `ParticleField.tsx` | Animated hero background |
+| `dashboard/MetricCard.tsx` | Stat tile for pageviews, sessions, etc. |
+| `dashboard/TrendChart.tsx` | Daily trend bar chart (Recharts) |
+| `dashboard/EventTable.tsx` | Top events table |
+
+---
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **State**: Zustand
+- **Data fetching**: React Query (`@tanstack/react-query`)
+- **Charts**: Recharts
+- **Auth**: JWT-based session (HttpOnly cookie set by backend)
+
+---
+
+## Development
 
 ```bash
+# From monorepo root
+npm run dev:frontend
+
+# Or from this directory
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `frontend/.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Linting
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+See the [root README](../README.md) for full monorepo setup and architecture documentation.

@@ -4,13 +4,23 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 const sections = [
-    { label: 'Overview', href: '#overview' },
-    { label: 'Quickstart', href: '#quickstart' },
-    { label: 'SDK Reference', href: '#sdk-reference' },
+    { label: 'Introduction', href: '#introduction' },
+    { label: 'Quick Start', href: '#quick-start' },
+    { label: 'Installation', href: '#installation' },
+    { label: 'Initialization', href: '#initialization' },
+    { label: 'Tracking Events', href: '#tracking-events' },
+    { label: 'Pageview Tracking', href: '#pageview-tracking' },
+    { label: 'Visitor & Session Model', href: '#visitor-session' },
+    { label: 'Batching & Delivery', href: '#batching-delivery' },
+    { label: 'Reliability Guarantees', href: '#reliability' },
+    { label: 'Configuration Options', href: '#configuration' },
     { label: 'API Reference', href: '#api-reference' },
-    { label: 'Authentication', href: '#authentication' },
-    { label: 'Self-hosting', href: '#self-hosting' },
+    { label: 'Backend Ingestion Format', href: '#ingest-format' },
+    { label: 'Security & Validation', href: '#security' },
+    { label: 'Local Development', href: '#local-dev' },
+    { label: 'Production Deployment', href: '#production' },
     { label: 'FAQ', href: '#faq' },
+    { label: 'Troubleshooting', href: '#troubleshooting' },
 ];
 
 export default function DocsSidebar() {
@@ -25,7 +35,7 @@ export default function DocsSidebar() {
                 }
             },
             {
-                rootMargin: '-100px 0px -60% 0px', // Trigger when section is near top
+                rootMargin: '-100px 0px -60% 0px',
                 threshold: 0,
             }
         );
@@ -39,7 +49,7 @@ export default function DocsSidebar() {
     }, []);
 
     return (
-        <aside className="sticky top-28 w-64 shrink-0 self-start hidden lg:block">
+        <aside className="sticky top-28 w-64 shrink-0 self-start hidden lg:block max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
             <nav>
                 <p className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4 px-3">
                     Documentation

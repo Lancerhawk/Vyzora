@@ -58,6 +58,8 @@ body {
 
 /* ── Code block ───────────────────────────────────────────── */
 .code-block {
+  display: block;
+  max-width: 100%;
   background: #060d1a;
   border: 1px solid #1a2236;
   border-radius: 0.75rem;

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] - 2026-02-24
+
+### Changed
+- **Frontend (v0.5.0) — Homepage Rewrite**: Completely replaced the homepage with a professional, technically accurate landing page. New sections: SDK code preview panel with syntax highlighting, tech stack grid (6 components with exact versions and roles), redesigned 2×2 feature cards using SVG icons instead of emojis with per-card gradient accents and 3 technical bullet points per card. Copy rewritten to remove marketing language and reference real code behavior.
+- **Frontend (v0.5.0) — Docs Rewrite**: Replaced the entire `/docs` page with 17 technically accurate sections derived directly from SDK and backend source code — no invented features, no vague descriptions.
+
+### Fixed
+- **Frontend (v0.5.0) — Docs Mobile Responsiveness**: Fixed horizontal overflow on mobile caused by `white-space: pre` code blocks lacking `max-width: 100%`. Fixed fixed-width (`w-48`, `w-28`, `w-40`) flex rows in metadata and API reference cards — now stack vertically on mobile, side-by-side from `sm` breakpoint up.
+- **Frontend (v0.5.0) — ChangelogButton Mobile**: Modal now uses `min(600px, 100vh - 2rem)` height. Two-column version sidebar replaced with a horizontal scrollable pill selector on mobile (`md:hidden`). Original two-column layout preserved on desktop.
+- **Frontend (v0.5.0) — Features Section**: Removed emoji FeatureCard grid. Replaced with inline 2×2 card design using SVG icons in colored icon wells, Tailwind JIT-safe static `dotColor` class per card, and visible bullet points at `text-gray-400`.
+
+---
+
 ## [0.7.2] - 2026-02-23
 
 ### Added

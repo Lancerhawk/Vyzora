@@ -58,7 +58,7 @@ export default function ChangelogButton() {
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
 
                     {/* ── Modal panel ─────────────────────────────── */}
-                    <div className="relative z-10 w-full max-w-4xl h-[600px] flex flex-col rounded-2xl border border-white/[0.08] bg-[#0c1018] shadow-2xl shadow-black/70 overflow-hidden">
+                    <div className="relative z-10 w-full max-w-4xl flex flex-col rounded-2xl border border-white/[0.08] bg-[#0c1018] shadow-2xl shadow-black/70 overflow-hidden" style={{ height: 'min(600px, calc(100vh - 2rem))' }}>
 
                         {/* Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.07] shrink-0">
@@ -85,21 +85,40 @@ export default function ChangelogButton() {
                             </button>
                         </div>
 
-                        {/* Body: two-column */}
-                        <div className="flex flex-1 min-h-0">
-                            {/* Left — version list */}
-                            <div className="w-56 shrink-0 border-r border-white/[0.07] flex flex-col overflow-y-auto">
-                                <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-600 px-4 pt-4 pb-3 flex items-center gap-1.5">
+                        {/* Body: stacks on mobile, two-column on md+ */}
+                        <div className="flex flex-col md:flex-row flex-1 min-h-0">
+                            {/* Version list — horizontal scroll on mobile, sidebar on md+ */}
+                            <div className="md:w-52 md:shrink-0 md:border-r md:border-white/[0.07] md:flex-col md:overflow-y-auto
+                                           flex flex-row overflow-x-auto border-b border-white/[0.07] md:border-b-0">
+                                <p className="hidden md:flex text-[10px] font-semibold uppercase tracking-widest text-gray-600 px-4 pt-4 pb-3 items-center gap-1.5 shrink-0">
                                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                                     Version History
                                 </p>
-                                <div className="flex-1 px-2 pb-4 space-y-1">
+                                {/* Mobile: horizontal pill row */}
+                                <div className="flex md:hidden flex-row gap-1.5 px-3 py-2.5 shrink-0">
                                     {ALL.map((v, i) => (
                                         <button
                                             key={v.version}
                                             onClick={() => setSelected(i)}
                                             className={[
-                                                'w-full text-left px-3 py-2.5 rounded-lg transition-all duration-150 group',
+                                                'shrink-0 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all duration-150 whitespace-nowrap',
+                                                selected === i
+                                                    ? 'bg-indigo-600 text-white'
+                                                    : 'bg-white/[0.05] text-gray-400 hover:bg-white/[0.08]',
+                                            ].join(' ')}
+                                        >
+                                            v{v.version}
+                                        </button>
+                                    ))}
+                                </div>
+                                {/* Desktop: vertical list */}
+                                <div className="hidden md:flex flex-col flex-1 px-2 pb-4 space-y-1">
+                                    {ALL.map((v, i) => (
+                                        <button
+                                            key={v.version}
+                                            onClick={() => setSelected(i)}
+                                            className={[
+                                                'w-full text-left px-3 py-2.5 rounded-lg transition-all duration-150',
                                                 selected === i
                                                     ? 'bg-indigo-600 shadow-lg shadow-indigo-500/20'
                                                     : 'hover:bg-white/[0.04]',
@@ -124,7 +143,7 @@ export default function ChangelogButton() {
                             </div>
 
                             {/* Right — version detail */}
-                            <div className="flex-1 overflow-y-auto px-6 py-5">
+                            <div className="flex-1 overflow-y-auto px-4 md:px-6 py-5">
                                 {/* Title + badge */}
                                 <div className="flex flex-wrap items-center gap-3 mb-2">
                                     <h2 className="text-xl font-bold text-white">{current.title}</h2>
