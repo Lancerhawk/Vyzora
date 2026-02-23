@@ -1,4 +1,4 @@
-# @vyzora/sdk
+# Vyzora-SDK
 
 > Lightweight, production-grade analytics SDK for Vyzora. Framework agnostic, under 7kb minified, and built for reliability.
 

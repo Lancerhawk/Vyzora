@@ -1,6 +1,9 @@
 {
-  "name": "@vyzora/sdk",
+  "name": "vyzora-sdk",
   "version": "0.1.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Vyzora Analytics SDK — lightweight, framework-agnostic client-side event tracking",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
