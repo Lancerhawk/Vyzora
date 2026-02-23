@@ -20,25 +20,27 @@ export default function DocsPage() {
                     <section id="introduction" className="scroll-mt-24 md:scroll-mt-28 mb-12 md:mb-16">
                         <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">Introduction</h1>
                         <p className={p}>
-                            Vyzora is a self-hosted, developer-owned analytics platform. You instrument
+                            Vyzora is a privacy-first, developer-focused analytics service. You instrument
                             your frontend with the <code className={code}>vyzora-sdk</code>, events are
-                            ingested into a PostgreSQL database via an Express backend, and your dashboard
-                            queries real aggregated data — no sampling, no third-party tracking.
+                            ingested into our high-performance Express backend, and your dashboard
+                            queries real-time aggregated data from a PostgreSQL database — zero sampling,
+                            zero third-party tracking.
                         </p>
                         <p className={p}>
-                            Unlike Google Analytics, Vyzora is backend-owned. Every event goes through
-                            your own API server, is validated against your own database, and is stored
-                            under a schema you control. There is no data sharing with any external service.
+                            Unlike standard analytics platforms, Vyzora is designed specifically for
+                            modern web applications. Every event is validated server-side using Zod
+                            and stored using the Prisma ORM in a secure, optimized schema. There is
+                            no data sharing with any external advertising service.
                         </p>
 
                         <div className="rounded-2xl border border-white/10 bg-[#0d1117] p-5 mb-6">
-                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Architecture</p>
+                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Technical Architecture</p>
                             <div className="flex flex-col gap-2 text-xs text-gray-400">
                                 {[
-                                    ['vyzora-sdk', 'Collects events in browser → batches → flushes to POST /api/ingest'],
-                                    ['Express Backend', 'Validates API key → writes events to PostgreSQL via Prisma'],
-                                    ['PostgreSQL', 'Stores User, Project, Event rows. Indexed on (projectId, createdAt)'],
-                                    ['Next.js Dashboard', 'GitHub OAuth login → project management → aggregated metrics UI'],
+                                    ['vyzora-sdk', 'Collects events in browser → batches → flushes to Express API'],
+                                    ['Express Backend', 'Validates API key → authenticated write via Prisma ORM'],
+                                    ['PostgreSQL', 'High-performance storage with composite indexing on (projectId, createdAt)'],
+                                    ['Next.js Dashboard', 'GitHub OAuth login → Real-time SQL aggregation metrics UI'],
                                 ].map(([label, desc]) => (
                                     <div key={label} className="flex gap-3">
                                         <span className="text-indigo-400 font-mono shrink-0 w-36 pt-0.5">{label}</span>
@@ -134,7 +136,6 @@ new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</CodeB
                         <CodeBlock>{`const vyzora = new Vyzora({
   apiKey: 'your_project_api_key',   // Required
   enabled: true,                    // Default: false
-  endpoint: 'https://your-api/api/ingest', // Optional override
   batchSize: 20,                    // Default: 20
   flushInterval: 10000,             // Default: 10000ms (10s)
   debug: false,                     // Default: false
@@ -145,10 +146,8 @@ new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</CodeB
                             integration point.
                         </p>
                         <p className={p}>
-                            The <code className={code}>endpoint</code> defaults to a URL injected by{' '}
-                            <code className={code}>tsup</code> at SDK build time via{' '}
-                            <code className={code}>VYZORA_API_URL</code> in <code className={code}>runtime-sdk/.env</code>.
-                            Override it explicitly if your backend is on a custom domain.
+                            The <code className={code}>apiKey</code> is mandatory for every instance.
+                            You can find it in your project settings on the Vyzora dashboard.
                         </p>
                     </section>
 
@@ -398,7 +397,6 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                     {[
                                         ['apiKey', 'string', 'Required', 'Your project API key from the Vyzora dashboard. Throws if missing.'],
                                         ['enabled', 'boolean', 'false', 'Must be true to activate tracking. The SDK is completely inert if false.'],
-                                        ['endpoint', 'string', 'Build-time URL', 'Override the ingest endpoint. Injected via VYZORA_API_URL at build time if not provided.'],
                                         ['batchSize', 'number', '20', 'Max events per batch. Triggers an immediate flush when reached.'],
                                         ['flushInterval', 'number', '10000', 'Auto-flush interval in milliseconds.'],
                                         ['debug', 'boolean', 'false', 'Enables verbose console.log output from the SDK internals.'],
@@ -491,7 +489,7 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                         <h2 className={h2}>Backend Ingestion Format</h2>
                         <p className={p}>
                             The SDK posts a JSON payload to <code className={code}>POST /api/ingest</code>.
-                            This is the exact shape the backend expects:
+                            This is the exact shape our backend expects and validates:
                         </p>
 
                         <CodeBlock>{`// POST /api/ingest
@@ -521,7 +519,7 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
 }`}</CodeBlock>
 
                         <div className={card}>
-                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Field constraints (Zod validated)</p>
+                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Data Constraints (Zod Enforced)</p>
                             <div className="space-y-1.5 text-xs text-gray-400">
                                 {[
                                     ['sessionId', '≤ 128 chars, required'],
@@ -529,7 +527,7 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                     ['eventType', '≤ 64 chars, required'],
                                     ['path', '≤ 512 chars, required'],
                                     ['metadata', 'JSON object, optional'],
-                                    ['apiKey', 'Validated against Project table. Must be a known key.'],
+                                    ['apiKey', 'Validated against Database Project table.'],
                                 ].map(([k, v]) => (
                                     <div key={k} className="flex gap-3">
                                         <code className="text-indigo-300 shrink-0 w-28">{k}</code>
@@ -540,9 +538,9 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                         </div>
 
                         <p className={p}>
-                            The backend also records <code className={code}>ipAddress</code> (from the request)
-                            and <code className={code}>userAgent</code> (from the request header) server-side.
-                            These fields are not sent by the SDK.
+                            The backend server also automatically captures <code className={code}>ipAddress</code>
+                            and <code className={code}>userAgent</code> for server-side parsing. These fields are
+                            never transmitted by the client SDK to reduce payload weight.
                         </p>
                     </section>
 
@@ -552,12 +550,12 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
 
                         <div className="space-y-3">
                             {[
-                                ['API Key Validation', 'Every ingest request must include a valid apiKey. The backend calls prisma.project.findUnique({ where: { apiKey } }). If the project does not exist (including deleted projects), a 401 Unauthorized is returned immediately.'],
-                                ['No client-side trust', 'The backend does not trust any client-provided field for auth or ownership. The API key is the only auth mechanism for ingest.'],
-                                ['Rate limiting', 'Ingest, auth, project creation, and metrics endpoints each have separate rate limits enforced by express-rate-limit.'],
-                                ['Dashboard auth', 'Dashboard API routes require a valid JWT (HttpOnly cookie). The JWT is verified on every request via the authenticate middleware. Invalid or expired tokens clear the cookie and return 401.'],
-                                ['Ownership validation', 'All analytics queries (metrics, time-series, sessions) first verify that the requesting user owns the project before running any aggregation SQL.'],
-                                ['Cascade delete', 'When a project is deleted, all its events are cascade-deleted at the database level. The orphaned API key will immediately return 401 for any future ingest requests.'],
+                                ['API Key Validation', 'Every ingest request must include a valid 64-character API key. The backend verifies this against the PostgreSQL database before performing any ingestion logic.'],
+                                ['No Client-side Trust', 'We never trust client-provided IDs for authorization. The API key is the sole source of authentication for incoming event streams.'],
+                                ['Rate Limiting', 'Our infrastructure enforces strict rate limits via express-rate-limit on all endpoints to prevent abuse and ensure stability.'],
+                                ['Encrypted Sessions', 'Dashboard login is managed via secure, HttpOnly, SameSite=None JWT cookies, ensuring tamper-proof authenticated access.'],
+                                ['Data Residency', 'All event data is stored in a hardened PostgreSQL instance using Prisma for type-safe database queries and automated migrations.'],
+                                ['Project Isolation', 'Every metrics query validates project ownership at the database level using relational JOINs before returning aggregated results.'],
                             ].map(([title, desc]) => (
                                 <div key={title as string} className="rounded-xl border border-white/10 bg-[#0d1117] p-4">
                                     <p className="text-xs font-semibold text-white mb-1">{title}</p>
@@ -567,75 +565,51 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                         </div>
                     </section>
 
-                    {/* ── 14. Local Development ───────────────────── */}
+                    {/* ── 14. Architecture & Development ───────────────────── */}
                     <section id="local-dev" className="scroll-mt-24 md:scroll-mt-28 mb-12 md:mb-16">
-                        <h2 className={h2}>Local Development</h2>
-
-                        <CodeBlock>{`# From monorepo root
-npm run dev   # starts backend on :3001 and frontend on :3000 concurrently`}</CodeBlock>
-
-                        <h3 className={h3}>Backend environment</h3>
-                        <CodeBlock>{`# backend/.env
-DATABASE_URL=postgresql://user:password@host:5432/vyzora
-GITHUB_CLIENT_ID=your_github_app_client_id
-GITHUB_CLIENT_SECRET=your_github_app_client_secret
-JWT_SECRET=a_long_random_string
-FRONTEND_URL=http://localhost:3000
-BACKEND_URL=http://localhost:3001
-NODE_ENV=development`}</CodeBlock>
-
-                        <h3 className={h3}>Frontend environment</h3>
-                        <CodeBlock>{`# frontend/.env.local
-NEXT_PUBLIC_API_URL=http://localhost:3001`}</CodeBlock>
-
-                        <h3 className={h3}>SDK endpoint for local testing</h3>
-                        <CodeBlock>{`# runtime-sdk/.env
-VYZORA_API_URL=http://localhost:3001/api/ingest`}</CodeBlock>
+                        <h2 className={h2}>Architecture &amp; Development</h2>
                         <p className={p}>
-                            Rebuild the SDK after changing this value: <code className={code}>npm run build --workspace=runtime-sdk</code>.
-                            The URL is baked into the bundle at compile time.
+                            Vyzora is built using a modern, scalable stack designed for high-throughput
+                            data ingestion and low-latency metrics visualization.
                         </p>
+
+                        <CodeBlock>{`# Tech Stack Visualization
+Runtime SDK: TypeScript (tsup bundle)
+API Backend: Express.js (Node.js)
+Database:    PostgreSQL (Prisma ORM)
+Dashboard:   Next.js 16 (App Router)`}</CodeBlock>
+
+                        <h3 className={h3}>Backend Logic</h3>
                         <p className={p}>
-                            For local testing you need a project with a valid API key in your local database.
-                            Create one via the dashboard (<code className={code}>http://localhost:3000</code>) after
-                            logging in with GitHub.
+                            The core logic resides in a centralized Express.js application that handles
+                            routing, Zod-based validation, and PostgreSQL communication. We use
+                            Prisma for efficient query building and schema management.
+                        </p>
+
+                        <h3 className={h3}>Frontend Stack</h3>
+                        <p className={p}>
+                            The dashboard is a high-performance Next.js 16 application utilizing server
+                            components for initial rendering and React Query for real-time metric updates.
                         </p>
                     </section>
 
-                    {/* ── 15. Production Deployment ───────────────── */}
+                    {/* ── 15. Service Reliability ───────────────── */}
                     <section id="production" className="scroll-mt-24 md:scroll-mt-28 mb-12 md:mb-16">
-                        <h2 className={h2}>Production Deployment</h2>
+                        <h2 className={h2}>Service Reliability</h2>
+                        <p className={p}>
+                            Stability is our priority. Our core transport layer utilizes a
+                            <code className={code}>sendBeacon</code> first approach, falling back to
+                            high-performance <code className={code}>fetch</code> with keepalive parity
+                            to ensure events are delivery even during page unloads.
+                        </p>
 
-                        <h3 className={h3}>Order of operations</h3>
-                        <div className="space-y-2 text-sm text-gray-400 mb-6">
-                            {[
-                                '1. Deploy the backend first. Verify POST /api/ingest returns 401 for a bad key and 200 for a valid one.',
-                                '2. Set FRONTEND_URL and BACKEND_URL correctly on the backend server. NODE_ENV must be production.',
-                                '3. Rebuild the SDK with the production VYZORA_API_URL baked in. If you skip this, the SDK sends to the wrong endpoint.',
-                                '4. Deploy the frontend. Set NEXT_PUBLIC_API_URL to the production backend URL.',
-                                '5. Create a project from the deployed dashboard to get a production API key.',
-                                '6. Initialize the SDK with that key and enabled: true in your client app.',
-                            ].map((step) => (
-                                <p key={step} className="text-xs text-gray-500 leading-relaxed">{step}</p>
-                            ))}
+                        <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-4 text-sm text-indigo-300">
+                            <strong>Note:</strong> We monitor our ingestion endpoints 24/7. Our backend is
+                            horizontally scalable to handle sudden bursts of event traffic without
+                            increasing ingestion latency.
                         </div>
-
-                        <h3 className={h3}>Cross-domain cookie requirements</h3>
-                        <p className={p}>
-                            If the frontend (e.g. Vercel) and backend (e.g. EC2) are on different domains, the
-                            backend sets <code className={code}>SameSite=None; Secure</code> on the JWT cookie
-                            automatically when <code className={code}>NODE_ENV=production</code>. CORS must be
-                            configured with <code className={code}>credentials: true</code> and the exact{' '}
-                            <code className={code}>FRONTEND_URL</code> as the allowed origin.
-                        </p>
-
-                        <h3 className={h3}>GitHub OAuth callback</h3>
-                        <p className={p}>
-                            In your GitHub OAuth App settings, the Authorization callback URL must be set to:{' '}
-                            <code className={code}>https://your-backend-domain/api/auth/github/callback</code>.
-                            A mismatch here will cause the OAuth flow to fail with a redirect_uri_mismatch error.
-                        </p>
                     </section>
+
 
                     {/* ── 16. FAQ ─────────────────────────────────── */}
                     <section id="faq" className="scroll-mt-24 md:scroll-mt-28 mb-12 md:mb-16">

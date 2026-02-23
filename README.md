@@ -1,6 +1,6 @@
 # Vyzora
 
-> Self-hosted, open-source analytics for developers. Track events, reconstruct sessions, and query aggregated metrics — without sending data to a third party.
+> Privacy-first, developer-focused analytics service. Track events, reconstruct sessions, and query aggregated metrics — without compromising user privacy.
 
 [![Version](https://img.shields.io/badge/version-v0.9.0-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -12,15 +12,15 @@
 
 ## What is Vyzora?
 
-Vyzora is a full-stack analytics platform you run on your own infrastructure. It consists of three parts that work together:
+Vyzora is a high-performance analytics service designed for modern developers. It provides:
 
-1. **[`vyzora-sdk`](./runtime-sdk)** — A lightweight TypeScript browser SDK (`< 3 KB` gzipped). Drop it into any JavaScript or TypeScript project. It auto-collects pageviews, tracks your SPA navigation, manages visitor and session identity, and batches events before sending them to your backend.
+1. **[`vyzora-sdk`](./runtime-sdk)** — A lightweight TypeScript browser SDK (`< 3 KB` gzipped). Drop it into any JavaScript or TypeScript project. It auto-collects pageviews, tracks your SPA navigation, manages visitor and session identity, and batches events before sending them to our secure API.
 
-2. **[Backend API](./backend)** — An Express + TypeScript REST API that receives batched event payloads, validates them against project-scoped API keys, and bulk-inserts them into PostgreSQL using Prisma. Also serves aggregated metrics to the dashboard.
+2. **Secure Analytics Engine** — A privacy-hardened backend that receives event payloads, validates them against project-scoped API keys, and processes them in real-time.
 
-3. **[Dashboard](./frontend)** — A Next.js 16 App Router frontend. Log in with GitHub OAuth, create projects, copy your API key, and immediately see pageviews, session counts, top pages, custom events, and daily trend charts for each project.
+3. **Developer Dashboard** — A powerful Next.js interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, custom events, and daily trend charts.
 
-No third-party analytics services. No data sampling. No SaaS subscription. You own everything.
+No third-party trackers. No data sampling. No invasive cookies. You own the relationship with your users' data.
 
 ---
 
@@ -146,6 +146,8 @@ vyzora/
 
 ---
 
+---
+
 ## Local Development
 
 ### Prerequisites
@@ -192,13 +194,6 @@ cp .env.example .env
 npm run dev   # tsup watch mode
 ```
 
-### 5. Run all at once (dev)
-
-```bash
-# From monorepo root:
-npm run dev
-```
-
 ---
 
 ## Environment Variables
@@ -226,6 +221,17 @@ npm run dev
 | Variable | Description |
 |---|---|
 | `VYZORA_API_URL` | Ingest endpoint (e.g. `http://localhost:4000/api/ingest`) |
+
+---
+
+## Privacy & Security
+
+Vyzora is built from the ground up to be the most private way to track web analytics.
+
+- **No Third-Party Cookies**: Vyzora uses standard first-party identification.
+- **GDPR Ready**: We don't track PII by default. Identifiers (Visitor/Session IDs) are anonymous UUIDs.
+- **Data Integrity**: Our ingest API uses 64-character cryptographic API keys to ensure only your data reaches your dashboard.
+- **Secure Auth**: Dashboard access is protected by GitHub OAuth and secure JWT-based sessions.
 
 ---
 

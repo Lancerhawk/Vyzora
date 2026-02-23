@@ -29,14 +29,18 @@ export default function DocsSidebar() {
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                const visible = entries.find((e) => e.isIntersecting);
-                if (visible) {
-                    setActiveId(`#${visible.target.id}`);
+                // Find visible sections
+                const intersecting = entries.filter((e) => e.isIntersecting);
+
+                // If we have intersecting entries, pick the one closest to the top
+                if (intersecting.length > 0) {
+                    const sorted = intersecting.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+                    setActiveId(`#${sorted[0].target.id}`);
                 }
             },
             {
-                rootMargin: '-100px 0px -60% 0px',
-                threshold: 0,
+                rootMargin: '-80px 0px -70% 0px',
+                threshold: [0, 0.1, 0.5, 1.0],
             }
         );
 

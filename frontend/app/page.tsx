@@ -118,20 +118,20 @@ export default function Home() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/[0.08] text-indigo-300 text-[13px] font-medium mb-10 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-            Self-hosted · Open source · Developer-first
+            Privacy-first · High performance · Developer-focused
           </div>
 
           {/* Headline */}
           <h1 className="text-5xl sm:text-6xl lg:text-[76px] font-black tracking-[-0.03em] leading-[1.04] text-white mb-6">
-            Analytics that lives
+            Analytics that respect
             <br />
-            <span className="gradient-text">in your infrastructure.</span>
+            <span className="gradient-text">user privacy.</span>
           </h1>
 
           {/* Sub */}
           <p className="max-w-[580px] mx-auto text-[17px] text-gray-400 leading-[1.65] mb-10">
-            Vyzora is a self-hosted analytics platform. A lightweight browser SDK, a
-            validated ingest API, a PostgreSQL backend — and a dashboard that shows you
+            Vyzora is a privacy-first analytics service. A lightweight browser SDK, a
+            secure ingest API, and a powerful dashboard that shows you
             exactly what your users are doing, with no third-party data sharing.
           </p>
 
@@ -159,7 +159,7 @@ export default function Home() {
             {[
               { value: '< 3 KB', label: 'Gzipped SDK bundle size' },
               { value: '10s', label: 'Default flush interval' },
-              { value: '100%', label: 'Open source, self-hostable' },
+              { value: '100%', label: 'Privacy-focused analytics' },
             ].map((s) => (
               <div key={s.label} className="text-center px-6 py-3 sm:py-0 first:pt-0 last:pb-0">
                 <div className="text-2xl font-bold text-white tracking-tight">{s.value}</div>
@@ -317,7 +317,8 @@ export default function Home() {
             SDK → API → Database → Dashboard
           </h2>
           <p className="mt-4 text-gray-500 max-w-lg mx-auto text-[15px] leading-relaxed">
-            Every layer is open source. You own the code, the database, and the data.
+            Every layer is built for privacy and performance. You get real-world insights
+            without ever compromising your users&apos; data or project security.
             Nothing is sampled. Nothing is sent to a third party.
           </p>
         </div>
@@ -395,11 +396,11 @@ export default function Home() {
               <span className="gradient-text">Your server.</span>
             </h2>
             <p className="text-gray-500 text-[16px] max-w-md mx-auto mb-3 leading-relaxed">
-              Log in with GitHub, create a project, copy the API key, and initialize the SDK.
+              Log in with GitHub, create a project, and initialize the SDK.
               Events start landing in your dashboard in under five minutes.
             </p>
             <p className="text-gray-600 text-xs mb-10">
-              No credit card. No data sharing. Self-host on any Node.js 18+ server.
+              No credit card. No data sharing. Enterprise-grade uptime and security.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
