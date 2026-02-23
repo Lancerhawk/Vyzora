@@ -11,7 +11,7 @@ import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 const COOKIE_OPTIONS = {
     httpOnly: true,
-    sameSite: 'lax' as const,
+    sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 7 * 24 * 60 * 60 * 1000,
 };
@@ -88,7 +88,7 @@ export async function getMe(req: AuthenticatedRequest, res: Response): Promise<v
 export function logout(_req: Request, res: Response): void {
     res.clearCookie('vyzora_token', {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
         secure: process.env.NODE_ENV === 'production',
     });
     res.json({ success: true, message: 'Logged out' });
