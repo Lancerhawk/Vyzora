@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.7.0",
+        "date": "2026-02-23",
+        "tag": "security",
+        "title": "SDK Production Safety Hardening",
+        "summary": "A comprehensive production safety pass on the Vyzora Analytics SDK (v0.2.0). This release hardens every layer of the SDK — storage, session, batching, transport, and SPA tracking — to make it bulletproof in real-world environments including Safari private mode.",
+        "whatsIncluded": [
+            {
+                "headline": "Safe Storage Layer",
+                "detail": "New storage.ts utility wraps all localStorage access in try/catch. Never throws, never crashes — including Safari private mode, storage quota exceeded, and SecurityError scenarios. Visitor and session data degrade gracefully to in-memory fallbacks."
+            },
+            {
+                "headline": "Flush Race Condition Fix",
+                "detail": "A flushing lock flag on the Queue class prevents concurrent visibilitychange and pagehide events from triggering duplicate network sends. The lock resets in a try/finally block so a transport error can never cause a permanent queue deadlock."
+            },
+            {
+                "headline": "Smart Retry & Full-Path Deduplication",
+                "detail": "Transport retries now limited to 5xx and network errors only — 4xx responses (401, 403, 429) dropped silently. Pageview deduplication upgraded to use full pathname + search, handling query-string navigation while correctly ignoring hash changes."
+            }
+        ],
+        "stack": [
+            "TypeScript",
+            "tsup",
+            "localStorage API",
+            "History API"
+        ]
+    },
+    {
         "version": "0.6.1",
         "date": "2026-02-23",
         "tag": "feat",

@@ -1,4 +1,6 @@
-const SESSION_KEY = 'vyzora_session_id';
+import { safeGet, safeSet, safeRemove } from './storage';
+
+const SESSION_KEY = 'vyzora_sid';
 const SESSION_TS_KEY = 'vyzora_session_ts';
 const INACTIVITY_MS = 30 * 60 * 1000;
 
@@ -16,33 +18,25 @@ function generateUUID(): string {
     });
 }
 
-function now(): number {
-    return Date.now();
-}
-
 export function getSessionId(): string {
-    try {
-        const lastTs = parseInt(sessionStorage.getItem(SESSION_TS_KEY) ?? '0', 10);
-        const expired = now() - lastTs > INACTIVITY_MS;
+    const lastTsRaw = safeGet(SESSION_TS_KEY);
+    const lastTs = lastTsRaw !== null ? parseInt(lastTsRaw, 10) : 0;
+    const now = Date.now();
+    const expired = now - lastTs > INACTIVITY_MS;
 
-        let id = sessionStorage.getItem(SESSION_KEY);
-        if (!id || expired) {
-            id = generateUUID();
-            sessionStorage.setItem(SESSION_KEY, id);
-        }
-
-        sessionStorage.setItem(SESSION_TS_KEY, String(now()));
-        return id;
-    } catch {
-        return generateUUID();
+    let id = safeGet(SESSION_KEY);
+    if (!id || expired) {
+        id = generateUUID();
+        safeSet(SESSION_KEY, id);
     }
+
+    // Always update timestamp on every call to prevent mid-activity expiry
+    safeSet(SESSION_TS_KEY, String(now));
+
+    return id;
 }
 
 export function resetSession(): void {
-    try {
-        sessionStorage.removeItem(SESSION_KEY);
-        sessionStorage.removeItem(SESSION_TS_KEY);
-    } catch {
-        // ignore
-    }
+    safeRemove(SESSION_KEY);
+    safeRemove(SESSION_TS_KEY);
 }

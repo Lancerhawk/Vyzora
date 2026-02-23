@@ -1,4 +1,6 @@
-const VISITOR_KEY = 'vyzora_visitor_id';
+import { safeGet, safeSet } from './storage';
+
+const VISITOR_KEY = 'vyzora_vid';
 
 function generateUUID(): string {
     if (
@@ -14,15 +16,22 @@ function generateUUID(): string {
     });
 }
 
+// In-memory fallback: stable for page lifetime if localStorage fails (e.g. Safari private mode)
+let fallbackId: string | null = null;
+
 export function getVisitorId(): string {
-    try {
-        let id = localStorage.getItem(VISITOR_KEY);
-        if (!id) {
-            id = generateUUID();
-            localStorage.setItem(VISITOR_KEY, id);
-        }
-        return id;
-    } catch {
-        return generateUUID();
-    }
+    const stored = safeGet(VISITOR_KEY);
+    if (stored) return stored;
+
+    // Try to persist a new ID
+    const id = generateUUID();
+    safeSet(VISITOR_KEY, id);
+
+    // Verify it was actually stored
+    const verified = safeGet(VISITOR_KEY);
+    if (verified) return verified;
+
+    // Storage failed — use stable in-memory fallback
+    if (!fallbackId) fallbackId = id;
+    return fallbackId;
 }

@@ -19,6 +19,7 @@ export class Vyzora {
     private customVisitorId: string | null = null;
     private logger: Logger;
     private lastTrackedPath: string | null = null;
+    private historyWrapped = false;
 
     constructor(config: VyzoraConfig) {
         if (!config.apiKey) {
@@ -58,38 +59,48 @@ export class Vyzora {
         try {
             const autoMeta = collectMetadata();
             const merged: Record<string, unknown> = { ...autoMeta, ...metadata };
+            const path =
+                typeof window !== 'undefined'
+                    ? window.location.pathname + window.location.search
+                    : '/';
 
             this.queue.push({
                 sessionId: getSessionId(),
                 visitorId: this.customVisitorId ?? getVisitorId(),
                 eventType,
-                path: typeof window !== 'undefined' ? window.location.pathname : '/',
+                path,
                 metadata: Object.keys(merged).length > 0 ? merged : undefined,
             });
         } catch {
-            // ignore
+            // ignore — SDK must never crash host application
         }
     }
 
     pageview(path?: string): void {
         if (!this.enabled || !this.queue) return;
         try {
-            const resolvedPath =
-                path ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+            // Use pathname + search to track full path. Hash changes (#) are ignored.
+            const fullPath =
+                path ??
+                (typeof window !== 'undefined'
+                    ? window.location.pathname + window.location.search
+                    : '/');
 
-            // Avoid double tracking the same path in immediate succession (e.g. load + pushState)
-            if (resolvedPath === this.lastTrackedPath) return;
-            this.lastTrackedPath = resolvedPath;
+            // Prevent double-fire (e.g. load + pushState, duplicate SPA route triggers)
+            if (fullPath === this.lastTrackedPath) return;
 
             const autoMeta = collectMetadata();
 
+            // Push FIRST, then update lastTrackedPath — so a failed push doesn't corrupt state
             this.queue.push({
                 sessionId: getSessionId(),
                 visitorId: this.customVisitorId ?? getVisitorId(),
                 eventType: 'pageview',
-                path: resolvedPath,
+                path: fullPath,
                 metadata: Object.keys(autoMeta).length > 0 ? autoMeta : undefined,
             });
+
+            this.lastTrackedPath = fullPath;
         } catch {
             // ignore
         }
@@ -115,27 +126,31 @@ export class Vyzora {
         this.queue = null;
     }
 
-
     private hookPageTracking(): void {
         if (typeof window === 'undefined') return;
 
         // Initial pageview on load
         window.addEventListener('load', () => this.pageview(), { once: true });
 
-        // SPA navigation — intercept history.pushState and history.replaceState
-        this.wrapHistoryMethod('pushState');
-        this.wrapHistoryMethod('replaceState');
+        // SPA navigation — wrap pushState and replaceState once only
+        if (!this.historyWrapped) {
+            this.wrapHistoryMethod('pushState');
+            this.wrapHistoryMethod('replaceState');
+            this.historyWrapped = true;
+        }
 
         // Back/forward navigation
         window.addEventListener('popstate', () => this.pageview());
     }
 
     private wrapHistoryMethod(method: 'pushState' | 'replaceState'): void {
-        const original = history[method]?.bind(history);
+        const original = history[method];
         if (typeof original !== 'function') return;
 
-        history[method] = (...args) => {
-            original(...args);
+        // Arrow function to retain `this` (Vyzora instance).
+        // apply.call preserves strict-mode safety without mutating prototype chain.
+        history[method] = (...args: Parameters<typeof original>): void => {
+            Function.prototype.apply.call(original, history, args);
             this.pageview();
         };
     }

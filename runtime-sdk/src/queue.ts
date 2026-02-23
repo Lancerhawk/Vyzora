@@ -5,6 +5,7 @@ import { Logger } from './logger';
 export class Queue {
     private events: InternalEvent[] = [];
     private timer: ReturnType<typeof setInterval> | null = null;
+    private flushing = false;
     private endpoint: string;
     private apiKey: string;
     private batchSize: number;
@@ -29,9 +30,8 @@ export class Queue {
     }
 
     start(): void {
-        if (this.timer !== null) return;
+        if (this.timer !== null) return; // Guard: prevent duplicate intervals
         this.timer = setInterval(() => {
-            // console.warn("INTERVAL TRIGGERED");
             this.logger.log('Auto-flush triggered');
             void this.flush();
         }, this.flushInterval);
@@ -46,8 +46,6 @@ export class Queue {
 
     push(event: InternalEvent): void {
         this.events.push(event);
-        // console.warn("EVENT PUSHED. Queue length:", this.events.length);
-
         this.logger.log(`Event queued: ${event.eventType} (queue=${this.events.length})`);
         if (this.events.length >= this.batchSize) {
             void this.flush();
@@ -56,18 +54,27 @@ export class Queue {
 
     async flush(): Promise<void> {
         if (this.events.length === 0) return;
+        if (this.flushing) return; // Guard: prevent concurrent/duplicate flushes
+
+        this.flushing = true;
+        // Splice BEFORE transport — clears array immediately to prevent race conditions
         const batch = this.events.splice(0, this.events.length);
         this.logger.log(`Flushing ${batch.length} event(s)`);
-        await sendBatch(this.endpoint, this.apiKey, batch, this.debug, this.logger);
+
+        try {
+            await sendBatch(this.endpoint, this.apiKey, batch, this.debug, this.logger);
+        } finally {
+            // Always reset — even if sendBatch throws, queue never deadlocks
+            this.flushing = false;
+        }
     }
 
     destroy(): void {
-        // console.warn("⚠️ SDK QUEUE DESTROY CALLED");
-
         if (this.timer !== null) {
             clearInterval(this.timer);
             this.timer = null;
         }
+        // Uses stored function references — removeEventListener correctly deregisters
         if (typeof document !== 'undefined') {
             document.removeEventListener('visibilitychange', this.handleVisibility);
         }
@@ -78,15 +85,12 @@ export class Queue {
     }
 
     private handleVisibility = (): void => {
-        // console.warn("VISIBILITY CHANGE:", document.visibilityState);
-
         if (document.visibilityState === 'hidden') {
             void this.flush();
         }
     };
 
     private handlePageHide = (): void => {
-        // console.warn("PAGEHIDE FLUSH");
         void this.flush();
     };
 }

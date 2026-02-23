@@ -28,7 +28,8 @@ export async function sendBatch(
         }
     }
 
-    await fetchWithRetry(endpoint, body, headers, debug, logger);
+    // Fallback to fetch with single retry (5xx or network error only)
+    await fetchWithRetry(endpoint, body, headers, debug, logger, 0);
 }
 
 async function fetchWithRetry(
@@ -37,7 +38,7 @@ async function fetchWithRetry(
     headers: Record<string, string>,
     debug: boolean,
     logger: Logger,
-    attempt = 0
+    attempt: number
 ): Promise<void> {
     try {
         const res = await fetch(endpoint, {
@@ -49,18 +50,21 @@ async function fetchWithRetry(
 
         logger.log(`Batch flush (attempt ${attempt + 1}) →`, res.status);
 
-        if (!res.ok && attempt === 0) {
+        // Retry only on server errors (5xx). Never retry 4xx — drop silently.
+        if (res.status >= 500 && attempt === 0) {
             setTimeout(
-                () => fetchWithRetry(endpoint, body, headers, debug, logger, 1),
+                () => void fetchWithRetry(endpoint, body, headers, debug, logger, 1),
                 RETRY_DELAY_MS
             );
         }
     } catch {
+        // Network error — retry once only
         if (attempt === 0) {
             setTimeout(
-                () => fetchWithRetry(endpoint, body, headers, debug, logger, 1),
+                () => void fetchWithRetry(endpoint, body, headers, debug, logger, 1),
                 RETRY_DELAY_MS
             );
         }
+        // Second attempt failed → drop silently. No re-insertion into queue.
     }
 }

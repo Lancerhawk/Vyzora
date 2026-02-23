@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Vyzora } from '@vyzora/sdk';
+import { Vyzora } from 'vyzora-sdk';
 
 export default function VyzoraProvider() {
     useEffect(() => {

@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] - 2026-02-23
+
+### Changed
+- **Analytics SDK v0.2.0 — Production Safety Hardening**:
+  - New `storage.ts` safe layer: all `localStorage` access wrapped in `try/catch` (`SecurityError`, `QuotaExceededError` handled silently)
+  - Visitor ID key renamed to `vyzora_vid`; stable in-memory fallback for Safari private mode
+  - Session migrated from `sessionStorage` → `localStorage` (keys: `vyzora_sid`, `vyzora_session_ts`)
+  - Session timestamp updated on every `track()` call — prevents mid-activity expiry
+  - `flushing` lock flag on `Queue` prevents concurrent `visibilitychange` + `pagehide` double-sends
+  - `sendBatch` wrapped in `try/finally` — flush lock always resets, no queue deadlock possible
+  - Retry policy tightened: only `5xx` and network errors retry; `4xx` dropped silently
+  - Full-path pageview deduplication (`pathname + search`) — hash changes ignored
+  - History wrap singleton (`historyWrapped`) — no double-wrapping on re-initialization
+  - `lastTrackedPath` updated after enqueue, never before
+  - Removed legacy `batch.ts` and `tracker.ts` (dead code)
+  - Full SDK README rewritten with framework integrations, API reference, and storage key documentation
+
+---
+
 ## [0.6.1] - 2026-02-23
 
 ### Added
