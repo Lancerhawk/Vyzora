@@ -27,12 +27,19 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(cors({
+// CORS configuration
+const dashboardCors = cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
     methods: ['GET', 'POST', 'DELETE'],
     optionsSuccessStatus: 200,
-}));
+});
+
+const ingestCors = cors({
+    origin: '*',
+    methods: ['POST'],
+    optionsSuccessStatus: 200,
+});
 
 // cookie-parser must come before routes so req.cookies is populated
 app.use(cookieParser());
@@ -43,9 +50,9 @@ app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use('/api/auth', authRouter);
-app.use('/api/projects', projectRouter);
-app.use('/api/ingest', INGEST_LIMITER, ingestRouter);
+app.use('/api/auth', dashboardCors, authRouter);
+app.use('/api/projects', dashboardCors, projectRouter);
+app.use('/api/ingest', ingestCors, INGEST_LIMITER, ingestRouter);
 
 app.use(errorHandler);
 

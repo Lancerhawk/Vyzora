@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.9.2",
+        "date": "2026-02-24",
+        "tag": "feat",
+        "title": "Universal Ingestion & SDK Reliability",
+        "summary": "This release marks a significant milestone in Vyzora's capability as a cross-domain analytics platform. We've unlocked universal event ingestion and hardened the SDK's tracking reliability for modern web frameworks.",
+        "whatsIncluded": [
+            {
+                "headline": "Universal Ingestion Endpoint",
+                "detail": "Updated the backend to allow events from any origin (wildcard CORS) on the ingestion route, while maintaining strict isolation and security for all dashboard and project-management APIs."
+            },
+            {
+                "headline": "SDK Initialization Pass",
+                "detail": "Hardened the SDK core to ensure tracking always fires, even if the library loads after the page is already interactive (using document.readyState checks)."
+            },
+            {
+                "headline": "Version Synchronization",
+                "detail": "SDK bumped to v0.2.3 and Root bumped to v0.9.2 to reflect the transition to a truly universal analytics infrastructure."
+            }
+        ],
+        "stack": [
+            "Express 5",
+            "CORS Policy",
+            "TypeScript",
+            "Beacons API"
+        ]
+    },
+    {
         "version": "0.9.1",
         "date": "2026-02-24",
         "tag": "fix",

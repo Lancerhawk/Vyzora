@@ -2,7 +2,7 @@
 
 > Lightweight, production-grade analytics SDK for Vyzora. Framework-agnostic, under 7KB minified, zero dependencies, built for reliability.
 
-[![npm version](https://img.shields.io/badge/version-0.2.2-blue)](https://npmjs.com/package/vyzora-sdk)
+[![npm version](https://img.shields.io/badge/version-0.2.3-blue)](https://npmjs.com/package/vyzora-sdk)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Bundle Size](https://img.shields.io/badge/size-%3C7KB-brightgreen)](https://bundlephobia.com/package/vyzora-sdk)
 

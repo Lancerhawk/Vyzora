@@ -3,6 +3,15 @@
 All notable changes to the Vyzora SDK will be documented in this file.
 
 
+## [0.2.3] - 2026-02-24
+
+### Fixed
+- **Initialization Timing**: Replaced the absolute `window.load` listener with a smart `document.readyState` check. Captures the initial pageview even if the SDK is loaded late or via dynamic imports in Next.js/React.
+- **TypeScript Alignment**: Resolved minor property errors in the `Vyzora` class and correctly typed the `history` wrapping mechanism to eliminate linting warnings.
+- **Build Integrity**: Synchronized SDK versioning with the platform's universal ingestion milestone.
+
+---
+
 ## [0.2.2] - 2026-02-23
 
 ### Changed

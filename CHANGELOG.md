@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.2] - 2026-02-24
+
+### Changed
+- **Backend (v0.5.1) — Ingestion Accessibility**: Split CORS configuration to allow universal access (`*`) for the ingestion endpoint while maintaining strict protection for authentication and project management routes. This allows tracking from any external domain.
+- **System — Version Sync**: Bumped Root to v0.9.2 and SDK to v0.2.3 to reflect the transition to a universal analytics infrastructure.
+
+### Fixed
+- **Analytics SDK (v0.2.3) — Initialization Reliability**: Hardened the SDK's initialization logic. It now checks `document.readyState` to trigger tracking immediately if the library loads after the page is already interactive or complete, ensuring no pageviews are missed in fast-loading SPAs.
+- **Analytics SDK (v0.2.3) — Type & Build Cleanup**: Resolved TypeScript property errors and fixed `history.pushState` wrapping types to ensure a clean build and full ESM/CJS compatibility.
+
+---
+
 ## [0.9.1] - 2026-02-24
 
 ### Fixed

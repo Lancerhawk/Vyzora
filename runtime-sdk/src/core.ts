@@ -20,6 +20,7 @@ export class Vyzora {
     private logger: Logger;
     private lastTrackedPath: string | null = null;
     private historyWrapped = false;
+    private initialPageviewFired = false;
 
     constructor(config: VyzoraConfig) {
         if (!config.apiKey) {
@@ -54,7 +55,7 @@ export class Vyzora {
         this.logger.log('SDK initialised.');
     }
 
-    track(eventType: string, metadata?: Record<string, unknown>): void {
+    public async track(eventType: string, metadata?: Record<string, unknown>): Promise<void> {
         if (!this.enabled || !this.queue) return;
         try {
             const autoMeta = collectMetadata();
@@ -87,7 +88,7 @@ export class Vyzora {
                     : '/');
 
             // Prevent double-fire (e.g. load + pushState, duplicate SPA route triggers)
-            if (fullPath === this.lastTrackedPath) return;
+            if (fullPath === this.lastTrackedPath && this.initialPageviewFired) return;
 
             const autoMeta = collectMetadata();
 
@@ -101,6 +102,7 @@ export class Vyzora {
             });
 
             this.lastTrackedPath = fullPath;
+            this.initialPageviewFired = true;
         } catch {
             // ignore
         }
@@ -129,8 +131,14 @@ export class Vyzora {
     private hookPageTracking(): void {
         if (typeof window === 'undefined') return;
 
-        // Initial pageview on load
-        window.addEventListener('load', () => this.pageview(), { once: true });
+        // Initial pageview on load - handle if already loaded (Next.js/SSR cases)
+        // Use requestAnimationFrame to ensure DOM is ready and to avoid potential race conditions
+        // if the SDK loads very early.
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            requestAnimationFrame(() => this.pageview());
+        } else {
+            window.addEventListener('load', () => this.pageview(), { once: true });
+        }
 
         // SPA navigation — wrap pushState and replaceState once only
         if (!this.historyWrapped) {
@@ -144,14 +152,12 @@ export class Vyzora {
     }
 
     private wrapHistoryMethod(method: 'pushState' | 'replaceState'): void {
-        const original = history[method];
-        if (typeof original !== 'function') return;
+        const original = window.history[method];
 
-        // Arrow function to retain `this` (Vyzora instance).
-        // apply.call preserves strict-mode safety without mutating prototype chain.
-        history[method] = (...args: Parameters<typeof original>): void => {
-            Function.prototype.apply.call(original, history, args);
+        window.history[method] = (data: unknown, unused: string, url?: string | URL | null) => {
+            const result = original.apply(window.history, [data, unused, url]);
             this.pageview();
+            return result;
         };
     }
 }
