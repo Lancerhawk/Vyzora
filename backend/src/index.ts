@@ -36,7 +36,8 @@ const dashboardCors = cors({
 });
 
 const ingestCors = cors({
-    origin: '*',
+    origin: true,
+    credentials: true,
     methods: ['POST'],
     optionsSuccessStatus: 200,
 });
