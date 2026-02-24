@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.3] - 2026-02-24
+
+### Fixed
+- **Backend (v0.5.2) — CORS Refinement**: Replaced the wildcard (`*`) origin policy on the ingestion route with a dynamic reflected-origin strategy. This resolves a critical browser security error where wildcard origins are blocked for requests containing credentials (like cookies or auth headers).
+- **System — Version Sync**: Bumped Root to v0.9.3 and Backend to v0.5.2 to finalize the cross-domain ingestion infrastructure.
+
+---
+
 ## [0.9.2] - 2026-02-24
 
 ### Changed

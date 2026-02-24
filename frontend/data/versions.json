@@ -1,5 +1,28 @@
 [
     {
+        "version": "0.9.3",
+        "date": "2026-02-24",
+        "tag": "fix",
+        "title": "CORS Refinement & Universal Reliability",
+        "summary": "This patch release fixes a critical CORS regression where wildcard origins were blocked for requests involving credentials. We've pivoted to a dynamic reflected-origin strategy to ensure universal compatibility.",
+        "whatsIncluded": [
+            {
+                "headline": "Reflected Origin Support",
+                "detail": "Replaced the brittle wildcard (*) CORS policy with a dynamic reflected-origin check (origin: true). This allows cross-domain analytics to work even when browsers include credentials in their requests."
+            },
+            {
+                "headline": "Backend Stabilization",
+                "detail": "Backend bumped to v0.5.2 and Root bumped to v0.9.3 to finalize the cross-domain ingestion infrastructure."
+            }
+        ],
+        "stack": [
+            "Express 5",
+            "CORS (Dynamic Origin)",
+            "Node.js",
+            "Vyzora Backend"
+        ]
+    },
+    {
         "version": "0.9.2",
         "date": "2026-02-24",
         "tag": "feat",
