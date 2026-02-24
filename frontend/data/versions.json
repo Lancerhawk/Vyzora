@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.9.1",
+        "date": "2026-02-24",
+        "tag": "fix",
+        "title": "Dashboard Accessibility & Sidebar Polish",
+        "summary": "This patch resolves critical interactivity issues with the dashboard sidebar and improves overall navigation accessibility with proper hover states and mobile interaction handling.",
+        "whatsIncluded": [
+            {
+                "headline": "Mobile Sidebar Interactivity Fix",
+                "detail": "Resolved a bug where the sidebar would immediately close on mobile when clicking project links or the sign-out button due to a misplaced event ref."
+            },
+            {
+                "headline": "Hover State Feedback",
+                "detail": "Added explicit cursor-pointer feedback to all interactive sidebar elements, ensuring consistent UX across desktop and mobile."
+            },
+            {
+                "headline": "Version Synchronization",
+                "detail": "Frontend bumped to v0.6.1 and Root bumped to v0.9.1 to incorporate these critical UX refinements."
+            }
+        ],
+        "stack": [
+            "Next.js 16",
+            "Tailwind CSS v4",
+            "React Refs",
+            "TypeScript"
+        ]
+    },
+    {
         "version": "0.9.0",
         "date": "2026-02-24",
         "tag": "feat",

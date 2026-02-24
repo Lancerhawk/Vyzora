@@ -227,7 +227,7 @@ export default function DashboardPage() {
                         {projects.map(p => (
                             <li key={p.id}>
                                 <div className={`group flex items-center px-3 py-2.5 rounded-md cursor-pointer transition-all duration-150 ${selected?.id === p.id ? 'bg-indigo-500/10 border border-indigo-500/20' : 'border border-transparent hover:bg-white/[0.05]'}`}>
-                                    <button onClick={() => selectProject(p)} className="flex-1 flex items-center gap-2.5 text-left min-w-0">
+                                    <button onClick={() => selectProject(p)} className="flex-1 flex items-center gap-2.5 text-left min-w-0 cursor-pointer">
                                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${selected?.id === p.id ? 'bg-indigo-400' : 'bg-gray-600 group-hover:bg-gray-400'}`} />
                                         <span className={`text-[13px] truncate font-medium ${selected?.id === p.id ? 'text-indigo-200' : 'text-gray-400 group-hover:text-gray-200'}`}>{p.name}</span>
                                     </button>
@@ -275,12 +275,12 @@ export default function DashboardPage() {
             {sidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
             {/* Desktop sidebar */}
-            <aside ref={sidebarRef} className="hidden lg:flex w-56 shrink-0 bg-[#060a12] border-r border-white/[0.06] flex-col fixed top-0 left-0 bottom-0 z-40">
+            <aside className="hidden lg:flex w-56 shrink-0 bg-[#060a12] border-r border-white/[0.06] flex-col fixed top-0 left-0 bottom-0 z-40">
                 <SidebarContent />
             </aside>
 
             {/* Mobile drawer */}
-            <aside className={`fixed top-0 left-0 bottom-0 z-40 w-64 bg-[#060a12] border-r border-white/[0.06] flex-col flex lg:hidden transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <aside ref={sidebarRef} className={`fixed top-0 left-0 bottom-0 z-40 w-64 bg-[#060a12] border-r border-white/[0.06] flex-col flex lg:hidden transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 <SidebarContent />
             </aside>
 

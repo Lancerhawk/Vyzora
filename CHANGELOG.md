@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.1] - 2026-02-24
+
+### Fixed
+- **Frontend (v0.6.1) — Mobile Sidebar Fix**: Resolved a critical interactivity bug where the dashboard sidebar would immediately close on mobile viewports due to a misplaced event reference on the hidden desktop sidebar.
+- **Frontend (v0.6.1) — UX Refinement**: Added explicit `cursor-pointer` styles to all interactive sidebar elements (project selection, sign-out) to provide consistent visual feedback across desktop and mobile.
+- **System — Version Sync**: Bumped Root to v0.9.1 and Frontend to v0.6.1 to reflect the dashboard accessibility pass.
+
+---
+
 ## [0.9.0] - 2026-02-24
 
 ### Added
