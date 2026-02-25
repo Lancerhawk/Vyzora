@@ -53,9 +53,10 @@ export default function Navbar() {
         <header
             className={[
                 'fixed inset-x-0 z-50 transition-all duration-300 ease-in-out',
+                'md:transition-all', // keep transition for desktop
                 scrolled
                     ? 'top-0 bg-black/80 backdrop-blur-xl border-b border-white/[0.06] shadow-xl shadow-black/30'
-                    : 'top-8 bg-transparent border-b border-transparent',
+                    : 'top-0 md:top-8 bg-black/40 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-b border-white/[0.03] md:border-transparent',
             ].join(' ')}
         >
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">

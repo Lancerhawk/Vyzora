@@ -114,32 +114,32 @@ export default function Home() {
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#030712]">
         <ParticleField />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center pt-28 pb-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center py-12 sm:py-20">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/[0.08] text-indigo-300 text-[13px] font-medium mb-10 backdrop-blur-sm">
+          <div className="hidden sm:inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/[0.08] text-indigo-300 text-[13px] font-medium mb-10 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
             Privacy-first · High performance · Developer-focused
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-[76px] font-black tracking-[-0.03em] leading-[1.04] text-white mb-6">
+          <h1 className="text-4xl sm:text-6xl lg:text-[76px] font-black tracking-[-0.03em] leading-[1.1] sm:leading-[1.04] text-white mb-6">
             Analytics that respect
             <br />
             <span className="gradient-text">user privacy.</span>
           </h1>
 
           {/* Sub */}
-          <p className="max-w-[580px] mx-auto text-[17px] text-gray-400 leading-[1.65] mb-10">
+          <p className="max-w-[580px] mx-auto text-[14px] sm:text-[17px] text-gray-400 leading-[1.6] sm:leading-[1.65] mb-8 sm:mb-10">
             Vyzora is a privacy-first analytics service. A lightweight browser SDK, a
             secure ingest API, and a powerful dashboard that shows you
-            exactly what your users are doing, with no third-party data sharing.
+            exactly what your users are doing.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12 sm:mb-16">
             <a
               href="/login"
-              className="flex items-center gap-2.5 px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all duration-200 shadow-xl shadow-indigo-600/25 hover:shadow-indigo-500/35 hover:-translate-y-px"
+              className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all duration-200 shadow-xl shadow-indigo-600/25"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d={GH_PATH} />
@@ -148,22 +148,22 @@ export default function Home() {
             </a>
             <a
               href="/docs"
-              className="px-8 py-3.5 rounded-xl border border-white/[0.1] hover:border-white/[0.18] text-gray-300 hover:text-white font-semibold text-sm transition-all duration-200 bg-white/[0.03] hover:bg-white/[0.07] hover:-translate-y-px"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-white/[0.1] hover:border-white/[0.18] text-gray-300 hover:text-white font-semibold text-sm transition-all duration-200 bg-white/[0.03] hover:bg-white/[0.07]"
             >
               Read the docs →
             </a>
           </div>
 
           {/* Stats bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-16 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.07]">
+          <div className="flex items-center justify-center gap-4 sm:gap-16 divide-x divide-white/[0.07]">
             {[
-              { value: '< 3 KB', label: 'Gzipped SDK bundle size' },
-              { value: '10s', label: 'Default flush interval' },
-              { value: '100%', label: 'Privacy-focused analytics' },
+              { value: '< 3 KB', label: 'SDK size' },
+              { value: '10s', label: 'Interval' },
+              { value: '100%', label: 'Privacy' },
             ].map((s) => (
-              <div key={s.label} className="text-center px-6 py-3 sm:py-0 first:pt-0 last:pb-0">
-                <div className="text-2xl font-bold text-white tracking-tight">{s.value}</div>
-                <div className="text-xs text-gray-600 mt-0.5">{s.label}</div>
+              <div key={s.label} className="text-center px-3 sm:px-6 w-auto">
+                <div className="text-base sm:text-2xl font-bold text-white tracking-tight">{s.value}</div>
+                <div className="text-[8px] sm:text-xs text-gray-600 mt-0.5 uppercase tracking-wider whitespace-nowrap">{s.label}</div>
               </div>
             ))}
           </div>

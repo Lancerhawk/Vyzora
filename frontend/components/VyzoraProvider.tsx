@@ -11,6 +11,7 @@ export default function VyzoraProvider() {
         new Vyzora({
             apiKey: process.env.NEXT_PUBLIC_VYZORA_KEY!,
             enabled: true,
+            debug: true,
         });
 
     }, []);

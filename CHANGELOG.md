@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.4] - 2026-02-25
+
+### Added
+- **Frontend (v0.6.2) — Feedback System**: Implemented a professional feedback modal with glassmorphism design. Integrated with SendGrid to provide automated email notifications for new submissions.
+- **Frontend (v0.6.2) — Email Infrastructure**: Added robust email deliverability features including plain-text alternatives, reply-to headers, and premium HTML templates with badges for feedback types (Bug, feature, fix).
+
+### Changed
+- **Frontend (v0.6.2) — Mobile Optimization**: 
+  - Simplified mobile navbar animations to prevent layout jumping on scroll.
+  - Optimized homepage hero section for mobile viewports by hiding the top badge and refining vertical centering.
+  - Reconfigured hero stats bar for horizontal alignment on small screens with simplified labels.
+  - Hardened `/docs` page layout with optimized heading sizes and increased top padding for better clearance from the sticky navbar.
+
+### Fixed
+- **System — Version Sync**: Bumped Root to v0.9.4 and Frontend to v0.6.2 to reflect the feedback system and mobile accessibility milestone.
+
+---
+
 ## [0.9.3] - 2026-02-24
 
 ### Fixed

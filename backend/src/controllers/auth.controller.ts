@@ -79,10 +79,11 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
         const redirectUrl = `${process.env.FRONTEND_URL}/dashboard`;
         console.log('[Auth] Success. Redirecting to frontend:', redirectUrl);
         res.redirect(redirectUrl);
-    } catch (err: any) {
-        console.error('[Auth] OAuth exception:', err.message);
-        if (err.response) {
-            console.error('[Auth] GitHub API Error Response:', err.response.data);
+    } catch (err: unknown) {
+        const error = err as Error & { response?: { data: unknown } };
+        console.error('[Auth] OAuth exception:', error.message);
+        if (error.response) {
+            console.error('[Auth] GitHub API Error Response:', error.response.data);
         }
         res.redirect(`${process.env.FRONTEND_URL}/login?error=oauth_failed`);
     }

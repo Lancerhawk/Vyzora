@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.9.4",
+        "date": "2026-02-25",
+        "tag": "feat",
+        "title": "Feedback System & Mobile Optimization",
+        "summary": "This update introduces a premium user feedback system and a comprehensive mobile responsiveness pass across the landing page and documentation.",
+        "whatsIncluded": [
+            {
+                "headline": "User Feedback System",
+                "detail": "Launched a glassmorphism feedback modal integrated with SendGrid. Includes automated email notifications with professional HTML templates and improved deliverability safeguards."
+            },
+            {
+                "headline": "Mobile Responsiveness Pass",
+                "detail": "Completely refined the mobile experience: simplified navbar animations, optimized hero section centering, and hardened the documentation layout for small screens."
+            },
+            {
+                "headline": "Version Synchronization",
+                "detail": "Frontend bumped to v0.6.2 and Root bumped to v0.9.4 to finalize the feedback and accessibility milestone."
+            }
+        ],
+        "stack": [
+            "SendGrid API",
+            "Next.js 16",
+            "Tailwind CSS v4",
+            "Responsive Design"
+        ]
+    },
+    {
         "version": "0.9.3",
         "date": "2026-02-24",
         "tag": "fix",

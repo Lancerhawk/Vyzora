@@ -3,22 +3,22 @@ import CodeBlock from '../../components/CodeBlock';
 
 // Shared style helpers — keep layout identical to original
 const code = 'bg-white/10 px-1.5 py-0.5 rounded text-indigo-300 text-xs';
-const h2 = 'text-xl md:text-2xl font-bold text-white mb-4';
-const h3 = 'text-sm md:text-base font-semibold text-white mb-2 mt-6';
-const p = 'text-gray-400 leading-relaxed mb-4 text-sm';
-const card = 'rounded-2xl border border-white/10 bg-[#0d1117] p-6 mb-4';
+const h2 = 'text-lg md:text-2xl font-bold text-white mb-4';
+const h3 = 'text-xs md:text-base font-semibold text-white mb-2 mt-6';
+const p = 'text-gray-400 leading-relaxed mb-4 text-[13px] md:text-sm';
+const card = 'rounded-2xl border border-white/10 bg-[#0d1117] p-5 md:p-6 mb-4';
 
 export default function DocsPage() {
     return (
-        <div className="min-h-screen pt-20 md:pt-28 pb-24">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex gap-8 lg:gap-12">
+        <div className="min-h-screen pt-24 md:pt-28 pb-24">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row gap-8 lg:gap-12">
                 <DocsSidebar />
 
                 <article className="flex-1 min-w-0 prose-sm max-w-none">
 
                     {/* ── 1. Introduction ─────────────────────────── */}
                     <section id="introduction" className="scroll-mt-24 md:scroll-mt-28 mb-12 md:mb-16">
-                        <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">Introduction</h1>
+                        <h1 className="text-xl md:text-3xl font-bold text-white mb-4">Introduction</h1>
                         <p className={p}>
                             Vyzora is a privacy-first, developer-focused analytics service. You instrument
                             your frontend with the <code className={code}>vyzora-sdk</code>, events are

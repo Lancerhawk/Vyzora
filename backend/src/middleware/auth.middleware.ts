@@ -31,8 +31,9 @@ export function authenticate(
         ) as { userId: string };
         req.authUser = { id: payload.userId };
         next();
-    } catch (err: any) {
-        console.error('[Auth] Token verification failed:', err.message);
+    } catch (err: unknown) {
+        const error = err as Error;
+        console.error('[Auth] Token verification failed:', error.message);
         // Clear the stuck invalid token before returning 401
         res.clearCookie('vyzora_token', COOKIE_OPTIONS);
         res.status(401).json({ success: false, message: 'Invalid or expired token' });

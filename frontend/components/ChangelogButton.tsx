@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import versions from '../data/versions.json';
+import FeedbackModal from './FeedbackModal';
 
 type VersionEntry = {
     version: string;
@@ -27,6 +28,7 @@ const ALL = versions as VersionEntry[];
 export default function ChangelogButton() {
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
+    const [feedbackOpen, setFeedbackOpen] = useState(false);
     const [selected, setSelected] = useState(0);
 
     if (pathname?.startsWith('/dashboard')) return null;
@@ -35,19 +37,31 @@ export default function ChangelogButton() {
 
     return (
         <>
-            {/* ── Floating trigger ────────────────────────────────── */}
-            <button
-                onClick={() => setOpen(true)}
-                aria-label="Open changelog"
-                className="fixed bottom-5 right-5 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.1] bg-[#0d1117]/90 backdrop-blur-md text-gray-400 hover:text-white hover:border-indigo-500/40 text-xs font-medium transition-all duration-200 shadow-xl shadow-black/40 group"
-            >
-                <span className="w-2 h-2 rounded-full bg-indigo-500 group-hover:animate-pulse" />
-                Changelog
-                <span className="text-gray-700">·</span>
-                <span className="text-gray-600 group-hover:text-indigo-400 font-mono transition-colors duration-200">
-                    v{ALL[0]?.version}
-                </span>
-            </button>
+            <div className="fixed bottom-5 right-5 z-40 flex items-center gap-2">
+                {/* Feedback Button */}
+                <button
+                    onClick={() => setFeedbackOpen(true)}
+                    aria-label="Open feedback"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.1] bg-[#0d1117]/90 backdrop-blur-md text-gray-400 hover:text-white hover:border-emerald-500/40 text-xs font-medium transition-all duration-200 shadow-xl shadow-black/40 group whitespace-nowrap"
+                >
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 group-hover:animate-pulse" />
+                    Review
+                </button>
+
+                {/* Changelog Button */}
+                <button
+                    onClick={() => setOpen(true)}
+                    aria-label="Open changelog"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.1] bg-[#0d1117]/90 backdrop-blur-md text-gray-400 hover:text-white hover:border-indigo-500/40 text-xs font-medium transition-all duration-200 shadow-xl shadow-black/40 group whitespace-nowrap"
+                >
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 group-hover:animate-pulse" />
+                    Changelog
+                    <span className="text-gray-700">·</span>
+                    <span className="text-gray-600 group-hover:text-indigo-400 font-mono transition-colors duration-200">
+                        v{ALL[0]?.version}
+                    </span>
+                </button>
+            </div>
 
             {/* ── Modal backdrop ──────────────────────────────────── */}
             {open && (
@@ -192,6 +206,11 @@ export default function ChangelogButton() {
                     </div>
                 </div>
             )}
+
+            <FeedbackModal
+                isOpen={feedbackOpen}
+                onClose={() => setFeedbackOpen(false)}
+            />
         </>
     );
 }
