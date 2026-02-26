@@ -1,0 +1,27 @@
+{
+    "name": "@vyzora/scalable-worker",
+    "version": "0.1.0",
+    "description": "Vyzora Scalable Worker — BullMQ Consumer",
+    "main": "dist/index.js",
+    "scripts": {
+        "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
+        "build": "tsc --project tsconfig.json",
+        "start": "node dist/src/index.js",
+        "prisma:generate": "prisma generate"
+    },
+    "dependencies": {
+        "@prisma/client": "^7.4.1",
+        "bullmq": "^5.0.0",
+        "dotenv": "^17.3.1",
+        "ioredis": "^5.4.1",
+        "pg": "^8.14.1"
+    },
+    "devDependencies": {
+        "@types/node": "^25.3.0",
+        "@types/pg": "^8.11.14",
+        "nodemon": "^3.1.14",
+        "prisma": "^7.4.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.9.3"
+    }
+}

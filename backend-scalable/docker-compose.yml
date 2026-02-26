@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - vyzora-network
+
+  api:
+    build: 
+      context: ./api
+    environment:
+      - PORT=3002
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - vyzora-network
+    depends_on:
+      - redis
+
+  worker:
+    build: 
+      context: ./worker
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - vyzora-network
+    depends_on:
+      - redis
+
+  load-balancer:
+    build:
+      context: ./nginx
+    ports:
+      - "8080:80"
+    networks:
+      - vyzora-network
+    depends_on:
+      - api
+
+networks:
+  vyzora-network:
+    driver: bridge
