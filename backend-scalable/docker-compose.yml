@@ -11,6 +11,8 @@ services:
   api:
     build: 
       context: ./api
+    labels:
+      - "version=0.0.1"
     environment:
       - PORT=3002
       - REDIS_HOST=redis
@@ -24,6 +26,8 @@ services:
   worker:
     build: 
       context: ./worker
+    labels:
+      - "version=0.0.1"
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379

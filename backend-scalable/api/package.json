@@ -1,12 +1,13 @@
 {
     "name": "@vyzora/scalable-api",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "description": "Vyzora Scalable API — Express + BullMQ",
     "main": "dist/index.js",
     "scripts": {
         "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
         "build": "tsc --project tsconfig.json",
         "start": "node dist/src/index.js",
+        "lint": "eslint src --max-warnings 10",
         "prisma:generate": "prisma generate"
     },
     "dependencies": {
@@ -23,14 +24,17 @@
         "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@eslint/js": "^9.0.0",
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
         "@types/node": "^25.3.0",
+        "eslint": "^9.0.0",
         "nodemon": "^3.1.14",
         "prisma": "^7.4.1",
         "ts-node": "^10.9.2",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.0.0"
     }
 }

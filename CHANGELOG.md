@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.5] - 2026-02-26
+
+### Added
+- **System — Scalable Architecture Foundation (v0.0.1)**: Architected and implemented a new horizontally scalable microservice foundation in `backend-scalable/`.
+- **System — Infrastructure**: 
+    - Isolated the new architecture into `api`, `worker`, and `nginx` components.
+    - Integrated with **Redis** and **BullMQ** for asynchronous "Producer-Consumer" event processing.
+    - Added comprehensive **Docker Compose** orchestration for local and production-parity testing.
+- **System — Workspace Integration**: Added `npm run dev:scalable` to concurrently launch the new microservice stack and the dashboard.
+
+### Fixed
+- **System — Version Sync**: Bumped Root to v0.9.5 and initialized Scalable Architecture components at v0.0.1.
+
+---
+
 ## [0.9.4] - 2026-02-25
 
 ### Added
