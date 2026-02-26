@@ -19,11 +19,11 @@ const worker = new Worker('events-queue', async (job) => {
 }, { connection });
 
 worker.on('completed', (job) => {
-    console.log(`Job ${job.id} completed!`);
+    console.log(`Job ${job?.id} completed!`);
 });
 
 worker.on('failed', (job, err) => {
-    console.log(`Job ${job.id} failed with error: ${err.message}`);
+    console.log(`Job ${job?.id} failed with error: ${err.message}`);
 });
 
 console.log('👷 Scalable Worker process started...');

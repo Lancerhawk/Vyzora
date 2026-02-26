@@ -1,5 +1,32 @@
 [
     {
+        "version": "0.9.5",
+        "date": "2026-02-26",
+        "tag": "feat",
+        "title": "Scalable Microservice Architecture",
+        "summary": "This update introduces Vyzora's new horizontally scalable infrastructure. We've moved from a monolithic synchronous model to an asynchronous 'Producer-Consumer' pattern, allowing for massive event throughput without slowing down the dashboard.",
+        "whatsIncluded": [
+            {
+                "headline": "Microservice Separation",
+                "detail": "Split the backend into independent API (Producer), Worker (Consumer), and Nginx (Load Balancer) services. Each component is now independently scalable and containerized."
+            },
+            {
+                "headline": "In-Memory Queuing Engine",
+                "detail": "Integrated BullMQ and Redis as a high-performance message bus. Events are now 'written to the rail' instantly, ensuring 200 OK responses in milliseconds while ingestion happens in the background."
+            },
+            {
+                "headline": "One-Click Infrastructure",
+                "detail": "Introduced Root-level orchestration (npm run dev:scalable) using Docker Compose to handle complex multi-service networking locally and in production."
+            }
+        ],
+        "stack": [
+            "BullMQ",
+            "Redis Cluster",
+            "Nginx Load Balancer",
+            "Docker Orchestration"
+        ]
+    },
+    {
         "version": "0.9.4",
         "date": "2026-02-25",
         "tag": "feat",
