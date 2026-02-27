@@ -10,6 +10,7 @@ export default function VyzoraProvider() {
 
         new Vyzora({
             apiKey: process.env.NEXT_PUBLIC_VYZORA_KEY!,
+            endpoint: `${process.env.NEXT_PUBLIC_API_URL}/api/ingest`,
             enabled: true,
             debug: true,
         });

@@ -1,29 +1,44 @@
-import { Worker } from 'bullmq';
-import IORedis from 'ioredis';
-import dotenv from 'dotenv';
+import 'dotenv/config';
+import { worker, QUEUE_NAME } from './worker';
+import { prisma } from './config/database';
 
-dotenv.config();
+console.log(JSON.stringify({
+    level: 'info',
+    service: 'worker',
+    message: `👷 Vyzora Worker started. Listening on queue: ${QUEUE_NAME}`,
+    concurrency: process.env.WORKER_CONCURRENCY || '5',
+}));
 
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
-const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379');
+// ── Graceful shutdown ─────────────────────────────────────────────────────────
+// On SIGTERM (Docker stop) or SIGINT (Ctrl+C):
+// 1. Stop accepting new jobs (worker.close waits for in-flight jobs to finish)
+// 2. Disconnect Prisma pool cleanly
 
-const connection = new IORedis({
-    host: REDIS_HOST,
-    port: REDIS_PORT,
-    maxRetriesPerRequest: null,
-});
+async function shutdown(signal: string): Promise<void> {
+    console.log(JSON.stringify({
+        level: 'info',
+        service: 'worker',
+        message: `Received ${signal}. Initiating graceful shutdown...`,
+    }));
 
-const worker = new Worker('events-queue', async (job) => {
-    console.log(`Processing job ${job.id} for event: ${job.data.eventType}`);
-    // Logic to save to DB will go here after schema setup
-}, { connection });
+    try {
+        await worker.close();
+        console.log(JSON.stringify({ level: 'info', service: 'worker', message: 'BullMQ worker closed.' }));
+    } catch (err) {
+        const error = err as Error;
+        console.error(JSON.stringify({ level: 'error', service: 'worker', message: 'Error closing worker', error: error.message }));
+    }
 
-worker.on('completed', (job) => {
-    console.log(`Job ${job?.id} completed!`);
-});
+    try {
+        await prisma.$disconnect();
+        console.log(JSON.stringify({ level: 'info', service: 'worker', message: 'Prisma disconnected.' }));
+    } catch (err) {
+        const error = err as Error;
+        console.error(JSON.stringify({ level: 'error', service: 'worker', message: 'Error disconnecting Prisma', error: error.message }));
+    }
 
-worker.on('failed', (job, err) => {
-    console.log(`Job ${job?.id} failed with error: ${err.message}`);
-});
+    process.exit(0);
+}
 
-console.log('👷 Scalable Worker process started...');
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

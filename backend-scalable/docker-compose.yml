@@ -7,35 +7,58 @@ services:
       - "6379:6379"
     networks:
       - vyzora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
-    build: 
+    build:
       context: ./api
     labels:
       - "version=0.0.1"
     environment:
       - PORT=3002
+      - NODE_ENV=production
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
     networks:
       - vyzora-network
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3002/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
 
   worker:
-    build: 
+    build:
       context: ./worker
     labels:
       - "version=0.0.1"
     environment:
+      - NODE_ENV=production
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DATABASE_URL=${DATABASE_URL}
+      - WORKER_CONCURRENCY=${WORKER_CONCURRENCY:-5}
     networks:
       - vyzora-network
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
 
   load-balancer:
     build:
@@ -45,7 +68,9 @@ services:
     networks:
       - vyzora-network
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    restart: unless-stopped
 
 networks:
   vyzora-network:

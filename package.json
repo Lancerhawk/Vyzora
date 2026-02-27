@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
-        "dev:scalable": "concurrently -n infra,frontend -c blue,green \"cd backend-scalable && docker-compose up\" \"npm run dev --workspace=frontend\"",
+        "dev:scalable": "concurrently -n infra,frontend -c blue,green \"cd backend-scalable && docker-compose up --scale api=3 --scale worker=3\" \"npm run dev --workspace=frontend\"",
         "dev:backend": "npm run dev --workspace=backend",
         "dev:api-scalable": "npm run dev --workspace=@vyzora/scalable-api",
         "dev:worker-scalable": "npm run dev --workspace=@vyzora/scalable-worker",
@@ -21,7 +21,8 @@
         "lint:backend": "npm run lint --workspace=backend",
         "lint:frontend": "npm run lint --workspace=frontend",
         "lint:sdk": "npm run lint --workspace=runtime-sdk",
-        "typecheck": "npm run typecheck --workspace=runtime-sdk"
+        "typecheck": "npm run typecheck --workspace=runtime-sdk",
+        "stress": "node backend-scalable/scripts/stress-test.js"
     },
     "devDependencies": {
         "concurrently": "^9.0.0"
