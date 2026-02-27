@@ -63,6 +63,20 @@ app.get('/health', (_req, res) => {
     res.json({ status: 'ok', service: 'scalable-api', timestamp: new Date().toISOString() });
 });
 
+// Root welcome — prevents 404 noise in logs from browser pings
+app.get('/', (_req, res) => {
+    res.json({
+        message: 'Vyzora Scalable API v1.0',
+        docs: 'https://docs.vyzora.com',
+        status: 'online'
+    });
+});
+
+// Handle favicon.ico — prevents 404 logs from browsers
+app.get('/favicon.ico', (_req, res) => {
+    res.status(204).end();
+});
+
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/auth', dashboardCors, authRouter);
 app.use('/api/projects', dashboardCors, projectRouter);
