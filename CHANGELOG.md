@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1] - 2026-02-27
+
+### Changed
+- **SDK — Production Endpoint Update (v0.2.4)**: Updated the default production ingestion endpoint in the SDK distribution to match the newly deployed scalable infrastructure.
+- **SDK — Version Synchronization**: Bumped SDK to v0.2.4 and Root to v1.0.1 to reflect the production-ready transport configuration.
+
+---
+
 ## [1.0.0] - 2026-02-27
 
 ### Added

@@ -1,5 +1,27 @@
 [
     {
+        "version": "1.0.1",
+        "date": "2026-02-28",
+        "tag": "fix",
+        "title": "SDK Production Transport Fix",
+        "summary": "Critical update to the Vyzora SDK (v0.2.4) to ensure the default transport endpoint matches the newly deployed production ingestion infrastructure.",
+        "whatsIncluded": [
+            {
+                "headline": "SDK Endpoint Synchronization",
+                "detail": "Hardcoded the production ingestion URL into the SDK distribution, ensuring zero-config connectivity for out-of-the-box installations."
+            },
+            {
+                "headline": "Version Hardening",
+                "detail": "Billed as a patch release (v1.0.1) to synchronize the workspace with the official SDK stable build (v0.2.4)."
+            }
+        ],
+        "stack": [
+            "SDK v0.2.4",
+            "Production Gateway",
+            "Git Flow"
+        ]
+    },
+    {
         "version": "1.0.0",
         "date": "2026-02-27",
         "tag": "feat",
