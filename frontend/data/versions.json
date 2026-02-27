@@ -1,5 +1,33 @@
 [
     {
+        "version": "1.0.0",
+        "date": "2026-02-27",
+        "tag": "feat",
+        "title": "Vyzora v1.0 Production Release",
+        "summary": "The official v1.0.0 release of Vyzora. This milestone marks the full transition to a high-performance, horizontally scalable microservice architecture designed for enterprise-grade ingestion and analytics.",
+        "whatsIncluded": [
+            {
+                "headline": "Production-Ready Ingestion",
+                "detail": "The scalable backend is now the default. Includes API pooling, worker batching, and high-concurrency optimizations for PostgreSQL."
+            },
+            {
+                "headline": "Infrastructure Stability",
+                "detail": "Verified 100% success rate under high concurrent load. Optimized for Supabase Transaction Mode and multi-replica horizontal scaling."
+            },
+            {
+                "headline": "Developer Experience v1.0",
+                "detail": "Simplified orchestration with 'npm run dev:scalable' defaulting to a 3-instance API/Worker cluster. Added 'npm run stress' for instant performance validation."
+            }
+        ],
+        "stack": [
+            "Next.js 16",
+            "Express 5",
+            "BullMQ + Redis",
+            "Prisma 7",
+            "Nginx LB"
+        ]
+    },
+    {
         "version": "0.9.5",
         "date": "2026-02-26",
         "tag": "feat",

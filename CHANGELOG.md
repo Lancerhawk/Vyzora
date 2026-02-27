@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.0] - 2026-02-27
+
+### Added
+- **System — High-Performance Scalable Ingestion (v0.1.0)**: Officially stabilized and released the new microservice architecture as the primary backend.
+- **System — Load Balancing**: Integrated Nginx as a reverse proxy/load balancer to horizontal targets.
+- **System — Asynchronous Processing**: Fully decoupled event ingestion from database persistence using BullMQ and Redis.
+- **Verification — Stress Testing**: Included a custom high-performance stress testing tool (`npm run stress`) to validate ingestion throughput.
+
+### Changed
+- **Infrastructure**: Defaulted `npm run dev:scalable` to a high-density 3x API and 3x Worker cluster.
+- **Database**: Migrated to Supabase Transaction Mode (Port 6543) and implemented client-side connection pooling limits for massive horizontal scale.
+- **Observability**: Upgraded all service logs to professional, color-coded status indicators.
+
+### Fixed
+- **Types — Redis Integration**: Resolved TypeScript mismatches between BullMQ and IORedis with safe type casting and ESLint suppression.
+
+---
+
 ## [0.9.5] - 2026-02-26
 
 ### Added

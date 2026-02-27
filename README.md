@@ -2,24 +2,22 @@
 
 > Privacy-first, developer-focused analytics service. Track events, reconstruct sessions, and query aggregated metrics — without compromising user privacy.
 
-[![Version](https://img.shields.io/badge/version-v0.9.5-indigo)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.0.0-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Backend](https://img.shields.io/badge/backend-v0.5.2-blue)](backend/package.json)
-[![Scalable-API](https://img.shields.io/badge/scalable--api-v0.0.1-blue)](backend-scalable/api/package.json)
+[![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.0-blue)](backend-scalable/api/package.json)
 [![SDK](https://img.shields.io/badge/sdk-v0.2.3-violet)](runtime-sdk/package.json)
 [![Frontend](https://img.shields.io/badge/frontend-v0.6.2-purple)](frontend/package.json)
 
 ---
 
-## What is Vyzora?
-
 Vyzora is a high-performance analytics service designed for modern developers. It provides:
 
-1. **[`vyzora-sdk`](./runtime-sdk)** — A lightweight TypeScript browser SDK (`< 3 KB` gzipped). Drop it into any JavaScript or TypeScript project. It auto-collects pageviews, tracks your SPA navigation, manages visitor and session identity, and batches events before sending them to our secure API.
+1. **[`vyzora-sdk`](./runtime-sdk)** — A lightweight TypeScript browser SDK (`< 3 KB` gzipped). Drop it into any JavaScript or TypeScript project. It auto-collects pageviews, tracks SPA navigation, and batches events before sending them to the scalable gateway.
 
-2. **Secure Analytics Engine** — A privacy-hardened backend that receives event payloads, validates them against project-scoped API keys, and processes them in real-time.
+2. **Scalable Ingestion Engine** — A horizontally scalable, asynchronous backend built on **Express, Redis, and BullMQ**. It decouples event reception from database writes, ensuring sub-millisecond API responsiveness even under massive traffic spikes.
 
-3. **Developer Dashboard** — A powerful Next.js interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, custom events, and daily trend charts.
+3. **Developer Dashboard** — A powerful Next.js interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, and daily trend charts.
 
 No third-party trackers. No data sampling. No invasive cookies. You own the relationship with your users' data.
 
@@ -30,17 +28,23 @@ No third-party trackers. No data sampling. No invasive cookies. You own the rela
 ```mermaid
 flowchart TD
     A["Client Website\n(vyzora-sdk)"]
-    B["Backend API\n(Express · Prisma · PostgreSQL)"]
-    C[("PostgreSQL\nindexed on projectId + createdAt")]
+    LB["Nginx Load Balancer\n(8080)"]
+    API["Scalable API\n(3 Replicas)"]
+    REDIS[("Redis / BullMQ\nEvent Queue")]
+    WRK["Scalable Worker\n(3 Replicas)"]
+    DB[("PostgreSQL\nindexed on projectId + createdAt")]
     D["Dashboard\n(Next.js · App Router)"]
     E["GitHub OAuth"]
 
-    A -- "POST /api/ingest\nbatched events + API key" --> B
-    B -- "Validate key → bulk insert" --> C
-    C -- "Aggregation query" --> B
-    B -- "GET /api/projects/:id/metrics\nJWT-authenticated" --> D
+    A -- "POST /api/ingest" --> LB
+    LB -- "RR Proxy" --> API
+    API -- "Enqueue" --> REDIS
+    REDIS -- "Listen" --> WRK
+    WRK -- "Bulk Insert" --> DB
+    DB -- "Aggregation query" --> API
+    API -- "GET /api/projects/:id/metrics" --> D
     D -- "Login" --> E
-    E -- "OAuth callback → JWT cookie" --> B
+    E -- "OAuth callback" --> API
 ```
 
 ---
@@ -69,10 +73,12 @@ sequenceDiagram
 
 | Layer | Technology |
 |---|---|
-| **Runtime SDK** | TypeScript, tsup (ESM + CJS dual build), sendBeacon + fetch transport |
-| **Backend** | Node.js 18+, Express 5, TypeScript, Prisma 6, Zod, Passport.js, JWT |
-| **Database** | PostgreSQL ≥ 15, indexed on `(projectId, createdAt)` |
-| **Frontend** | Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Zustand, React Query |
+| **Runtime SDK** | TypeScript, tsup (ESM + CJS), sendBeacon + fetch transport |
+| **Scalable API** | Node.js 20, Express 5, BullMQ (Producer), IORedis |
+| **Scalable Worker** | Node.js 20, BullMQ (Consumer), Bulk Insertion Engine |
+| **Infrastructure** | Nginx (Load Balancer), Redis, Docker Compose |
+| **Database** | PostgreSQL ≥ 15 (Supabase Transaction Mode), Prisma 7 |
+| **Frontend** | Next.js 16 (App Router), Tailwind CSS v4, Zustand, React Query |
 | **Auth** | GitHub OAuth (Passport.js) for dashboard, project-scoped API keys for ingest |
 | **Rate Limiting** | `express-rate-limit` with per-route policies |
 
@@ -91,12 +97,14 @@ The `vyzora-sdk` is designed to be zero-overhead and production-safe:
 
 ---
 
-## Backend Highlights
+## Scalable Ingestion Highlights
 
-- **Ingest endpoint** (`POST /api/ingest`): validates `X-Api-Key` header against `project.apiKey` in database, runs Zod schema validation on each event, bulk-inserts valid batches via `prisma.event.createMany({ skipDuplicates: true })`
-- **Metrics endpoint** (`GET /api/projects/:id/metrics`): verifies project ownership against the JWT claims, runs `COUNT`, `COUNT DISTINCT`, `GROUP BY path`, `GROUP BY eventType`, and `GROUP BY DATE` queries over the `event` table with optional time-range filtering (1d, 7d, 30d, 90d)
-- **Auth**: GitHub OAuth issues a signed JWT stored in an HttpOnly, SameSite=None, Secure cookie — works across separate frontend/backend domains
-- **Security**: rate limiting on all ingest and auth routes, cascade-delete ensures all events are removed when a project is deleted, API keys are 64-character hex strings generated with `crypto.randomBytes(32)`
+- **Asynchronous Ingestion** (`POST /api/ingest`): The API gateway enqueues events to Redis in milliseconds. Jobs are processed in the background by specialized workers, protecting the API from database-induced latency.
+- **Bulk Database Writing**: Workers utilize a dedicated ingestion engine that performs bulk inserts via `prisma.event.createMany({ skipDuplicates: true })`.
+- **Database Resilience**: Configured for **Supabase Transaction Mode (Port 6543)** with explicit connection pooling limits, allowing dozens of concurrent workers to handle millions of events without connection overflows.
+- **Horizontal Scaling**: Fully containerized architecture allows you to scale up by simply adding replicas (`--scale api=3 --scale worker=3`).
+- **Nginx Load Balancer**: Distributes traffic across healthy API replicas and handles automatic failover.
+- **Metrics APIs**: Aggregated metrics are calculated in real-time using optimized indices on `(projectId, createdAt)`.
 
 ---
 
@@ -104,7 +112,12 @@ The `vyzora-sdk` is designed to be zero-overhead and production-safe:
 
 ```
 vyzora/
-├── backend/                  # Express API
+├── backend-scalable/         # NEW Scalable Architecture (Recommended)
+│   ├── api/                  # API Service (Producer)
+│   ├── worker/               # Worker Service (Consumer)
+│   ├── nginx/                # Load Balancer config
+│   └── scripts/              # Stress testing & maintenance
+├── backend/                  # Legacy Monolithic API
 │   ├── src/
 │   │   ├── controllers/      # auth, ingest, project, metrics
 │   │   ├── routes/           # route definitions
@@ -165,25 +178,27 @@ cd vyzora
 npm install
 ```
 
-### 2. Backend
+### 2. Launch Scalable Stack (Default)
+
+The scalable stack uses Docker Compose to orchestrate API replicas, workers, Nginx, and Redis.
 
 ```bash
-cp backend/.env.example backend/.env
-# Fill in: DATABASE_URL, SESSION_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET, FRONTEND_URL
-cd backend
-npx prisma db push
-npm run dev
-# → http://localhost:4000
+# From the project root
+npm run dev:scalable
 ```
 
-### 3. Frontend
+This command will:
+1. Spin up **3 API replicas** and **3 Worker replicas**.
+2. Launch the **Nginx** Load Balancer at `http://localhost:8080`.
+3. Start the **Redis** message bus.
+4. Launch the **Next.js Dashboard** at `http://localhost:3000`.
+
+### 3. Stress Test (Verification)
+
+Confirm the system can handle concurrent ingestion:
 
 ```bash
-cp frontend/.env.example frontend/.env.local
-# Fill in: NEXT_PUBLIC_API_URL=http://localhost:4000
-cd frontend
-npm run dev
-# → http://localhost:3000
+npm run stress
 ```
 
 ### 4. SDK (for development)
