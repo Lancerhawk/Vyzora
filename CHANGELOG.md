@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.2] - 2026-03-16
+
+### Fixed
+- **API Security**: Secured the global error middleware to prevent leaking internal stack traces or database schema details to clients during 500 Internal Server Errors in production. Applied to both legacy and scalable backends.
+- **OAuth Resilience**: Scoped the GitHub authentication rate limiter specifically to the `/github` redirect endpoint, preventing false-positive lockouts during the OAuth callback phase.
+
+---
+
 ## [1.0.1] - 2026-02-27
 
 ### Changed

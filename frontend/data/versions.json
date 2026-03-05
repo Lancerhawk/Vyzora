@@ -1,5 +1,27 @@
 [
     {
+        "version": "1.0.2",
+        "date": "2026-03-16",
+        "tag": "fix",
+        "title": "Security & Architecture Resiliency Patch",
+        "summary": "This patch release addresses two critical backend edge cases related to global error handling and GitHub authentication flow limits.",
+        "whatsIncluded": [
+            {
+                "headline": "API Error Hardening",
+                "detail": "Secured the global error middleware to ensure internal database schema errors or stack traces are never leaked to the client during a 500 Internal Server Error in production."
+            },
+            {
+                "headline": "OAuth Flow Reliability",
+                "detail": "Adjusted the API rate limiter to specifically target only the initial GitHub authentication redirect, preventing false-positive lockouts from occurring dynamically during the OAuth callback hand-off."
+            }
+        ],
+        "stack": [
+            "Express Middleware",
+            "OAuth Rate Limiting",
+            "Vyzora Backend"
+        ]
+    },
+    {
         "version": "1.0.1",
         "date": "2026-02-28",
         "tag": "fix",
