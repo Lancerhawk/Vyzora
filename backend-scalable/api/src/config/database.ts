@@ -13,7 +13,7 @@ function createPrismaClient(): PrismaClient {
         connectionString: process.env.DATABASE_URL!,
         max: 3,
     });
-    const adapter = new PrismaPg(pool);
+    const adapter = new PrismaPg(pool as any);
     return new PrismaClient({ adapter });
 }
 
