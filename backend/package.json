@@ -1,6 +1,6 @@
 {
   "name": "@vyzora/backend",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Vyzora backend API — Express + Prisma + TypeScript",
   "main": "dist/index.js",
   "scripts": {

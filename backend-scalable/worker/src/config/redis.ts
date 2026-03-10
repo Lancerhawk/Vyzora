@@ -1,7 +1,5 @@
 import IORedis from 'ioredis';
-
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
-const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379', 10);
+import { config } from './env';
 
 /**
  * Shared IORedis connection for BullMQ Worker.
@@ -9,14 +7,14 @@ const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379', 10);
  * - enableReadyCheck: false     → safer in Docker bridge networks
  */
 export const redis = new IORedis({
-    host: REDIS_HOST,
-    port: REDIS_PORT,
+    host: config.redisHost,
+    port: config.redisPort,
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
 });
 
 redis.on('connect', () => {
-    console.log(`🔌 [Redis]  Connected to ${REDIS_HOST}:${REDIS_PORT}`);
+    console.log(`🔌 [Redis]  Connected to ${config.redisHost}:${config.redisPort}`);
 });
 
 redis.on('error', (err) => {

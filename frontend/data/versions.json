@@ -1,5 +1,31 @@
 [
     {
+        "version": "1.0.3",
+        "date": "2026-03-16",
+        "tag": "fix",
+        "title": "Timestamp & Auth Hardening",
+        "summary": "This update fixes timestamp compression in high-volume ingestion and standardizes JWT security protocols across the architecture.",
+        "whatsIncluded": [
+            {
+                "headline": "Timestamp Accuracy (B3)",
+                "detail": "Removed hardcoded creation dates from bulk ingestion, ensuring that every event receives a unique, database-native timestamp for better time-series granularity."
+            },
+            {
+                "headline": "Unified Security & Architect (v1.0.3)",
+                "detail": "Synchronized environment configuration (env.ts) across all services including the worker, removed redundant .env.example files, and added startup safety assertions."
+            },
+            {
+                "headline": "Timestamp Precision",
+                "detail": "Fixed ingestion timestamp compression by using database-native arrival times, restoring accurate granularity to all time-series charts."
+            }
+        ],
+        "stack": [
+            "BullMQ Config",
+            "JWT Security",
+            "Vyzora Monorepo"
+        ]
+    },
+    {
         "version": "1.0.2",
         "date": "2026-03-16",
         "tag": "fix",

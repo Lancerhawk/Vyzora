@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.3] - 2026-03-16
+
+### Fixed
+- **Ingest**: Resolved timestamp compression by removing hardcoded `createdAt` in bulk ingestion, allowing the database to provide accurate arrival timestamps.
+- **Security**: Unified environment configuration (env.ts) across legacy backend, scalable API, and scalable worker. Added professional startup assertions for `JWT_SECRET` in all relevant production services.
+- **Architectural Cleanup**: Removed redundant `.env.example` files from sub-packages to follow the root-based environment strategy.
+
+---
+
 ## [1.0.2] - 2026-03-16
 
 ### Fixed

@@ -1,12 +1,13 @@
 import 'dotenv/config';
 import { worker, QUEUE_NAME } from './worker';
 import { prisma } from './config/database';
+import { config } from './config/env';
 
 console.log(JSON.stringify({
     level: 'info',
     service: 'worker',
     message: `👷 Vyzora Worker started. Listening on queue: ${QUEUE_NAME}`,
-    concurrency: process.env.WORKER_CONCURRENCY || '5',
+    concurrency: config.workerConcurrency,
 }));
 
 // ── Graceful shutdown ─────────────────────────────────────────────────────────

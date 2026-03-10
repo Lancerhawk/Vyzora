@@ -7,6 +7,7 @@ import {
     upsertUser,
 } from '../services/auth.service';
 import { prisma } from '../config/database';
+import { config } from '../config/env';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 const COOKIE_OPTIONS = {
@@ -69,8 +70,8 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
 
         const token = jwt.sign(
             { userId: user.id },
-            process.env.JWT_SECRET || 'secret',
-            { expiresIn: '7d' }
+            config.jwtSecret,
+            { expiresIn: config.jwtExpiresIn as any }
         );
 
         console.log('[Auth] Token signed. Setting cookie...');

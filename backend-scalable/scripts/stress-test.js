@@ -21,7 +21,7 @@ if (!API_KEY) {
 
 // Final fallback for the current user's key
 if (!API_KEY) {
-    API_KEY = 'a8c8811ee1d3b44d53f9ebcf80c126a7dba9286f61ac12b4c7821dd8c30e561c';
+    API_KEY = 'a80f012255cecfff38cb3b7fb5e5727200428585001583c0a47612c2be66db86';
 }
 
 const TOTAL_REQUESTS = parseInt(process.argv[2] || '500', 10);

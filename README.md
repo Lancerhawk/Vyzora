@@ -2,10 +2,10 @@
 
 > Privacy-first, developer-focused analytics service. Track events, reconstruct sessions, and query aggregated metrics — without compromising user privacy.
 
-[![Version](https://img.shields.io/badge/version-v1.0.0-indigo)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.0.3-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Backend](https://img.shields.io/badge/backend-v0.5.3-blue)](backend/package.json)
-[![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.1-blue)](backend-scalable/api/package.json)
+[![Backend](https://img.shields.io/badge/backend-v0.5.4-blue)](backend/package.json)
+[![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.2-blue)](backend-scalable/api/package.json)
 [![SDK](https://img.shields.io/badge/sdk-v0.2.4-violet)](runtime-sdk/package.json)
 [![Frontend](https://img.shields.io/badge/frontend-v0.6.2-purple)](frontend/package.json)
 
@@ -214,29 +214,21 @@ npm run dev   # tsup watch mode
 
 ## Environment Variables
 
-### Backend (`backend/.env`)
+Configuration is managed via a single `.env` file at the project root for the scalable architecture (API, Worker, Nginx). Local services like the legacy backend or SDK dev-environment may use their own local `.env` files.
+
+### Project Root (`.env`) / Scalable Stack
 
 | Variable | Description |
 |---|---|
 | `DATABASE_URL` | PostgreSQL connection string |
-| `SESSION_SECRET` | Express session secret (any long random string) |
+| `REDIS_HOST` | Redis host (default: `localhost` or `redis` in Docker) |
+| `JWT_SECRET` | Secret for signing JWT tokens (Required in production) |
+| `FRONTEND_URL` | Allowed CORS origin (e.g. `https://your-app.vercel.app`) |
+| `BACKEND_URL` | Public backend gateway URL (used for OAuth callbacks) |
 | `GITHUB_CLIENT_ID` | GitHub OAuth app client ID |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth app client secret |
-| `JWT_SECRET` | Secret for signing JWT tokens |
-| `FRONTEND_URL` | Allowed CORS origin (e.g. `https://your-app.vercel.app`) |
-| `PORT` | Backend port (default: `4000`) |
 
-### Frontend (`frontend/.env.local`)
-
-| Variable | Description |
-|---|---|
-| `NEXT_PUBLIC_API_URL` | Backend API base URL (e.g. `http://localhost:4000`) |
-
-### SDK (`runtime-sdk/.env`)
-
-| Variable | Description |
-|---|---|
-| `VYZORA_API_URL` | Ingest endpoint (e.g. `http://localhost:4000/api/ingest`) |
+### Legacy Backend (`backend/.env`)
 
 ---
 

@@ -8,11 +8,18 @@ import authRouter from './routes/auth.routes';
 import projectRouter from './routes/project.routes';
 import { errorHandler } from './middleware/error.middleware';
 import { INGEST_LIMITER } from './middleware/rateLimit.middleware';
+import { config } from './config/env';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3002;
+const PORT = config.port;
+
+// Startup validation
+if (config.nodeEnv === 'production' && config.jwtSecret === 'change_me_in_production') {
+    console.error('❌ FATAL: JWT_SECRET must be set in production!');
+    process.exit(1);
+}
 
 // Trust proxy — required for correct IP resolution behind Nginx/Vercel/Fly/Render
 app.set('trust proxy', 1);

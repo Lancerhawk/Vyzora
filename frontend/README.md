@@ -62,11 +62,12 @@ npm run dev
 
 ### Environment
 
-Create `frontend/.env.local`:
+Environment variables are typically injected via the project root. For local frontend-only development, create `frontend/.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
+*(Note: Use `8080` if running via Nginx load balancer, or `3002`/`3001` for direct API access).*
 
 ---
 

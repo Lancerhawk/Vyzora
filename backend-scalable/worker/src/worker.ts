@@ -2,12 +2,10 @@ import { Worker, Job } from 'bullmq';
 import { Prisma } from '@prisma/client';
 import { redis } from './config/redis';
 import { prisma } from './config/database';
+import { config } from './config/env';
 import type { IngestJobData } from './types';
 
 export const QUEUE_NAME = 'events-queue';
-
-// Concurrency — default 5, explicit numeric parse prevents silent string coercion
-const CONCURRENCY = parseInt(process.env.WORKER_CONCURRENCY || '5', 10);
 
 /**
  * BullMQ Worker — consumes ingest-batch jobs from the events-queue.
@@ -53,7 +51,7 @@ export const worker = new Worker<IngestJobData>(
     },
     {
         connection: redis as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-        concurrency: CONCURRENCY,
+        concurrency: config.workerConcurrency,
     }
 );
 

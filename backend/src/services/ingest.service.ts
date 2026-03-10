@@ -34,7 +34,6 @@ export async function ingestEvents(
         metadata: (event.metadata as Prisma.InputJsonValue) ?? null,
         ipAddress: event.ipAddress ?? null,
         userAgent: event.userAgent ?? null,
-        createdAt: now,
     }));
 
     const result = await prisma.event.createMany({ data });
