@@ -14,6 +14,7 @@ function createPrismaClient(): PrismaClient {
         connectionString: config.databaseUrl,
         max: 2,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const adapter = new PrismaPg(pool as any);
     return new PrismaClient({ adapter });
 }

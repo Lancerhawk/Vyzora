@@ -23,8 +23,6 @@ export async function ingestEvents(
         return { count: 0 };
     }
 
-    const now = new Date();
-
     const data: Prisma.EventCreateManyInput[] = events.map((event) => ({
         projectId,
         sessionId: event.sessionId,
