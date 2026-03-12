@@ -2,21 +2,15 @@
 set -e
 
 echo "Pulling latest code..."
-CHANGES=$(git pull)
+git pull
 
-echo "$CHANGES"
+echo "Stopping containers..."
+docker-compose -f docker-compose.prod.yml down
 
-if [[ "$CHANGES" == *"Already up to date."* ]]; then
-    echo "No code changes detected."
-    echo "Restarting containers only..."
-    docker-compose -f docker-compose.prod.yml up -d
-else
-    echo "Code changes detected."
-    echo "Rebuilding containers..."
-    docker-compose -f docker-compose.prod.yml up -d --build
-fi
+echo "Building and starting containers..."
+docker-compose -f docker-compose.prod.yml up -d --build
 
-echo "Cleaning unused images..."
+echo "Cleaning old images..."
 docker image prune -f
 
 echo "Deployment finished."
