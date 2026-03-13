@@ -71,8 +71,7 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
         const token = jwt.sign(
             { userId: user.id },
             config.jwtSecret,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            { expiresIn: config.jwtExpiresIn as any }
+            { expiresIn: config.jwtExpiresIn as number | jwt.SignOptions['expiresIn'] }
         );
 
         console.log('[Auth] Token signed. Setting cookie...');

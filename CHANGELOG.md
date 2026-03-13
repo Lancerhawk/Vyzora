@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.4] - 2026-03-16
+
+### Fixed
+- **Types**: Implemented "Honest Type Casting" across all backends. Replaced brittle `any` casts and ESLint suppressions with legitimate library-inherited types (inherited via `ConstructorParameters` and `SignOptions`).
+- **Code Hygiene**: Removed unused variables and resolved all outstanding linting warnings for a mathematically clean build.
+- **Deployment**: Hardened the deployment script to ensure clean container restarts by explicitly stopping old instances before rebuilding.
+
+---
+
 ## [1.0.3] - 2026-03-16
 
 ### Fixed

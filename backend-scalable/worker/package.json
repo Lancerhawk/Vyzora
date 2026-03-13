@@ -1,6 +1,6 @@
 {
     "name": "@vyzora/scalable-worker",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Vyzora Scalable Worker — BullMQ Consumer",
     "main": "dist/index.js",
     "scripts": {

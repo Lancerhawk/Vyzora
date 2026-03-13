@@ -1,5 +1,31 @@
 [
     {
+        "version": "1.0.4",
+        "date": "2026-03-16",
+        "tag": "fix",
+        "title": "Honest Types & Code Hygiene",
+        "summary": "This release resolves all outstanding linting issues and implements proper, non-evasive type safety across the entire architecture.",
+        "whatsIncluded": [
+            {
+                "headline": "Honest Type Casting",
+                "detail": "Replaced 'any' casts with robust library types, ensuring the codebase is 100% type-safe without needing to suppress linter warnings."
+            },
+            {
+                "headline": "Zero-Warning Build",
+                "detail": "Performed a full hygiene pass to remove unused code and resolve every warning, achieving a perfectly clean build for production."
+            },
+            {
+                "headline": "Deployment Stability",
+                "detail": "Optimized the deployment pipeline to prioritize clean container lifecycles, reducing potential startup race conditions."
+            }
+        ],
+        "stack": [
+            "Prisma Type Safety",
+            "JWT SignOptions",
+            "ESLint Zero-Warnings"
+        ]
+    },
+    {
         "version": "1.0.3",
         "date": "2026-03-16",
         "tag": "fix",

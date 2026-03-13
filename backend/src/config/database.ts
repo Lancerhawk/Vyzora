@@ -8,8 +8,7 @@ const globalForPrisma = globalThis as unknown as { prisma: any };
 
 function createPrismaClient(): PrismaClient {
     const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const adapter = new PrismaPg(pool as any);
+    const adapter = new PrismaPg(pool as ConstructorParameters<typeof PrismaPg>[0]);
     return new PrismaClient({ adapter });
 }
 
