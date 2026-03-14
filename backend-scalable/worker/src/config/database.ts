@@ -14,7 +14,7 @@ function createPrismaClient(): PrismaClient {
         connectionString: config.databaseUrl,
         max: 2,
     });
-    const adapter = new PrismaPg(pool as ConstructorParameters<typeof PrismaPg>[0]);
+    const adapter = new PrismaPg(pool as unknown as ConstructorParameters<typeof PrismaPg>[0]);
     return new PrismaClient({ adapter });
 }
 
