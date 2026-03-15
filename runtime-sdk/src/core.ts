@@ -11,6 +11,9 @@ const DEFAULT_BATCH_SIZE = 20;
 const DEFAULT_FLUSH_INTERVAL = 10000;
 
 export class Vyzora {
+    private static readonly instances = new Set<Vyzora>();
+    private static historyPatched = false;
+
     private readonly apiKey: string;
     private readonly endpoint: string;
     private readonly enabled: boolean;
@@ -19,8 +22,10 @@ export class Vyzora {
     private customVisitorId: string | null = null;
     private logger: Logger;
     private lastTrackedPath: string | null = null;
-    private historyWrapped = false;
     private initialPageviewFired = false;
+
+    private readonly popstateListener = () => this.pageview();
+    private readonly loadListener = () => this.pageview();
 
     constructor(config: VyzoraConfig) {
         if (!config.apiKey) {
@@ -50,7 +55,10 @@ export class Vyzora {
         });
         this.queue.start();
 
-        this.hookPageTracking();
+        if (typeof window !== 'undefined') {
+            Vyzora.instances.add(this);
+            this.hookPageTracking();
+        }
 
         this.logger.log('SDK initialised.');
     }
@@ -126,37 +134,42 @@ export class Vyzora {
     destroy(): void {
         this.queue?.destroy();
         this.queue = null;
+
+        if (typeof window !== 'undefined') {
+            Vyzora.instances.delete(this);
+            window.removeEventListener('popstate', this.popstateListener);
+            window.removeEventListener('load', this.loadListener);
+        }
     }
 
     private hookPageTracking(): void {
         if (typeof window === 'undefined') return;
 
-        // Initial pageview on load - handle if already loaded (Next.js/SSR cases)
-        // Use requestAnimationFrame to ensure DOM is ready and to avoid potential race conditions
-        // if the SDK loads very early.
+        // Initial pageview on load
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             requestAnimationFrame(() => this.pageview());
         } else {
-            window.addEventListener('load', () => this.pageview(), { once: true });
+            window.addEventListener('load', this.loadListener, { once: true });
         }
 
-        // SPA navigation — wrap pushState and replaceState once only
-        if (!this.historyWrapped) {
-            this.wrapHistoryMethod('pushState');
-            this.wrapHistoryMethod('replaceState');
-            this.historyWrapped = true;
+        // SPA navigation — wrap pushState and replaceState once only across all instances
+        if (!Vyzora.historyPatched) {
+            this.patchHistory('pushState');
+            this.patchHistory('replaceState');
+            Vyzora.historyPatched = true;
         }
 
         // Back/forward navigation
-        window.addEventListener('popstate', () => this.pageview());
+        window.addEventListener('popstate', this.popstateListener);
     }
 
-    private wrapHistoryMethod(method: 'pushState' | 'replaceState'): void {
+    private patchHistory(method: 'pushState' | 'replaceState'): void {
         const original = window.history[method];
 
         window.history[method] = (data: unknown, unused: string, url?: string | URL | null) => {
             const result = original.apply(window.history, [data, unused, url]);
-            this.pageview();
+            // Notify all active instances that the URL has changed
+            Vyzora.instances.forEach((instance) => instance.pageview());
             return result;
         };
     }

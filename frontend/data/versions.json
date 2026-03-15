@@ -1,5 +1,23 @@
 [
     {
+        "version": "1.0.5",
+        "date": "2026-03-16",
+        "tag": "fix",
+        "title": "SDK Memory & Lifecycle Fixes",
+        "summary": "This release resolves a critical memory leak and redundant monkeypatching issue in the Analytics SDK history tracking.",
+        "whatsIncluded": [
+            {
+                "headline": "SDK History Leak (B5)",
+                "detail": "Eliminated redundant monkeypatching and memory leaks in the Analytics SDK by implementing a global instance registry and unified history tracking."
+            }
+        ],
+        "stack": [
+            "SDK v0.2.5",
+            "Global Registry",
+            "Memory Cleanup"
+        ]
+    },
+    {
         "version": "1.0.4",
         "date": "2026-03-16",
         "tag": "fix",

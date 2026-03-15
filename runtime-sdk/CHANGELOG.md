@@ -3,6 +3,15 @@
 All notable changes to the Vyzora SDK will be documented in this file.
 
 
+## [0.2.5] - 2026-03-16
+
+### Fixed
+- **History Leaks (B5)**: Implemented a global instance registry and static monkeypatch guard. Ensures `window.history` is only patched once, regardless of instance count.
+- **Memory Management**: Added proper cleanup logic in `.destroy()` to remove the instance from the registry and detach all event listeners (`popstate`, `load`).
+- **Duplicate Tracking**: Resolved a race condition where SPA navigation could trigger multiple pageviews in complex environment.
+
+---
+
 ## [0.2.4] - 2026-02-28
 
 ### Fixed
