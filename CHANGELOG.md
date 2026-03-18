@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.7] - 2026-03-18
+
+### Fixed
+- **SDK (v0.2.7)**: Hardened the default production ingestion endpoint. This second patch (following a failed v0.2.6 build) ensures the SDK always points to the correct scalable infrastructure without manual configuration.
+
+---
+
 ## [1.0.6] - 2026-03-18
 
 ### Fixed
-- **SDK (v0.2.6)**: Synchronized the default build-time ingestion endpoint with the latest production infrastructure, ensuring reliable data delivery for out-of-the-box installations without manual configuration.
+- **SDK (v0.2.6)**: Synchronized the default build-time ingestion endpoint with the latest production infrastructure. (Note: Build was stale, superseded by v1.0.7).
 
 ---
 

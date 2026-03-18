@@ -1,20 +1,20 @@
 [
     {
-        "version": "1.0.6",
+        "version": "1.0.7",
         "date": "2026-03-18",
         "tag": "fix",
-        "title": "Production Endpoint Sync",
-        "summary": "This release synchronizes the Analytics SDK's default ingestion endpoint with the latest horizontally scalable production infrastructure.",
+        "title": "SDK Production Endpoint (v2)",
+        "summary": "Critical follow-up to coordinate a fresh SDK build (v0.2.7) with the correct production ingestion endpoint fully baked into the distribution.",
         "whatsIncluded": [
             {
-                "headline": "SDK Endpoint Synchronization",
-                "detail": "Updated the build-time ingestion URL in the SDK distribution to ensure zero-config connectivity for production deployments."
+                "headline": "SDK Endpoint Hardening",
+                "detail": "Ensured the build-time ingestion URL is correctly injected into the SDK minified bundle for zero-config production reliability."
             }
         ],
         "stack": [
-            "SDK v0.2.6",
+            "SDK v0.2.7",
             "Scalable Gateway",
-            "Zero-Config"
+            "Production Build"
         ]
     },
     {
