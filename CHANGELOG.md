@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.6] - 2026-03-18
+
+### Fixed
+- **SDK (v0.2.6)**: Synchronized the default build-time ingestion endpoint with the latest production infrastructure, ensuring reliable data delivery for out-of-the-box installations without manual configuration.
+
+---
+
 ## [1.0.5] - 2026-03-16
 
 ### Fixed

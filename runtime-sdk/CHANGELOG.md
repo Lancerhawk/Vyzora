@@ -3,6 +3,13 @@
 All notable changes to the Vyzora SDK will be documented in this file.
 
 
+## [0.2.6] - 2026-03-18
+
+### Fixed
+- **Production Endpoint**: Synchronized the default build-time ingestion endpoint with the latest horizontally scalable production infrastructure to ensure zero-config connectivity for out-of-the-box installations on the production domain.
+
+---
+
 ## [0.2.5] - 2026-03-16
 
 ### Fixed
