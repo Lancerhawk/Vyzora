@@ -1,5 +1,27 @@
 [
     {
+        "version": "1.0.8",
+        "date": "2026-03-21",
+        "tag": "fix",
+        "title": "Universal Ingestion Optimization",
+        "summary": "This update synchronizes high-performance caching and analytics accuracy across both monolithic and scalable backend architectures.",
+        "whatsIncluded": [
+            {
+                "headline": "Cross-Architecture API Caching",
+                "detail": "Extended in-process LRU caching for API key validation to the Scalable Gateway, removing redundant DB queries and increasing system-wide ingestion throughput."
+            },
+            {
+                "headline": "Unified Browser Analytics",
+                "detail": "Standardized the browser grouping logic across all metric engines to ensure consistent dashboard reporting for events without browser metadata."
+            }
+        ],
+        "stack": [
+            "Backend v0.5.6",
+            "Scalable Gateway v0.1.4",
+            "LRU Cache Optimization"
+        ]
+    },
+    {
         "version": "1.0.7",
         "date": "2026-03-18",
         "tag": "fix",

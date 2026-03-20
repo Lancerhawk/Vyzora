@@ -5,6 +5,12 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.8] - 2026-03-21
+
+### Fixed
+- **Analytics — Browser Chart Discrepancy**: Resolved a logic error in the browser analytics SQL where events without browser metadata were excluded from the aggregation. Missing metadata is now correctly bucketed as 'Other/None', ensuring the browser chart total aligns with the overall event count. **Applied to both legacy and scalable backends.**
+- **Ingest — API Key Validation Caching**: Implemented in-process LRU caching for library API key validation. This eliminates redundant database roundtrips on every ingestion request, significantly improving throughput under high concurrent load. **Applied to both legacy and scalable backends.**
+
 ---
 
 ## [1.0.7] - 2026-03-18

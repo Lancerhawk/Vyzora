@@ -1,6 +1,13 @@
 import { randomBytes } from 'crypto';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../config/database';
+import { LRUCache } from 'lru-cache';
+
+// Cache valid API keys to avoid DB roundtrips on every ingest request (Bug B7)
+const apiKeyCache = new LRUCache<string, { id: string }>({
+    max: 1000,
+    ttl: 1000 * 60 * 5, // 5 minutes
+});
 
 // ─── Existing functions ────────────────────────────────────────────────────────
 
@@ -31,11 +38,20 @@ export async function getProjectsByUser(userId: string) {
 }
 
 export async function validateApiKey(apiKey: string) {
+    const cached = apiKeyCache.get(apiKey);
+    if (cached) return cached;
+
     // Select only { id } — apiKey is @unique (indexed). Avoid fetching full row.
-    return prisma.project.findUnique({
+    const project = await prisma.project.findUnique({
         where: { apiKey },
         select: { id: true },
     });
+
+    if (project) {
+        apiKeyCache.set(apiKey, project);
+    }
+
+    return project;
 }
 
 // ─── New functions ─────────────────────────────────────────────────────────────
@@ -190,12 +206,11 @@ export async function getBrowsers(projectId: string, userId: string, range: Metr
     start.setDate(start.getDate() - RANGE_DAYS[range]);
     return prisma.$queryRaw<BrowserRow[]>(Prisma.sql`
         SELECT
-            metadata->>'browser' AS browser,
+            COALESCE(metadata->>'browser', 'Other/None') AS browser,
             COUNT(*)::int AS count
         FROM "Event"
         WHERE "projectId" = ${projectId}
           AND "createdAt" >= ${start}
-          AND metadata->>'browser' IS NOT NULL
         GROUP BY browser
         ORDER BY count DESC
     `);

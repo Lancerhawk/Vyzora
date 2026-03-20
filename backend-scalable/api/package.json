@@ -1,6 +1,6 @@
 {
     "name": "@vyzora/scalable-api",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Vyzora Scalable API — Express + BullMQ",
     "main": "dist/index.js",
     "scripts": {
@@ -23,6 +23,7 @@
         "install": "^0.13.0",
         "ioredis": "^5.4.1",
         "jsonwebtoken": "^9.0.3",
+        "lru-cache": "^11.2.7",
         "pg": "^8.14.1",
         "uuid": "^13.0.0",
         "zod": "^4.3.6"
