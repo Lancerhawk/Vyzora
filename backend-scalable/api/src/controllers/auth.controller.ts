@@ -108,7 +108,17 @@ export async function getMe(req: AuthenticatedRequest, res: Response): Promise<v
     }
 }
 
-export function logout(_req: Request, res: Response): void {
+export function logout(req: Request, res: Response): void {
+    // 🔴 S1 Fix: Basic CSRF protection for logout
+    // Ensure the request originated from the official frontend
+    const origin = req.headers.origin || req.headers.referer;
+    const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+    if (origin && !origin.startsWith(allowedOrigin)) {
+        res.status(403).json({ success: false, message: 'Invalid request origin' });
+        return;
+    }
+
     res.clearCookie('vyzora_token', {
         httpOnly: true,
         sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',

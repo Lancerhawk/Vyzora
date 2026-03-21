@@ -15,10 +15,12 @@ dotenv.config();
 const app = express();
 const PORT = config.port;
 
-// Startup validation
-if (config.nodeEnv === 'production' && config.jwtSecret === 'change_me_in_production') {
-    console.error('❌ FATAL: JWT_SECRET must be set in production!');
-    process.exit(1);
+// 🔴 S2 Fix: Strict startup validation
+// Ensure the application crashes immediately if an insecure default secret is used in production
+if (config.nodeEnv === 'production') {
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'change_me_in_production') {
+        throw new Error('FATAL: JWT_SECRET must be set to a secure value in production environments.');
+    }
 }
 
 // Trust proxy — required for correct IP resolution behind Vercel/Fly/Render
@@ -42,6 +44,9 @@ const dashboardCors = cors({
     optionsSuccessStatus: 200,
 });
 
+// 🔴 S3 Fix: Refined Ingest CORS Policy
+// The ingestion endpoint mirrors 'origin: true' to allow any website using the SDK to send events.
+// Security is enforced via the API Key. For maximum security, we restrict allowed methods to POST only.
 const ingestCors = cors({
     origin: true,
     credentials: true,

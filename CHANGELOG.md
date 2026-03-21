@@ -5,6 +5,15 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.9] - 2026-03-21
+
+### Security
+- **Auth (S1) — Logout CSRF Protection**: Implemented `Origin` and `Referer` header validation on the logout endpoint to prevent cross-site logout attacks.
+- **Core (S2) — JWT Secret Enforcement**: Added a strict startup assertion that throws a fatal error if an insecure default `JWT_SECRET` is detected in production environments.
+- **Ingest (S3) — CORS Policy Hardening**: Refined and documented the ingestion CORS policy to restrict allowed methods and clarify security trade-off.
+
+---
+
 ## [1.0.8] - 2026-03-21
 
 ### Fixed

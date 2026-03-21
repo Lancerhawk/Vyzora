@@ -1,5 +1,27 @@
 [
     {
+        "version": "1.0.9",
+        "date": "2026-03-21",
+        "tag": "security",
+        "title": "Security Hardening Update",
+        "summary": "This critical security update addresses CSRF vulnerabilities and strengthens identity verification and CORS policies across all backend services.",
+        "whatsIncluded": [
+            {
+                "headline": "Logout CSRF Shield",
+                "detail": "Implemented strict origin validation for the logout process to prevent unauthorized cross-site logout attempts."
+            },
+            {
+                "headline": "JWT Production Lockdown",
+                "detail": "Enforced a fatal startup check that prevents the system from running in production with insecure or default secrets."
+            }
+        ],
+        "stack": [
+            "Backend v0.5.7",
+            "Scalable API v0.1.5",
+            "Security Hardening"
+        ]
+    },
+    {
         "version": "1.0.8",
         "date": "2026-03-21",
         "tag": "fix",
