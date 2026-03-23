@@ -24,8 +24,8 @@ export const PROJECT_CREATION_LIMITER = rateLimit({
 });
 
 export const METRICS_LIMITER = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,
+    windowMs: 60 * 1000, // 1 minute
+    max: 300,
     standardHeaders: true,
     legacyHeaders: false,
     handler: rateLimitHandler as never,

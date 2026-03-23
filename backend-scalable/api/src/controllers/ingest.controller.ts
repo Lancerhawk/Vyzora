@@ -12,12 +12,12 @@ const eventSchema = z.object({
     visitorId: z.string().min(1).max(128),
     eventType: z.string().min(1).max(64),
     path: z.string().min(1).max(512),
-    metadata: z.record(z.string(), z.unknown()).optional(),
+    metadata: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
 });
 
 const ingestBodySchema = z.object({
     apiKey: z.string().length(64),
-    events: z.array(eventSchema).min(1),
+    events: z.array(eventSchema).min(1).max(500),
 });
 
 export async function ingestHandler(
@@ -26,7 +26,6 @@ export async function ingestHandler(
     next: NextFunction
 ): Promise<void> {
     try {
-        // 1. Validate request body
         const parsed = ingestBodySchema.safeParse(req.body);
 
         if (!parsed.success) {
@@ -39,7 +38,6 @@ export async function ingestHandler(
 
         const { apiKey, events } = parsed.data;
 
-        // 2. Validate API key — select only { id } to avoid fetching the full row
         const project = await validateApiKey(apiKey);
 
         if (!project) {
@@ -50,7 +48,6 @@ export async function ingestHandler(
             return;
         }
 
-        // 3. Enrich events with request-level metadata (IP + User-Agent)
         const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0].trim()
             ?? req.socket.remoteAddress
             ?? undefined;
@@ -63,13 +60,11 @@ export async function ingestHandler(
             userAgent,
         }));
 
-        // 4. Enqueue job — no direct DB write happens here
         await ingestQueue.add('ingest-batch', {
             projectId: project.id,
             events: eventsWithMeta,
         });
 
-        // 5. Optional: log queue depth to surface backpressure issues
         try {
             const waitingCount = await ingestQueue.getWaitingCount();
             if (waitingCount > QUEUE_DEPTH_WARN_THRESHOLD) {
@@ -86,7 +81,6 @@ export async function ingestHandler(
             // Non-critical — never let depth check crash the ingest response
         }
 
-        // 6. Return same contract as /backend — field name preserved exactly
         res.status(200).json({
             success: true,
             data: { inserted: events.length },

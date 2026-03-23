@@ -8,8 +8,7 @@ import { config } from './env';
 const globalForPrisma = globalThis as unknown as { prisma: any };
 
 function createPrismaClient(): PrismaClient {
-    // Limit pool size per instance to prevent 'MaxClients' errors when scaled.
-    // 3 connections per replica * 3 replicas = 9 total connections.
+
     const pool = new Pool({
         connectionString: config.databaseUrl,
         max: 3,

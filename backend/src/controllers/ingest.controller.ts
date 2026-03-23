@@ -8,12 +8,12 @@ const eventSchema = z.object({
     visitorId: z.string().min(1).max(128),
     eventType: z.string().min(1).max(64),
     path: z.string().min(1).max(512),
-    metadata: z.record(z.string(), z.unknown()).optional(),
+    metadata: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
 });
 
 const ingestBodySchema = z.object({
     apiKey: z.string().length(64),
-    events: z.array(eventSchema).min(1),
+    events: z.array(eventSchema).min(1).max(500),
 });
 
 export async function ingestHandler(

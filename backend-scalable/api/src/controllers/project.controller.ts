@@ -95,7 +95,6 @@ export async function getMetricsHandler(req: AuthenticatedRequest, res: Response
     }
 }
 
-// ── Analytics helpers ────────────────────────────────────────────────────────
 
 function validateAnalyticsParams(
     req: AuthenticatedRequest,

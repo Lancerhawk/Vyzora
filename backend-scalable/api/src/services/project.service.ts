@@ -1,18 +1,19 @@
-import { randomBytes } from 'crypto';
+import { randomBytes, createHash } from 'crypto';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../config/database';
 import { LRUCache } from 'lru-cache';
 
-// Cache valid API keys to avoid DB roundtrips on every ingest request (Bug B7)
 const apiKeyCache = new LRUCache<string, { id: string }>({
     max: 1000,
     ttl: 1000 * 60 * 5, // 5 minutes
 });
 
-// ─── Existing functions ────────────────────────────────────────────────────────
+function hashApiKey(apiKey: string): string {
+    return createHash('sha256').update(apiKey).digest('hex');
+}
+
 
 export async function createProject(userId: string, name: string) {
-    // Hard maximum of 50 total projects per user
     const totalCount = await prisma.project.count({
         where: { userId }
     });
@@ -21,13 +22,14 @@ export async function createProject(userId: string, name: string) {
         throw new Error('PROJECT_CAP_REACHED');
     }
 
-    const apiKey = randomBytes(32).toString('hex');
+    const rawKey = randomBytes(32).toString('hex');
+    const apiKey = hashApiKey(rawKey);
 
     const project = await prisma.project.create({
         data: { name, apiKey, userId },
     });
 
-    return project;
+    return { ...project, apiKey: rawKey };
 }
 
 export async function getProjectsByUser(userId: string) {
@@ -38,23 +40,22 @@ export async function getProjectsByUser(userId: string) {
 }
 
 export async function validateApiKey(apiKey: string) {
-    const cached = apiKeyCache.get(apiKey);
+    const hashedKey = hashApiKey(apiKey);
+    const cached = apiKeyCache.get(hashedKey);
     if (cached) return cached;
 
-    // Select only { id } — apiKey is @unique (indexed). Avoid fetching full row.
     const project = await prisma.project.findUnique({
-        where: { apiKey },
+        where: { apiKey: hashedKey },
         select: { id: true },
     });
 
     if (project) {
-        apiKeyCache.set(apiKey, project);
+        apiKeyCache.set(hashedKey, project);
     }
 
     return project;
 }
 
-// ─── New functions ─────────────────────────────────────────────────────────────
 
 export async function getProjectById(id: string, userId: string) {
     return prisma.project.findFirst({ where: { id, userId } });
@@ -82,7 +83,6 @@ export async function getMetrics(
     userId: string,
     range: MetricsRange
 ) {
-    // Ownership check FIRST — before any aggregation
     const project = await prisma.project.findFirst({ where: { id: projectId, userId } });
     if (!project) return null;
 
@@ -96,8 +96,6 @@ export async function getMetrics(
         pageviews: number;
     }
 
-    // Efficient database-level aggregation using raw SQL for COUNT(DISTINCT) support.
-    // Parameters are safely bound by Prisma.sql to prevent injection.
     const result = await prisma.$queryRaw<RawMetricsResult[]>(Prisma.sql`
         SELECT 
             COUNT(*)::int as "totalEvents",
@@ -118,7 +116,6 @@ export async function getMetrics(
     };
 }
 
-// ─── Advanced Analytics ────────────────────────────────────────────────────────
 
 interface TimeSeriesRow { date: Date; events: number; visitors: number; sessions: number; }
 interface TopPageRow { path: string; views: number; }

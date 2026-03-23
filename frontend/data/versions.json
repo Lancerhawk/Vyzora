@@ -1,5 +1,31 @@
 [
     {
+        "version": "1.0.10",
+        "date": "2026-03-26",
+        "tag": "security",
+        "title": "API Key Security & Hardening",
+        "summary": "This update introduces SHA-256 API key hashing, ingest array capping, and metadata sanitization to protect the system at scale.",
+        "whatsIncluded": [
+            {
+                "headline": "API Key Hashing",
+                "detail": "Upgraded storage to use deterministic SHA-256 hashes for all API keys, ensuring plain-text keys are never stored in the database."
+            },
+            {
+                "headline": "Ingest Guardrails",
+                "detail": "Implemented strict capping of 500 events per request and metadata type sanitization to prevent memory flooding and injection attacks."
+            },
+            {
+                "headline": "Performance Tuning",
+                "detail": "Optimized the dashboard analytics rate limiter from 15 minutes to 60 seconds (max 300 requests) for a significantly more responsive experience."
+            }
+        ],
+        "stack": [
+            "Backend v0.5.8",
+            "Scalable API v0.1.6",
+            "SHA-256 Security"
+        ]
+    },
+    {
         "version": "1.0.9",
         "date": "2026-03-21",
         "tag": "security",

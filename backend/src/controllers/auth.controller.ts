@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 import {
     exchangeCodeForToken,
@@ -19,10 +20,20 @@ const COOKIE_OPTIONS = {
 
 export async function githubRedirect(_req: Request, res: Response): Promise<void> {
     console.log('[Auth] Initiating GitHub redirect...');
+
+    const state = randomBytes(16).toString('hex');
+    res.cookie('oauth_state', state, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 10 * 60 * 1000,
+    });
+
     const params = new URLSearchParams({
         client_id: process.env.GITHUB_CLIENT_ID || '',
         scope: 'user:email',
         redirect_uri: `${process.env.BACKEND_URL}/api/auth/github/callback`,
+        state,
     });
     const url = `https://github.com/login/oauth/authorize?${params.toString()}`;
     console.log('[Auth] Redirecting to:', url);
@@ -32,6 +43,16 @@ export async function githubRedirect(_req: Request, res: Response): Promise<void
 export async function githubCallback(req: Request, res: Response): Promise<void> {
     console.log('[Auth] GitHub callback received');
     try {
+        const returnedState = req.query.state as string;
+        const expectedState = req.cookies?.oauth_state;
+        res.clearCookie('oauth_state');
+
+        if (!returnedState || !expectedState || returnedState !== expectedState) {
+            console.error('[Auth] OAuth state mismatch — possible CSRF attack');
+            res.redirect(`${process.env.FRONTEND_URL}/login?error=state_mismatch`);
+            return;
+        }
+
         const code = req.query.code as string;
 
         if (!code) {
@@ -109,8 +130,6 @@ export async function getMe(req: AuthenticatedRequest, res: Response): Promise<v
 }
 
 export function logout(req: Request, res: Response): void {
-    // 🔴 S1 Fix: Basic CSRF protection for logout
-    // Ensure the request originated from the official frontend
     const origin = req.headers.origin || req.headers.referer;
     const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
 

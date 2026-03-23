@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { randomBytes, createHash } from 'crypto';
 import { Prisma, Project } from '@prisma/client';
 import { prisma } from '../config/database';
 import { LRUCache } from 'lru-cache';
@@ -8,6 +8,12 @@ const apiKeyCache = new LRUCache<string, Project>({
     max: 1000,
     ttl: 1000 * 60 * 5, // 5 minutes
 });
+
+// S4: Hash API keys with SHA-256 before storing in the DB.
+// SHA-256 is deterministic, so we can still do a direct WHERE lookup.
+function hashApiKey(apiKey: string): string {
+    return createHash('sha256').update(apiKey).digest('hex');
+}
 
 // ─── Existing functions ────────────────────────────────────────────────────────
 
@@ -21,13 +27,15 @@ export async function createProject(userId: string, name: string) {
         throw new Error('PROJECT_CAP_REACHED');
     }
 
-    const apiKey = randomBytes(32).toString('hex');
+    const rawKey = randomBytes(32).toString('hex');
+    const apiKey = hashApiKey(rawKey); // S4: store hash, not plain text
 
     const project = await prisma.project.create({
         data: { name, apiKey, userId },
     });
 
-    return project;
+    // Return the raw key to the caller so they can display it once
+    return { ...project, apiKey: rawKey };
 }
 
 export async function getProjectsByUser(userId: string) {
@@ -38,13 +46,15 @@ export async function getProjectsByUser(userId: string) {
 }
 
 export async function validateApiKey(apiKey: string) {
-    const cached = apiKeyCache.get(apiKey);
+    // S4: Hash the incoming key before lookup — DB stores hashes only
+    const hashedKey = hashApiKey(apiKey);
+    const cached = apiKeyCache.get(hashedKey);
     if (cached) return cached;
 
-    const project = await prisma.project.findUnique({ where: { apiKey } });
+    const project = await prisma.project.findUnique({ where: { apiKey: hashedKey } });
 
     if (project) {
-        apiKeyCache.set(apiKey, project);
+        apiKeyCache.set(hashedKey, project);
     }
 
     return project;

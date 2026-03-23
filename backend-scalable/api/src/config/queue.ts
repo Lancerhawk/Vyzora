@@ -19,10 +19,7 @@ export interface IngestJobData {
 
 export const QUEUE_NAME = 'events-queue';
 
-/**
- * BullMQ Queue singleton.
- * The API service only produces jobs — it never consumes them.
- */
+
 export const ingestQueue = new Queue<IngestJobData>(QUEUE_NAME, {
     connection: redis as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     defaultJobOptions: {
