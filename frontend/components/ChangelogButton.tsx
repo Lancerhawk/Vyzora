@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import versions from '../data/versions.json';
 import FeedbackModal from './FeedbackModal';
+import { useStore } from '../lib/store';
 
 type VersionEntry = {
     version: string;
@@ -30,6 +31,17 @@ export default function ChangelogButton() {
     const [open, setOpen] = useState(false);
     const [feedbackOpen, setFeedbackOpen] = useState(false);
     const [selected, setSelected] = useState(0);
+    const { isChangelogOpen, closeChangelog } = useStore();
+
+    // Sync with store — lets the footer "Changelog" link open this modal
+    useEffect(() => {
+        if (isChangelogOpen) setOpen(true);
+    }, [isChangelogOpen]);
+
+    const handleClose = () => {
+        setOpen(false);
+        closeChangelog();
+    };
 
     if (pathname?.startsWith('/dashboard')) return null;
 
@@ -67,9 +79,9 @@ export default function ChangelogButton() {
             {open && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center p-4"
-                    onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
+                    onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
                 >
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
 
                     {/* ── Modal panel ─────────────────────────────── */}
                     <div className="relative z-10 w-full max-w-4xl flex flex-col rounded-2xl border border-white/[0.08] bg-[#0c1018] shadow-2xl shadow-black/70 overflow-hidden" style={{ height: 'min(600px, calc(100vh - 2rem))' }}>
@@ -92,7 +104,7 @@ export default function ChangelogButton() {
                                 </div>
                             </div>
                             <button
-                                onClick={() => setOpen(false)}
+                                onClick={handleClose}
                                 className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-500 hover:text-white hover:bg-white/[0.06] transition-all duration-150 text-xl leading-none"
                             >
                                 ×

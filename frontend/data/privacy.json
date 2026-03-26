@@ -1,0 +1,34 @@
+[
+    {
+        "title": "1. Introduction",
+        "text": "Vyzora is a privacy-first analytics platform. We are committed to being transparent about how event data flows through our system and how we protect the privacy of end users whose behavior is tracked via the Vyzora SDK."
+    },
+    {
+        "title": "2. What We Collect",
+        "text": "The Vyzora SDK collects anonymous behavioral data including pageviews, custom events, browser type, operating system, screen resolution, and anonymous session identifiers (UUIDs). We do not collect names, email addresses, IP addresses, or any other Personally Identifiable Information (PII) by default."
+    },
+    {
+        "title": "3. Visitor & Session Identity",
+        "text": "Visitors are identified by a stable UUID stored in localStorage (vyzora_vid). Sessions are managed by a separate UUID (vyzora_sid) with a 30-minute inactivity expiry. These identifiers are fully anonymous and cannot be used to identify a real person without additional data you choose to provide via .identify()."
+    },
+    {
+        "title": "4. API Key Security",
+        "text": "Project API keys are stored as SHA-256 hashes in our database. Plain-text keys are never persisted. This ensures that even in the event of a database breach, your project credentials remain protected."
+    },
+    {
+        "title": "5. Data Ownership",
+        "text": "All event data ingested through your project API key belongs to you. We act solely as a data processor. We do not sell, share, or monetize your data or your users' behavioral data with any third party."
+    },
+    {
+        "title": "6. Data Retention & Deletion",
+        "text": "You may delete your project and all associated events at any time from the dashboard. Upon project deletion, all event data is permanently removed from our database."
+    },
+    {
+        "title": "7. GDPR Compliance",
+        "text": "Our architecture is designed to support GDPR compliance. Since we track anonymous UUIDs rather than PII, the burden of compliance is significantly reduced. For full compliance, you remain responsible for your own data processing agreements."
+    },
+    {
+        "title": "8. Contact",
+        "text": "For privacy-related inquiries, please reach out via our GitHub repository or the feedback form."
+    }
+]

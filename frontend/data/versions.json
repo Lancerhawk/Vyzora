@@ -1,7 +1,33 @@
 [
     {
-        "version": "1.0.10",
+        "version": "1.0.11",
         "date": "2026-03-26",
+        "tag": "feat",
+        "title": "Legal Transparency & Footer Modals",
+        "summary": "This update introduces dedicated Privacy Policy and Terms of Service modals, wires up all footer links to their respective modals, and extracts legal content into maintainable data files.",
+        "whatsIncluded": [
+            {
+                "headline": "Privacy Policy Modal",
+                "detail": "A new dedicated modal covering data collection, visitor and session identity, API key security, data ownership, GDPR compliance, and data retention policies."
+            },
+            {
+                "headline": "Terms of Service Modal",
+                "detail": "A new dedicated modal covering acceptable use, account access requirements, API key limits, rate limiting policies, and service availability guarantees."
+            },
+            {
+                "headline": "Footer Link Integration",
+                "detail": "The footer Changelog, Privacy, and Terms links now correctly open their respective modals using a lightweight global store, with zero duplication of existing components."
+            }
+        ],
+        "stack": [
+            "Frontend v0.6.3",
+            "Zustand Store",
+            "JSON Data Files"
+        ]
+    },
+    {
+        "version": "1.0.10",
+        "date": "2026-03-23",
         "tag": "security",
         "title": "API Key Security & Hardening",
         "summary": "This update introduces SHA-256 API key hashing, ingest array capping, and metadata sanitization to protect the system at scale.",
@@ -27,7 +53,7 @@
     },
     {
         "version": "1.0.9",
-        "date": "2026-03-21",
+        "date": "2026-03-22",
         "tag": "security",
         "title": "Security Hardening Update",
         "summary": "This critical security update addresses CSRF vulnerabilities and strengthens identity verification and CORS policies across all backend services.",
@@ -49,7 +75,7 @@
     },
     {
         "version": "1.0.8",
-        "date": "2026-03-21",
+        "date": "2026-03-20",
         "tag": "fix",
         "title": "Universal Ingestion Optimization",
         "summary": "This update synchronizes high-performance caching and analytics accuracy across both monolithic and scalable backend architectures.",
@@ -89,7 +115,7 @@
     },
     {
         "version": "1.0.5",
-        "date": "2026-03-16",
+        "date": "2026-03-15",
         "tag": "fix",
         "title": "SDK Memory & Lifecycle Fixes",
         "summary": "This release resolves a critical memory leak and redundant monkeypatching issue in the Analytics SDK history tracking.",
@@ -107,7 +133,7 @@
     },
     {
         "version": "1.0.4",
-        "date": "2026-03-16",
+        "date": "2026-03-13",
         "tag": "fix",
         "title": "Honest Types & Code Hygiene",
         "summary": "This release resolves all outstanding linting issues and implements proper, non-evasive type safety across the entire architecture.",
@@ -133,7 +159,7 @@
     },
     {
         "version": "1.0.3",
-        "date": "2026-03-16",
+        "date": "2026-03-10",
         "tag": "fix",
         "title": "Timestamp & Auth Hardening",
         "summary": "This update fixes timestamp compression in high-volume ingestion and standardizes JWT security protocols across the architecture.",
@@ -159,7 +185,7 @@
     },
     {
         "version": "1.0.2",
-        "date": "2026-03-16",
+        "date": "2026-03-05",
         "tag": "fix",
         "title": "Security & Architecture Resiliency Patch",
         "summary": "This patch release addresses two critical backend edge cases related to global error handling and GitHub authentication flow limits.",

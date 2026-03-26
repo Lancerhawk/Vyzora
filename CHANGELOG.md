@@ -5,6 +5,19 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.11] - 2026-03-26
+
+### Added
+- **Frontend — Changelog Footer Link**: The "Changelog" link in the site footer now opens the existing changelog modal directly, mirroring the floating button behavior.
+- **Frontend — Privacy Policy Modal**: New dedicated modal with 8 comprehensive sections covering data collection, visitor identity, API key security, data ownership, retention, and GDPR compliance.
+- **Frontend — Terms of Service Modal**: New dedicated modal with 8 sections covering acceptable use, account access, API key limits, rate limiting policy, and service availability.
+- **Frontend — Legal Data Files**: Extracted Privacy and Terms content into standalone `data/privacy.json` and `data/terms.json` data files for easy maintenance.
+
+### Changed
+- **Frontend (v0.6.3) — Footer**: Replaced dead placeholder links for Changelog, Privacy, and Terms with interactive buttons that correctly open their respective modals.
+
+---
+
 ## [1.0.10] - 2026-03-26
 
 ### Security

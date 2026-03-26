@@ -7,6 +7,7 @@ import ChangelogButton from '../components/ChangelogButton';
 import Preloader from '../components/Preloader';
 import { AuthProvider } from '../contexts/AuthContext';
 import VyzoraProvider from '../components/VyzoraProvider';
+import LegalModal from '../components/LegalModal';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -37,6 +38,7 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
           <ChangelogButton />
+          <LegalModal />
         </AuthProvider>
       </body>
     </html>

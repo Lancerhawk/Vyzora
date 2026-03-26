@@ -1,0 +1,34 @@
+[
+    {
+        "title": "1. Acceptance of Terms",
+        "text": "By accessing or using Vyzora, you agree to be bound by these Terms of Service. If you are using Vyzora on behalf of an organization, you represent that you have authority to bind that organization to these terms."
+    },
+    {
+        "title": "2. Eligibility & Account Access",
+        "text": "Access to the Vyzora dashboard requires a valid GitHub account. You are responsible for maintaining the security of your GitHub OAuth session and all activity that occurs under your account."
+    },
+    {
+        "title": "3. Acceptable Use",
+        "text": "You may not use Vyzora to transmit malicious content, conduct automated scraping of the API beyond reasonable usage, interfere with system stability, or circumvent rate limiting mechanisms. Violation of these policies may result in immediate account suspension."
+    },
+    {
+        "title": "4. API Keys & Project Limits",
+        "text": "Each user account is limited to 50 projects. API keys are project-scoped and must not be shared publicly. You are responsible for any ingestion that occurs via your API key. Lost or compromised keys should be rotated immediately."
+    },
+    {
+        "title": "5. Rate Limiting",
+        "text": "To ensure fair usage and system stability, all API endpoints are subject to rate limiting. Dashboard metrics endpoints allow up to 300 requests per 60 seconds. Ingest endpoints cap individual requests at 500 events. Sustained abuse beyond these limits may result in temporary or permanent throttling."
+    },
+    {
+        "title": "6. Service Availability",
+        "text": "Vyzora is provided on an 'as is' and 'as available' basis. We strive for high availability but do not guarantee uninterrupted service. We are not liable for any loss of data or business interruption resulting from service downtime."
+    },
+    {
+        "title": "7. Modifications to Service",
+        "text": "We reserve the right to modify or discontinue the service at any time with reasonable notice. Continued use of the service after changes constitutes acceptance of the updated terms."
+    },
+    {
+        "title": "8. Governing Law",
+        "text": "These terms are governed by applicable law. Any disputes arising under these terms shall be resolved through good-faith negotiation before any formal legal proceedings."
+    }
+]
