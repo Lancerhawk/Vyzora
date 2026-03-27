@@ -5,6 +5,18 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.12] - 2026-03-27
+
+### Changed
+- **Backend — Analytics Caching**: Implemented a 5-second TTL cache for project ownership checks across all analytics endpoints. This significantly reduces database load during parallel dashboard panel refreshes.
+- **Backend — Selective Project Queries**: Updated the project list API to explicitly omit sensitive API key hashes, returning only the essential fields needed for the dashboard.
+- **Backend-Scalable — Sync Fixes**: Applied identical caching and selective query optimizations to the horizontally scalable API architecture.
+
+### Fixed
+- **Backend**: Resolved N+1 database queries where multiple parallel analytics requests would each trigger a separate ownership verification query.
+
+---
+
 ## [1.0.11] - 2026-03-26
 
 ### Added
@@ -18,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.10] - 2026-03-26
+## [1.0.10] - 2026-03-23
 
 ### Security
 - **Core — API Key Hashing**: Implemented deterministic SHA-256 hashing for all stored API keys. Includes a one-time migration script for existing keys.
@@ -31,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.9] - 2026-03-21
+## [1.0.9] - 2026-03-22
 
 ### Security
 - **Auth — Logout CSRF Protection**: Implemented `Origin` and `Referer` header validation on the logout endpoint to prevent cross-site logout attacks.
@@ -40,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.8] - 2026-03-21
+## [1.0.8] - 2026-03-20
 
 ### Fixed
 - **Analytics — Browser Chart Discrepancy**: Resolved a logic error in the browser analytics SQL where events without browser metadata were excluded from the aggregation. Missing metadata is now correctly bucketed as 'Other/None', ensuring the browser chart total aligns with the overall event count. **Applied to both legacy and scalable backends.**
@@ -62,14 +74,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.5] - 2026-03-16
+## [1.0.5] - 2026-03-15
 
 ### Fixed
 - **SDK (v0.2.5)**: Fixed a memory leak and redundant tracking issue (Bug B5) by centralizing history monkeypatching and implementing a global instance registry. Added proper cleanup in `.destroy()`.
 
 ---
 
-## [1.0.4] - 2026-03-16
+## [1.0.4] - 2026-03-13
 
 ### Fixed
 - **Types**: Implemented "Honest Type Casting" across all backends. Replaced brittle `any` casts and ESLint suppressions with legitimate library-inherited types (inherited via `ConstructorParameters` and `SignOptions`).
@@ -78,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.3] - 2026-03-16
+## [1.0.3] - 2026-03-10
 
 ### Fixed
 - **Ingest**: Resolved timestamp compression by removing hardcoded `createdAt` in bulk ingestion, allowing the database to provide accurate arrival timestamps.
@@ -87,7 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.2] - 2026-03-16
+## [1.0.2] - 2026-03-05
 
 ### Fixed
 - **API Security**: Secured the global error middleware to prevent leaking internal stack traces or database schema details to clients during 500 Internal Server Errors in production. Applied to both legacy and scalable backends.
@@ -95,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.1] - 2026-02-27
+## [1.0.1] - 2026-02-28
 
 ### Changed
 - **SDK — Production Endpoint Update (v0.2.4)**: Updated the default production ingestion endpoint in the SDK distribution to match the newly deployed scalable infrastructure.

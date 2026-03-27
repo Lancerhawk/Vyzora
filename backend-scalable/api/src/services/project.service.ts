@@ -5,7 +5,12 @@ import { LRUCache } from 'lru-cache';
 
 const apiKeyCache = new LRUCache<string, { id: string }>({
     max: 1000,
-    ttl: 1000 * 60 * 5, // 5 minutes
+    ttl: 1000 * 60 * 5,
+});
+
+const ownerCache = new LRUCache<string, boolean>({
+    max: 1000,
+    ttl: 1000 * 5,
 });
 
 function hashApiKey(apiKey: string): string {
@@ -35,6 +40,12 @@ export async function createProject(userId: string, name: string) {
 export async function getProjectsByUser(userId: string) {
     return prisma.project.findMany({
         where: { userId },
+        select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            updatedAt: true,
+        },
         orderBy: { createdAt: 'desc' },
     });
 }
@@ -83,8 +94,7 @@ export async function getMetrics(
     userId: string,
     range: MetricsRange
 ) {
-    const project = await prisma.project.findFirst({ where: { id: projectId, userId } });
-    if (!project) return null;
+    if (!await ownerCheck(projectId, userId)) return null;
 
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - RANGE_DAYS[range]);
@@ -124,8 +134,18 @@ interface SessionRow { sessionId: string; startTime: Date; endTime: Date; eventC
 interface BrowserRow { browser: string; count: number; }
 
 async function ownerCheck(projectId: string, userId: string): Promise<boolean> {
-    const p = await prisma.project.findFirst({ where: { id: projectId, userId } });
-    return p !== null;
+    const cacheKey = `${projectId}:${userId}`;
+    const cached = ownerCache.get(cacheKey);
+    if (cached !== undefined) return cached;
+
+    const p = await prisma.project.findFirst({
+        where: { id: projectId, userId },
+        select: { id: true }
+    });
+
+    const isOwner = p !== null;
+    ownerCache.set(cacheKey, isOwner);
+    return isOwner;
 }
 
 export async function getTimeSeries(projectId: string, userId: string, range: MetricsRange) {

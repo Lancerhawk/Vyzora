@@ -1,5 +1,31 @@
 [
     {
+        "version": "1.0.12",
+        "date": "2026-03-27",
+        "tag": "fix",
+        "title": "Performance & Architecture Hygiene",
+        "summary": "This optimization pass introduces low-latency caching for ownership verification and strengthens data privacy by removing sensitive hashes from the project listing API.",
+        "whatsIncluded": [
+            {
+                "headline": "Analytics Ownership Caching",
+                "detail": "Added a 5-second TTL cache to both legacy and scalable backends to deduplicate parallel ownership checks, reducing redundant database load during dashboard refreshes."
+            },
+            {
+                "headline": "Selective Project Metadata",
+                "detail": "Strengthened API security by ensuring the project list endpoint only returns required metadata (ID, Name, Dates), explicitly omitting internal API key hashes."
+            },
+            {
+                "headline": "Cross-Architecture Optimization Sync",
+                "detail": "Ensured both standard and horizontally scalable backend versions are feature-parity with respect to these high-performance optimizations."
+            }
+        ],
+        "stack": [
+            "Backend v0.5.9",
+            "Scalable API v0.1.7",
+            "LRU Caching"
+        ]
+    },
+    {
         "version": "1.0.11",
         "date": "2026-03-26",
         "tag": "feat",

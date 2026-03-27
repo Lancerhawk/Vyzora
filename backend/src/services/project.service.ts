@@ -9,6 +9,12 @@ const apiKeyCache = new LRUCache<string, Project>({
     ttl: 1000 * 60 * 5, // 5 minutes
 });
 
+// Cache ownership checks to deduplicate parallel dashboard requests (P1)
+const ownerCache = new LRUCache<string, boolean>({
+    max: 1000,
+    ttl: 1000 * 5, // 5 seconds
+});
+
 // S4: Hash API keys with SHA-256 before storing in the DB.
 // SHA-256 is deterministic, so we can still do a direct WHERE lookup.
 function hashApiKey(apiKey: string): string {
@@ -41,6 +47,13 @@ export async function createProject(userId: string, name: string) {
 export async function getProjectsByUser(userId: string) {
     return prisma.project.findMany({
         where: { userId },
+        select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            updatedAt: true,
+            // apiKey is explicitly omitted (P2)
+        },
         orderBy: { createdAt: 'desc' },
     });
 }
@@ -88,9 +101,8 @@ export async function getMetrics(
     userId: string,
     range: MetricsRange
 ) {
-    // Ownership check FIRST — before any aggregation
-    const project = await prisma.project.findFirst({ where: { id: projectId, userId } });
-    if (!project) return null;
+    // Ownership check FIRST — before any aggregation (P1: using cached check)
+    if (!await ownerCheck(projectId, userId)) return null;
 
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - RANGE_DAYS[range]);
@@ -133,8 +145,18 @@ interface SessionRow { sessionId: string; startTime: Date; endTime: Date; eventC
 interface BrowserRow { browser: string; count: number; }
 
 async function ownerCheck(projectId: string, userId: string): Promise<boolean> {
-    const p = await prisma.project.findFirst({ where: { id: projectId, userId } });
-    return p !== null;
+    const cacheKey = `${projectId}:${userId}`;
+    const cached = ownerCache.get(cacheKey);
+    if (cached !== undefined) return cached;
+
+    const p = await prisma.project.findFirst({
+        where: { id: projectId, userId },
+        select: { id: true } // Optimization: only fetch ID
+    });
+
+    const isOwner = p !== null;
+    ownerCache.set(cacheKey, isOwner);
+    return isOwner;
 }
 
 export async function getTimeSeries(projectId: string, userId: string, range: MetricsRange) {
