@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Backend — Batched Analytics API**: Consolidated multiple analytics requests into a single, high-performance `/analytics` endpoint, reducing dashboard network overhead by 80%.
-- **Backend — Timezone-Aware Time Series**: Implemented full IANA timezone support for daily event buckets, ensuring accurate data alignment for global users.
+- **Backend — Timezone-Aware Time Series**: Implemented full IANA timezone support for daily event buckets using absolute UTC offset mapping and `TO_CHAR` extraction, ensuring zero-drift data alignment for global users.
 
 ### Changed
 - **Backend — Compression Middleware**: Integrated `compression` middleware into both legacy and scalable architectures, significantly reducing bandwidth consumption through Gzip/Brotli payload optimization.

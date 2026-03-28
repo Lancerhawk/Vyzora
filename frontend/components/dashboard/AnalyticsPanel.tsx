@@ -25,7 +25,12 @@ export interface SparkData {
 type Range = '7d' | '30d' | '90d';
 
 function fmtDate(iso: string) {
-    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const d = new Date(iso.includes('T') ? iso : `${iso}T00:00:00Z`);
+    return d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC'
+    });
 }
 
 export function AnalyticsPanel({

@@ -130,7 +130,7 @@ export async function getMetrics(
 // ─── Advanced Analytics ───────────────────────────────────────────────────────────
 
 interface RawMetricsResult { totalEvents: number; uniqueVisitors: number; totalSessions: number; pageviews: number; }
-interface TimeSeriesRow { date: Date; events: number; visitors: number; sessions: number; }
+interface TimeSeriesRow { date: string | Date; events: number; visitors: number; sessions: number; }
 interface TopPageRow { path: string; views: number; }
 interface TopEventRow { eventType: string; count: number; }
 interface SessionRow { sessionId: string; startTime: Date; endTime: Date; eventCount: number; }
@@ -155,9 +155,11 @@ export async function getTimeSeries(projectId: string, userId: string, range: Me
     if (!await ownerCheck(projectId, userId)) return null;
     const start = new Date();
     start.setDate(start.getDate() - RANGE_DAYS[range]);
+    
+    // P5 Precision: Using explicit timezone() function and timestamptz cast.
     return prisma.$queryRaw<TimeSeriesRow[]>(Prisma.sql`
         SELECT
-            DATE_TRUNC('day', "createdAt" AT TIME ZONE ${tz}) AS date,
+            TO_CHAR(timezone(${tz}, "createdAt"::timestamptz), 'YYYY-MM-DD') AS date,
             COUNT(*)::int AS events,
             COUNT(DISTINCT "visitorId")::int AS visitors,
             COUNT(DISTINCT "sessionId")::int AS sessions
@@ -236,9 +238,6 @@ export async function getBrowsers(projectId: string, userId: string, range: Metr
     `);
 }
 
-// ─── Batched Analytics (P4+P5) ────────────────────────────────────────────────
-// Runs all 6 queries in a single Promise.all with one shared ownerCheck.
-// The frontend calls this instead of 6 individual endpoints.
 export async function getAnalyticsBatch(
     projectId: string,
     userId: string,
@@ -262,7 +261,7 @@ export async function getAnalyticsBatch(
         `),
         prisma.$queryRaw<TimeSeriesRow[]>(Prisma.sql`
             SELECT
-                DATE_TRUNC('day', "createdAt" AT TIME ZONE ${tz}) AS date,
+                TO_CHAR(timezone(${tz}, "createdAt"::timestamptz), 'YYYY-MM-DD') AS date,
                 COUNT(*)::int AS events,
                 COUNT(DISTINCT "visitorId")::int AS visitors,
                 COUNT(DISTINCT "sessionId")::int AS sessions

@@ -12,7 +12,7 @@
             },
             {
                 "headline": "Universal Timezone Support",
-                "detail": "Added support for user-defined IANA timezones in time-series charts, ensuring that daily data buckets align perfectly with local calendars everywhere."
+                "detail": "Added support for user-defined IANA timezones in time-series charts using absolute UTC offset mapping and string-based day extraction, ensuring that daily data buckets align perfectly with local calendars everywhere."
             },
             {
                 "headline": "Global Response Compression",
