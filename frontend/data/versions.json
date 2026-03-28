@@ -1,5 +1,31 @@
 [
     {
+        "version": "1.0.13",
+        "date": "2026-03-29",
+        "tag": "perf",
+        "title": "High-Efficiency Batching & Timezone Sync",
+        "summary": "This update introduces a consolidated analytics batch endpoint and intelligent timezone bucket alignment, while significantly reducing network bandwidth through global Gzip compression.",
+        "whatsIncluded": [
+            {
+                "headline": "Batched Analytics Endpoint",
+                "detail": "Consolidated 6 separate parallel analytics calls into a single high-performance request, ensuring faster dashboard loads and reduced request overhead."
+            },
+            {
+                "headline": "Universal Timezone Support",
+                "detail": "Added support for user-defined IANA timezones in time-series charts, ensuring that daily data buckets align perfectly with local calendars everywhere."
+            },
+            {
+                "headline": "Global Response Compression",
+                "detail": "Activated middleware-level Gzip compression across all backend services, drastically reducing the transmission size of JSON analytics data."
+            }
+        ],
+        "stack": [
+            "Batched API",
+            "IANA Timezone Support",
+            "Gzip Compression"
+        ]
+    },
+    {
         "version": "1.0.12",
         "date": "2026-03-27",
         "tag": "fix",

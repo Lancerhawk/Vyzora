@@ -1,6 +1,6 @@
 # Vyzora — Frontend
 
-[![Version](https://img.shields.io/badge/version-v0.6.2-purple)](package.json)
+[![Version](https://img.shields.io/badge/version-v0.6.4-purple)](package.json)
 
 The Next.js 16 App Router frontend for Vyzora. Serves both the public-facing marketing site (homepage, docs) and the authenticated analytics dashboard.
 

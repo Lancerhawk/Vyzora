@@ -10,6 +10,7 @@ import {
     getTopEvents,
     getSessions,
     getBrowsers,
+    getAnalyticsBatch,
 } from '../services/project.service';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
@@ -96,12 +97,25 @@ export async function getMetricsHandler(req: AuthenticatedRequest, res: Response
 }
 
 
+// Validate IANA timezone: attempt to construct a DateTimeFormat with the zone.
+// Intl.DateTimeFormat throws RangeError for invalid timeZone values.
+function resolveTimezone(raw: unknown): string {
+    if (typeof raw !== 'string' || !raw) return 'UTC';
+    try {
+        Intl.DateTimeFormat(undefined, { timeZone: raw });
+        return raw;
+    } catch {
+        return 'UTC';
+    }
+}
+
 function validateAnalyticsParams(
     req: AuthenticatedRequest,
     res: Response
-): { id: string; range: MetricsRange } | null {
+): { id: string; range: MetricsRange; tz: string } | null {
     const id = req.params.id as string;
     const range = req.query.range as string;
+    const tz = resolveTimezone(req.query.tz);
     if (!UUID_REGEX.test(id)) {
         res.status(400).json({ success: false, message: 'Invalid project ID.' });
         return null;
@@ -110,14 +124,14 @@ function validateAnalyticsParams(
         res.status(400).json({ success: false, message: 'Invalid range. Must be 7d, 30d, or 90d.' });
         return null;
     }
-    return { id, range: range as MetricsRange };
+    return { id, range: range as MetricsRange, tz };
 }
 
 export async function getTimeSeriesHandler(req: AuthenticatedRequest, res: Response): Promise<void> {
     const params = validateAnalyticsParams(req, res);
     if (!params) return;
     try {
-        const data = await getTimeSeries(params.id, req.authUser!.id, params.range);
+        const data = await getTimeSeries(params.id, req.authUser!.id, params.range, params.tz);
         if (data === null) { res.status(404).json({ success: false, message: 'Project not found.' }); return; }
         res.json({ success: true, data });
     } catch { res.status(500).json({ success: false, message: 'Failed to fetch time series.' }); }
@@ -161,4 +175,14 @@ export async function getBrowsersHandler(req: AuthenticatedRequest, res: Respons
         if (data === null) { res.status(404).json({ success: false, message: 'Project not found.' }); return; }
         res.json({ success: true, data });
     } catch { res.status(500).json({ success: false, message: 'Failed to fetch browser data.' }); }
+}
+
+export async function getAnalyticsBatchHandler(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const params = validateAnalyticsParams(req, res);
+    if (!params) return;
+    try {
+        const data = await getAnalyticsBatch(params.id, req.authUser!.id, params.range, params.tz);
+        if (data === null) { res.status(404).json({ success: false, message: 'Project not found.' }); return; }
+        res.json({ success: true, data });
+    } catch { res.status(500).json({ success: false, message: 'Failed to fetch analytics.' }); }
 }

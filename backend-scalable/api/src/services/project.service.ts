@@ -127,6 +127,9 @@ export async function getMetrics(
 }
 
 
+// ─── Advanced Analytics ───────────────────────────────────────────────────────────
+
+interface RawMetricsResult { totalEvents: number; uniqueVisitors: number; totalSessions: number; pageviews: number; }
 interface TimeSeriesRow { date: Date; events: number; visitors: number; sessions: number; }
 interface TopPageRow { path: string; views: number; }
 interface TopEventRow { eventType: string; count: number; }
@@ -148,13 +151,13 @@ async function ownerCheck(projectId: string, userId: string): Promise<boolean> {
     return isOwner;
 }
 
-export async function getTimeSeries(projectId: string, userId: string, range: MetricsRange) {
+export async function getTimeSeries(projectId: string, userId: string, range: MetricsRange, tz = 'UTC') {
     if (!await ownerCheck(projectId, userId)) return null;
     const start = new Date();
     start.setDate(start.getDate() - RANGE_DAYS[range]);
     return prisma.$queryRaw<TimeSeriesRow[]>(Prisma.sql`
         SELECT
-            DATE_TRUNC('day', "createdAt") AS date,
+            DATE_TRUNC('day', "createdAt" AT TIME ZONE ${tz}) AS date,
             COUNT(*)::int AS events,
             COUNT(DISTINCT "visitorId")::int AS visitors,
             COUNT(DISTINCT "sessionId")::int AS sessions
@@ -231,4 +234,101 @@ export async function getBrowsers(projectId: string, userId: string, range: Metr
         GROUP BY browser
         ORDER BY count DESC
     `);
+}
+
+// ─── Batched Analytics (P4+P5) ────────────────────────────────────────────────
+// Runs all 6 queries in a single Promise.all with one shared ownerCheck.
+// The frontend calls this instead of 6 individual endpoints.
+export async function getAnalyticsBatch(
+    projectId: string,
+    userId: string,
+    range: MetricsRange,
+    tz = 'UTC'
+) {
+    if (!await ownerCheck(projectId, userId)) return null;
+
+    const start = new Date();
+    start.setDate(start.getDate() - RANGE_DAYS[range]);
+
+    const [rawMetrics, timeSeries, topPages, topEvents, sessions, browsers] = await Promise.all([
+        prisma.$queryRaw<RawMetricsResult[]>(Prisma.sql`
+            SELECT
+                COUNT(*)::int as "totalEvents",
+                COUNT(DISTINCT "visitorId")::int as "uniqueVisitors",
+                COUNT(DISTINCT "sessionId")::int as "totalSessions",
+                SUM(CASE WHEN "eventType" = 'pageview' THEN 1 ELSE 0 END)::int as "pageviews"
+            FROM "Event"
+            WHERE "projectId" = ${projectId} AND "createdAt" >= ${start}
+        `),
+        prisma.$queryRaw<TimeSeriesRow[]>(Prisma.sql`
+            SELECT
+                DATE_TRUNC('day', "createdAt" AT TIME ZONE ${tz}) AS date,
+                COUNT(*)::int AS events,
+                COUNT(DISTINCT "visitorId")::int AS visitors,
+                COUNT(DISTINCT "sessionId")::int AS sessions
+            FROM "Event"
+            WHERE "projectId" = ${projectId} AND "createdAt" >= ${start}
+            GROUP BY date
+            ORDER BY date ASC
+        `),
+        prisma.$queryRaw<TopPageRow[]>(Prisma.sql`
+            SELECT
+                "path",
+                COUNT(*)::int AS views
+            FROM "Event"
+            WHERE "projectId" = ${projectId}
+              AND "eventType" = 'pageview'
+              AND "createdAt" >= ${start}
+            GROUP BY "path"
+            ORDER BY views DESC
+            LIMIT 10
+        `),
+        prisma.$queryRaw<TopEventRow[]>(Prisma.sql`
+            SELECT
+                "eventType",
+                COUNT(*)::int AS count
+            FROM "Event"
+            WHERE "projectId" = ${projectId} AND "createdAt" >= ${start}
+            GROUP BY "eventType"
+            ORDER BY count DESC
+            LIMIT 10
+        `),
+        prisma.$queryRaw<SessionRow[]>(Prisma.sql`
+            SELECT
+                "sessionId",
+                MIN("createdAt") AS "startTime",
+                MAX("createdAt") AS "endTime",
+                COUNT(*)::int AS "eventCount"
+            FROM "Event"
+            WHERE "projectId" = ${projectId} AND "createdAt" >= ${start}
+            GROUP BY "sessionId"
+            ORDER BY "startTime" DESC
+            LIMIT 50
+        `),
+        prisma.$queryRaw<BrowserRow[]>(Prisma.sql`
+            SELECT
+                COALESCE(metadata->>'browser', 'Other/None') AS browser,
+                COUNT(*)::int AS count
+            FROM "Event"
+            WHERE "projectId" = ${projectId}
+              AND "createdAt" >= ${start}
+            GROUP BY browser
+            ORDER BY count DESC
+        `),
+    ]);
+
+    const m = rawMetrics[0];
+    return {
+        metrics: {
+            totalEvents: m.totalEvents || 0,
+            uniqueVisitors: m.uniqueVisitors || 0,
+            totalSessions: m.totalSessions || 0,
+            pageviews: m.pageviews || 0,
+        },
+        timeSeries,
+        topPages,
+        topEvents,
+        sessions,
+        browsers,
+    };
 }

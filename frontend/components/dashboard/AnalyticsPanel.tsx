@@ -13,6 +13,7 @@ interface TopPage { path: string; views: number; }
 interface TopEvent { eventType: string; count: number; }
 interface SessionRow { sessionId: string; startTime: string; endTime: string; eventCount: number; }
 interface BrowserRow { browser: string; count: number; }
+interface Metrics { totalEvents: number; uniqueVisitors: number; totalSessions: number; pageviews: number; }
 
 export interface SparkData {
     pageviews: number[];
@@ -31,10 +32,14 @@ export function AnalyticsPanel({
     projectId,
     range,
     onSparkData,
+    onMetrics,
+    onLoadingChange,
 }: {
     projectId: string;
     range: Range;
     onSparkData?: (data: SparkData) => void;
+    onMetrics?: (metrics: Metrics | null) => void;
+    onLoadingChange?: (loading: boolean) => void;
 }) {
     const [timeSeries, setTimeSeries] = useState<TimePoint[]>([]);
     const [topPages, setTopPages] = useState<TopPage[]>([]);
@@ -45,44 +50,68 @@ export function AnalyticsPanel({
 
     useEffect(() => {
         let cancelled = false;
-        setLoading(true);
 
-        const q = `range=${range}`;
+        const setLoad = (v: boolean) => {
+            setLoading(v);
+            onLoadingChange?.(v);
+        };
+
+        setLoad(true);
+        onMetrics?.(null);
+
+        // P5: Send the browser's IANA timezone so the backend can align daily buckets correctly.
+        const tz = encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'UTC');
+        const q = `range=${range}&tz=${tz}`;
         const base = `/api/projects/${projectId}`;
 
-        Promise.all([
-            api.get<{ data: TimePoint[] }>(`${base}/timeseries?${q}`),
-            api.get<{ data: TopPage[] }>(`${base}/top-pages?${q}`),
-            api.get<{ data: TopEvent[] }>(`${base}/top-events?${q}`),
-            api.get<{ data: SessionRow[] }>(`${base}/sessions?${q}`),
-            api.get<{ data: BrowserRow[] }>(`${base}/browsers?${q}`),
-        ]).then(([ts, tp, te, se, br]) => {
-            if (cancelled) return;
-            const mapped = ts.data.data.map(d => ({ ...d, date: fmtDate(String(d.date)) }));
-            setTimeSeries(mapped);
-            setTopPages(tp.data.data);
-            setTopEvents(te.data.data);
-            setSessions(se.data.data);
-            setBrowsers(br.data.data);
+        // P4: Single batched request instead of 5 parallel calls.
+        api.get<{
+            data: {
+                metrics: Metrics;
+                timeSeries: TimePoint[];
+                topPages: TopPage[];
+                topEvents: TopEvent[];
+                sessions: SessionRow[];
+                browsers: BrowserRow[];
+            };
+        }>(`${base}/analytics?${q}`)
+            .then(({ data: res }) => {
+                if (cancelled) return;
 
-            // Lift sparkline arrays up to parent for stat cards
-            if (onSparkData) {
-                onSparkData({
-                    pageviews: mapped.map(d => d.visitors), // pageviews = visitors tracking
-                    visitors: mapped.map(d => d.visitors),
-                    sessions: mapped.map(d => d.sessions),
-                    events: mapped.map(d => d.events),
-                });
-            }
-        }).catch(() => {
-            if (!cancelled) {
+                const { metrics, timeSeries: ts, topPages: tp, topEvents: te, sessions: se, browsers: br } = res.data;
+
+                const mapped = ts.map(d => ({ ...d, date: fmtDate(String(d.date)) }));
+                setTimeSeries(mapped);
+                setTopPages(tp);
+                setTopEvents(te);
+                setSessions(se);
+                setBrowsers(br);
+
+                // Lift metrics up to the parent for StatCard totals
+                onMetrics?.(metrics);
+
+                // Lift sparkline arrays up for stat card mini-charts
+                if (onSparkData) {
+                    onSparkData({
+                        pageviews: mapped.map(d => d.visitors),
+                        visitors: mapped.map(d => d.visitors),
+                        sessions: mapped.map(d => d.sessions),
+                        events: mapped.map(d => d.events),
+                    });
+                }
+            })
+            .catch(() => {
+                if (cancelled) return;
                 setTimeSeries([]); setTopPages([]);
                 setTopEvents([]); setSessions([]); setBrowsers([]);
-            }
-        }).finally(() => { if (!cancelled) setLoading(false); });
+                onMetrics?.(null);
+            })
+            .finally(() => {
+                if (!cancelled) setLoad(false);
+            });
 
         return () => { cancelled = true; };
-    }, [projectId, range, onSparkData]);
+    }, [projectId, range, onSparkData, onMetrics, onLoadingChange]);
 
     return (
         <div className="space-y-6">

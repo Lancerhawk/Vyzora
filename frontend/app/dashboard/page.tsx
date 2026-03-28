@@ -147,15 +147,8 @@ export default function DashboardPage() {
 
     useEffect(() => { if (user) fetchProjects(); }, [user, fetchProjects]);
 
-    const fetchMetrics = useCallback(async (id: string, r: MetricsRange) => {
-        setMetricsLoading(true); setMetrics(null);
-        try {
-            const res = await api.get<{ metrics: Metrics }>(`/api/projects/${id}/metrics?range=${r}`);
-            setMetrics(res.data.metrics);
-        } catch { setMetrics(null); } finally { setMetricsLoading(false); }
-    }, []);
-
-    useEffect(() => { if (selected) fetchMetrics(selected.id, range); }, [selected, range, fetchMetrics]);
+    // Metrics + loading state are now driven by AnalyticsPanel via onMetrics / onLoadingChange
+    // No separate fetchMetrics call needed (P4: single batched request from the panel).
 
     const selectProject = (p: Project) => { setSelected(p); setSidebarOpen(false); };
 
@@ -336,6 +329,8 @@ export default function DashboardPage() {
                                     projectId={selected.id}
                                     range={range}
                                     onSparkData={setSparkData}
+                                    onMetrics={setMetrics}
+                                    onLoadingChange={setMetricsLoading}
                                 />
 
                                 {/* Credentials */}

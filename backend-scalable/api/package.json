@@ -1,6 +1,6 @@
 {
     "name": "@vyzora/scalable-api",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "description": "Vyzora Scalable API — Express + BullMQ",
     "main": "dist/index.js",
     "scripts": {
@@ -15,6 +15,7 @@
         "@prisma/client": "^7.4.1",
         "axios": "^1.13.5",
         "bullmq": "^5.0.0",
+        "compression": "^1.8.1",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.6",
         "dotenv": "^17.3.1",
@@ -30,6 +31,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.0.0",
+        "@types/compression": "^1.8.1",
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",

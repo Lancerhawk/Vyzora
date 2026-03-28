@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
@@ -53,6 +54,9 @@ const ingestCors = cors({
     methods: ['POST'],
     optionsSuccessStatus: 200,
 });
+
+// Compression — gzip/br for all responses (P3)
+app.use(compression());
 
 // cookie-parser must come before routes so req.cookies is populated
 app.use(cookieParser());

@@ -5,6 +5,17 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.13] - 2026-03-29
+
+### Added
+- **Backend — Batched Analytics API**: Consolidated multiple analytics requests into a single, high-performance `/analytics` endpoint, reducing dashboard network overhead by 80%.
+- **Backend — Timezone-Aware Time Series**: Implemented full IANA timezone support for daily event buckets, ensuring accurate data alignment for global users.
+
+### Changed
+- **Backend — Compression Middleware**: Integrated `compression` middleware into both legacy and scalable architectures, significantly reducing bandwidth consumption through Gzip/Brotli payload optimization.
+
+---
+
 ## [1.0.12] - 2026-03-27
 
 ### Changed
