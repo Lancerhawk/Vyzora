@@ -13,8 +13,8 @@ import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 const COOKIE_OPTIONS = {
     httpOnly: true,
-    sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: (config.nodeEnv === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+    secure: config.nodeEnv === 'production',
     maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
@@ -25,14 +25,14 @@ export async function githubRedirect(_req: Request, res: Response): Promise<void
     res.cookie('oauth_state', state, {
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: config.nodeEnv === 'production',
         maxAge: 10 * 60 * 1000,
     });
 
     const params = new URLSearchParams({
-        client_id: process.env.GITHUB_CLIENT_ID || '',
+        client_id: config.github.clientId,
         scope: 'user:email',
-        redirect_uri: `${process.env.BACKEND_URL}/api/auth/github/callback`,
+        redirect_uri: `${config.backendUrl}/api/auth/github/callback`,
         state,
     });
     const url = `https://github.com/login/oauth/authorize?${params.toString()}`;
@@ -49,7 +49,7 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
 
         if (!returnedState || !expectedState || returnedState !== expectedState) {
             console.error('[Auth] OAuth state mismatch — possible CSRF attack');
-            res.redirect(`${process.env.FRONTEND_URL}/login?error=state_mismatch`);
+            res.redirect(`${config.frontendUrl}/login?error=state_mismatch`);
             return;
         }
 
@@ -98,7 +98,7 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
         console.log('[Auth] Token signed. Setting cookie...');
         res.cookie('vyzora_token', token, COOKIE_OPTIONS);
 
-        const redirectUrl = `${process.env.FRONTEND_URL}/dashboard`;
+        const redirectUrl = `${config.frontendUrl}/dashboard`;
         console.log('[Auth] Success. Redirecting to frontend:', redirectUrl);
         res.redirect(redirectUrl);
     } catch (err: unknown) {
@@ -107,7 +107,7 @@ export async function githubCallback(req: Request, res: Response): Promise<void>
         if (error.response) {
             console.error('[Auth] GitHub API Error Response:', error.response.data);
         }
-        res.redirect(`${process.env.FRONTEND_URL}/login?error=oauth_failed`);
+        res.redirect(`${config.frontendUrl}/login?error=oauth_failed`);
     }
 }
 
@@ -131,7 +131,7 @@ export async function getMe(req: AuthenticatedRequest, res: Response): Promise<v
 
 export function logout(req: Request, res: Response): void {
     const origin = req.headers.origin || req.headers.referer;
-    const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const allowedOrigin = config.frontendUrl;
 
     if (origin && !origin.startsWith(allowedOrigin)) {
         res.status(403).json({ success: false, message: 'Invalid request origin' });
@@ -140,8 +140,8 @@ export function logout(req: Request, res: Response): void {
 
     res.clearCookie('vyzora_token', {
         httpOnly: true,
-        sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        sameSite: (config.nodeEnv === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+        secure: config.nodeEnv === 'production',
     });
     res.json({ success: true, message: 'Logged out' });
 }

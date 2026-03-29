@@ -5,6 +5,14 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.14] - 2026-03-30
+
+### Changed
+- **Core — Unified Environment Configuration**: Centralized all `process.env` access into a strictly-typed `config` object across both the legacy and scalable backend architectures. This eliminates fragmented environment lookups and provides a single source of truth for service configuration.
+- **Backend — Architecture Sync**: Synchronized all environment variable resolutions (including `BACKEND_URL` and `GITHUB_CLIENT_ID`) across all controllers and middleware to follow the centralized config pattern.
+
+---
+
 ## [1.0.13] - 2026-03-29
 
 ### Added
@@ -16,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.12] - 2026-03-27
+## [1.0.12] - 2026-03-28
 
 ### Changed
 - **Backend — Analytics Caching**: Implemented a 5-second TTL cache for project ownership checks across all analytics endpoints. This significantly reduces database load during parallel dashboard panel refreshes.
@@ -28,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.11] - 2026-03-26
+## [1.0.11] - 2026-03-27
 
 ### Added
 - **Frontend — Changelog Footer Link**: The "Changelog" link in the site footer now opens the existing changelog modal directly, mirroring the floating button behavior.

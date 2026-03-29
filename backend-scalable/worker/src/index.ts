@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { worker, QUEUE_NAME } from './worker';
 import { prisma } from './config/database';
 import { config } from './config/env';
@@ -9,11 +8,6 @@ console.log(JSON.stringify({
     message: `👷 Vyzora Worker started. Listening on queue: ${QUEUE_NAME}`,
     concurrency: config.workerConcurrency,
 }));
-
-// ── Graceful shutdown ─────────────────────────────────────────────────────────
-// On SIGTERM (Docker stop) or SIGINT (Ctrl+C):
-// 1. Stop accepting new jobs (worker.close waits for in-flight jobs to finish)
-// 2. Disconnect Prisma pool cleanly
 
 async function shutdown(signal: string): Promise<void> {
     console.log(JSON.stringify({

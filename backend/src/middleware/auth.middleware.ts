@@ -8,8 +8,8 @@ export interface AuthenticatedRequest extends Request {
 
 const COOKIE_OPTIONS = {
     httpOnly: true,
-    sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: (config.nodeEnv === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+    secure: config.nodeEnv === 'production',
 };
 
 export function authenticate(

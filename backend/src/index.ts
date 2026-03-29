@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
-import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
 import ingestRouter from './routes/ingest.routes';
@@ -11,15 +10,13 @@ import { errorHandler } from './middleware/error.middleware';
 import { INGEST_LIMITER } from './middleware/rateLimit.middleware';
 import { config } from './config/env';
 
-dotenv.config();
-
 const app = express();
 const PORT = config.port;
 
 // 🔴 S2 Fix: Strict startup validation
 // Ensure the application crashes immediately if an insecure default secret is used in production
 if (config.nodeEnv === 'production') {
-    if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'change_me_in_production') {
+    if (!config.jwtSecret || config.jwtSecret === 'change_me_in_production') {
         throw new Error('FATAL: JWT_SECRET must be set to a secure value in production environments.');
     }
 }
@@ -39,7 +36,7 @@ app.use((req, res, next) => {
 
 // CORS configuration
 const dashboardCors = cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: config.frontendUrl,
     credentials: true,
     methods: ['GET', 'POST', 'DELETE'],
     optionsSuccessStatus: 200,

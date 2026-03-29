@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { prisma } from '../config/database';
+import { config } from '../config/env';
 
 interface GithubTokenResponse {
     access_token: string;
@@ -21,10 +22,10 @@ export async function exchangeCodeForToken(code: string): Promise<string> {
     const response = await axios.post<GithubTokenResponse>(
         'https://github.com/login/oauth/access_token',
         {
-            client_id: process.env.GITHUB_CLIENT_ID,
-            client_secret: process.env.GITHUB_CLIENT_SECRET,
+            client_id: config.github.clientId,
+            client_secret: config.github.clientSecret,
             code,
-            redirect_uri: `${process.env.BACKEND_URL}/api/auth/github/callback`,
+            redirect_uri: `${config.backendUrl}/api/auth/github/callback`,
         },
         {
             headers: { Accept: 'application/json' },

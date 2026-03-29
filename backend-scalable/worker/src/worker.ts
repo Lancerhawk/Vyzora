@@ -7,15 +7,6 @@ import type { IngestJobData } from './types';
 
 export const QUEUE_NAME = 'events-queue';
 
-/**
- * BullMQ Worker — consumes ingest-batch jobs from the events-queue.
- *
- * Each job carries { projectId, events[] } and performs a bulk Prisma insert.
- * Retry policy (3 attempts, exponential backoff) is inherited from job options
- * set by the API producer.
- *
- * This process exposes NO HTTP server.
- */
 export const worker = new Worker<IngestJobData>(
     QUEUE_NAME,
     async (job: Job<IngestJobData>) => {
@@ -32,14 +23,12 @@ export const worker = new Worker<IngestJobData>(
             visitorId: e.visitorId,
             eventType: e.eventType,
             path: e.path,
-            // Prisma 7 nullable JSON: use Prisma.JsonNull sentinel for null,
-            // cast defined objects as InputJsonValue
+
             metadata: e.metadata !== undefined
                 ? (e.metadata as Prisma.InputJsonValue)
                 : Prisma.JsonNull,
             ipAddress: e.ipAddress ?? null,
             userAgent: e.userAgent ?? null,
-            // No createdAt — Prisma schema @default(now()) handles it correctly
         }));
 
         const result = await prisma.event.createMany({
@@ -55,7 +44,6 @@ export const worker = new Worker<IngestJobData>(
     }
 );
 
-// ── Event listeners ───────────────────────────────────────────────────────────
 
 worker.on('failed', (job, err) => {
     console.error(`❌ [Worker] Job #${job?.id} FAILED | Attempt: ${job?.attemptsMade} | Error: ${err.message}`);

@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
@@ -8,8 +7,6 @@ import { config } from './env';
 const globalForPrisma = globalThis as unknown as { prisma: any };
 
 function createPrismaClient(): PrismaClient {
-    // Workers perform batch inserts, so they need fewer persistent connections.
-    // 2 connections per replica * 3 replicas = 6 total connections.
     const pool = new Pool({
         connectionString: config.databaseUrl,
         max: 2,

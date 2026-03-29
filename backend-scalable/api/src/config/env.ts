@@ -10,4 +10,8 @@ export const config = {
         clientId: process.env.GITHUB_CLIENT_ID || '',
         clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
     },
+    redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    },
 } as const;

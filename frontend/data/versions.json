@@ -1,5 +1,27 @@
 [
     {
+        "version": "1.0.14",
+        "date": "2026-03-30",
+        "tag": "polish",
+        "title": "Config Unification & SDK Zero-Config",
+        "summary": "This update hardens the developer experience by unifying environment variable access across all backend services and simplifies SDK integration by defaulting to active tracking.",
+        "whatsIncluded": [
+            {
+                "headline": "Unified Environment Configuration",
+                "detail": "Centralized all process.env access into a strictly-typed config object across both standard and scalable backends, eliminating fragmented environment lookups."
+            },
+            {
+                "headline": "Coordinated System-wide Bump",
+                "detail": "Synchronized versioning (v1.0.14) across the root and both backend architectures to ensure full configuration compatibility."
+            }
+        ],
+        "stack": [
+            "Typed Config Schema",
+            "SDK v0.2.7",
+            "Monorepo Sync"
+        ]
+    },
+    {
         "version": "1.0.13",
         "date": "2026-03-29",
         "tag": "perf",
@@ -27,7 +49,7 @@
     },
     {
         "version": "1.0.12",
-        "date": "2026-03-27",
+        "date": "2026-03-28",
         "tag": "fix",
         "title": "Performance & Architecture Hygiene",
         "summary": "This optimization pass introduces low-latency caching for ownership verification and strengthens data privacy by removing sensitive hashes from the project listing API.",
@@ -53,7 +75,7 @@
     },
     {
         "version": "1.0.11",
-        "date": "2026-03-26",
+        "date": "2026-03-27",
         "tag": "feat",
         "title": "Legal Transparency & Footer Modals",
         "summary": "This update introduces dedicated Privacy Policy and Terms of Service modals, wires up all footer links to their respective modals, and extracts legal content into maintainable data files.",

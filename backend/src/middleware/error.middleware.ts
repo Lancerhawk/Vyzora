@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { config } from '../config/env';
 
 export function errorHandler(
     err: Error,
@@ -7,7 +8,7 @@ export function errorHandler(
     _next: NextFunction
 ): void {
     console.error('[ErrorHandler]', err);
-    const msg = process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message;
+    const msg = config.nodeEnv === 'production' ? 'Internal server error' : err.message;
     res.status(500).json({
         success: false,
         message: msg,
