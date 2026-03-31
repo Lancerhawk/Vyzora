@@ -1,8 +1,17 @@
-/**
- * Safe localStorage wrapper.
- * All methods fail silently — never throw, never console.error.
- * Handles Safari private mode (SecurityError) and storage quota.
- */
+
+export function generateUUID(): string {
+    if (
+        typeof crypto !== 'undefined' &&
+        typeof crypto.randomUUID === 'function'
+    ) {
+        return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}
 
 export function safeGet(key: string): string | null {
     try {

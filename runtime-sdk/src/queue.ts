@@ -30,7 +30,7 @@ export class Queue {
     }
 
     start(): void {
-        if (this.timer !== null) return; // Guard: prevent duplicate intervals
+        if (this.timer !== null) return;
         this.timer = setInterval(() => {
             this.logger.log('Auto-flush triggered');
             void this.flush();
@@ -54,17 +54,15 @@ export class Queue {
 
     async flush(): Promise<void> {
         if (this.events.length === 0) return;
-        if (this.flushing) return; // Guard: prevent concurrent/duplicate flushes
+        if (this.flushing) return;
 
         this.flushing = true;
-        // Splice BEFORE transport — clears array immediately to prevent race conditions
         const batch = this.events.splice(0, this.events.length);
         this.logger.log(`Flushing ${batch.length} event(s)`);
 
         try {
             await sendBatch(this.endpoint, this.apiKey, batch, this.debug, this.logger);
         } finally {
-            // Always reset — even if sendBatch throws, queue never deadlocks
             this.flushing = false;
         }
     }
@@ -74,7 +72,6 @@ export class Queue {
             clearInterval(this.timer);
             this.timer = null;
         }
-        // Uses stored function references — removeEventListener correctly deregisters
         if (typeof document !== 'undefined') {
             document.removeEventListener('visibilitychange', this.handleVisibility);
         }

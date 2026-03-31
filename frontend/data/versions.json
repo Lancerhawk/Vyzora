@@ -1,5 +1,32 @@
 [
     {
+        "version": "1.0.15",
+        "date": "2026-03-31",
+        "tag": "fix",
+        "title": "SDK Code Quality — Shared UUID Generation",
+        "summary": "This release eliminates a code duplication issue in the Analytics SDK where the UUID generation function was defined independently in two separate modules. The function is now defined once and shared across the SDK.",
+        "whatsIncluded": [
+            {
+                "headline": "Centralized UUID Generation",
+                "detail": "The generateUUID() function was identically duplicated in both session.ts and visitor.ts. It has been extracted into storage.ts as a single shared export, ensuring both modules always use the same implementation with no risk of the copies diverging."
+            },
+            {
+                "headline": "Reduced Bundle Footprint",
+                "detail": "Removing the duplicate implementation slightly reduces the compiled SDK output, as the same logic is no longer emitted twice into the bundle."
+            },
+            {
+                "headline": "SDK Bumped to v0.2.10",
+                "detail": "The Runtime SDK is updated to v0.2.10 to reflect this internal code quality improvement."
+            }
+        ],
+        "stack": [
+            "SDK v0.2.10",
+            "storage.ts",
+            "Code Quality"
+        ]
+    },
+    {
+
         "version": "1.0.14",
         "date": "2026-03-30",
         "tag": "polish",

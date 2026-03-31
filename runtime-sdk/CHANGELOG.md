@@ -3,7 +3,15 @@
 All notable changes to the Vyzora SDK will be documented in this file.
 
 
+## [0.2.10] - 2026-03-31
+
+### Changed
+- **Shared UUID Generation**: Extracted the `generateUUID()` function — which was identically duplicated in both `session.ts` and `visitor.ts` — into `storage.ts` as a single shared export. Both modules now import from that one location. This eliminates the risk of the two copies drifting out of sync and reduces bundle weight by removing the redundant implementation.
+
+---
+
 ## [0.2.7] - 2026-03-18
+
 
 ### Fixed
 - **Production Endpoint (v2)**: Re-synchronized the default build-time ingestion endpoint with the latest production infrastructure. This ensures zero-config connectivity for out-of-the-box installations on the production domain. (Note: v0.2.6 was published without a full build; use v0.2.7+ for the fix).

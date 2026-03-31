@@ -50,7 +50,6 @@ async function fetchWithRetry(
 
         logger.log(`Batch flush (attempt ${attempt + 1}) →`, res.status);
 
-        // Retry only on server errors (5xx). Never retry 4xx — drop silently.
         if (res.status >= 500 && attempt === 0) {
             setTimeout(
                 () => void fetchWithRetry(endpoint, body, headers, debug, logger, 1),
@@ -58,13 +57,11 @@ async function fetchWithRetry(
             );
         }
     } catch {
-        // Network error — retry once only
         if (attempt === 0) {
             setTimeout(
                 () => void fetchWithRetry(endpoint, body, headers, debug, logger, 1),
                 RETRY_DELAY_MS
             );
         }
-        // Second attempt failed → drop silently. No re-insertion into queue.
     }
 }

@@ -5,7 +5,15 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.15] - 2026-03-31
+
+### Changed
+- **SDK (v0.2.10) — Centralized UUID Generation**: The `generateUUID()` function was independently defined in both `session.ts` and `visitor.ts` within the Runtime SDK. This release consolidates it into a single exported utility in `storage.ts`, which both modules now share. The fix eliminates duplicated logic, ensures consistency, and reduces the compiled output size.
+
+---
+
 ## [1.0.14] - 2026-03-30
+
 
 ### Changed
 - **Core — Unified Environment Configuration**: Centralized all `process.env` access into a strictly-typed `config` object across both the legacy and scalable backend architectures. This eliminates fragmented environment lookups and provides a single source of truth for service configuration.
