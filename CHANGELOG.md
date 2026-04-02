@@ -5,6 +5,14 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.16] - 2026-04-02
+
+### Fixed
+- **Frontend (v0.6.5) — Accurate Project Type**: Removed `apiKey` from the shared `Project` interface on the dashboard. The field was never returned by the list endpoint after the plain-text key removal; the stale type was misleading and would have caused confusion for future dashboard work. A dedicated `ProjectCreateResponse` type now correctly captures the one-time key returned only on project creation.
+- **Frontend (v0.6.5) — Modal-Based Delete Confirmation**: Replaced the synchronous `window.confirm()` dialog on project deletion with a `DeleteConfirmModal` component consistent with the rest of the dashboard's modal-based interface. The modal displays the project name, shows a loading state during the async delete, and disables both buttons to prevent double-submission.
+
+---
+
 ## [1.0.15] - 2026-03-31
 
 ### Changed

@@ -2,22 +2,22 @@
 
 > Privacy-first, developer-focused analytics service. Track events, reconstruct sessions, and query aggregated metrics — without compromising user privacy.
 
-[![Version](https://img.shields.io/badge/version-v1.0.15-indigo)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.0.16-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Backend](https://img.shields.io/badge/backend-v0.5.11-blue)](backend/package.json)
 [![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.9-blue)](backend-scalable/api/package.json)
 [![SDK](https://img.shields.io/badge/sdk-v0.2.10-violet)](runtime-sdk/package.json)
-[![Frontend](https://img.shields.io/badge/frontend-v0.6.4-purple)](frontend/package.json)
+[![Frontend](https://img.shields.io/badge/frontend-v0.6.5-purple)](frontend/package.json)
 
 ---
 
 Vyzora is a high-performance analytics service designed for modern developers. It provides:
 
-1. **[`vyzora-sdk`](./runtime-sdk)** — A lightweight TypeScript browser SDK (`< 3 KB` gzipped). Drop it into any JavaScript or TypeScript project. It auto-collects pageviews, tracks SPA navigation, and batches events before sending them to the scalable gateway.
+1. **[`vyzora-sdk`](./runtime-sdk)**: A lightweight TypeScript browser SDK (`< 3 KB` gzipped). Drop it into any JavaScript or TypeScript project. It auto-collects pageviews, tracks SPA navigation, and batches events before sending them to the scalable gateway.
 
-2. **Scalable Ingestion Engine** — A horizontally scalable, asynchronous backend built on **Express, Redis, and BullMQ**. It decouples event reception from database writes, ensuring sub-millisecond API responsiveness even under massive traffic spikes.
+2. **Scalable Ingestion Engine**: A horizontally scalable, asynchronous backend built on **Express, Redis, and BullMQ**. It decouples event reception from database writes, ensuring sub-millisecond API responsiveness even under massive traffic spikes.
 
-3. **Developer Dashboard** — A powerful Next.js interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, and daily trend charts.
+3. **Developer Dashboard**: A powerful Next.js interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, and daily trend charts.
 
 No third-party trackers. No data sampling. No invasive cookies. You own the relationship with your users' data.
 

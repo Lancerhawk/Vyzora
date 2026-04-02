@@ -11,7 +11,8 @@ import { StatCard } from '../../components/dashboard/Panel';
 import { AnalyticsPanel, SparkData } from '../../components/dashboard/AnalyticsPanel';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-interface Project { id: string; name: string; apiKey: string; createdAt: string; }
+interface Project { id: string; name: string; createdAt: string; }
+interface ProjectCreateResponse extends Project { apiKey: string; }
 interface Metrics { totalEvents: number; uniqueVisitors: number; totalSessions: number; pageviews: number; }
 type MetricsRange = '7d' | '30d' | '90d';
 
@@ -108,6 +109,35 @@ function ApiKeyModal({ apiKey, onDone }: { apiKey: string; onDone: () => void })
     );
 }
 
+function DeleteConfirmModal({ project, onConfirm, onCancel, deleting }: {
+    project: Project; onConfirm: () => void; onCancel: () => void; deleting: boolean;
+}) {
+    return (
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm px-0 sm:px-4"
+            onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}>
+            <div className="w-full sm:max-w-md bg-[#0b1220] border border-white/[0.08] rounded-t-xl sm:rounded-xl shadow-2xl shadow-black/70">
+                <div className="border-b border-white/[0.07] px-7 py-5">
+                    <h2 className="text-base font-semibold text-white">Delete project</h2>
+                    <p className="text-[13px] text-gray-500 mt-1">This action cannot be undone.</p>
+                </div>
+                <div className="px-7 py-6">
+                    <p className="text-[13px] text-gray-400 leading-relaxed">
+                        Are you sure you want to permanently delete{' '}
+                        <span className="font-semibold text-white">{project.name}</span>?
+                        All associated analytics data will be lost.
+                    </p>
+                </div>
+                <div className="border-t border-white/[0.07] px-7 py-4 flex gap-3">
+                    <button onClick={onCancel} disabled={deleting} className="flex-1 py-3 text-[13px] font-medium text-gray-500 border border-white/[0.08] rounded-lg hover:bg-white/[0.03] hover:text-gray-300 disabled:opacity-40 disabled:pointer-events-none transition-all">Cancel</button>
+                    <button onClick={onConfirm} disabled={deleting} className="flex-1 py-3 text-[13px] font-semibold text-white bg-red-600 hover:bg-red-500 rounded-lg disabled:opacity-40 disabled:pointer-events-none transition-all">
+                        {deleting ? 'Deleting…' : 'Delete project'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
     const { user, loading, refetch } = useAuth();
@@ -124,6 +154,8 @@ export default function DashboardPage() {
     const [newApiKey, setNewApiKey] = useState('');
     const [idCopied, setIdCopied] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
+    const [deleting, setDeleting] = useState(false);
     const [sparkData, setSparkData] = useState<SparkData | null>(null);
 
     useEffect(() => { if (!loading && !user) router.replace('/login'); }, [user, loading, router]);
@@ -147,14 +179,11 @@ export default function DashboardPage() {
 
     useEffect(() => { if (user) fetchProjects(); }, [user, fetchProjects]);
 
-    // Metrics + loading state are now driven by AnalyticsPanel via onMetrics / onLoadingChange
-    // No separate fetchMetrics call needed (P4: single batched request from the panel).
-
     const selectProject = (p: Project) => { setSelected(p); setSidebarOpen(false); };
 
     const handleCreate = async (name: string): Promise<string | null> => {
         try {
-            const res = await api.post<{ project: Project }>('/api/projects', { name });
+            const res = await api.post<{ project: ProjectCreateResponse }>('/api/projects', { name });
             await fetchProjects();
             setNewApiKey(res.data.project.apiKey);
             setShowCreate(false); setShowKey(true);
@@ -166,12 +195,15 @@ export default function DashboardPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Permanently delete this project?')) return;
+        setDeleting(true);
         try {
             await api.delete(`/api/projects/${id}`);
             if (selected?.id === id) { setSelected(null); setMetrics(null); }
             await fetchProjects();
-        } catch { /* silent */ }
+        } catch { /* silent */ } finally {
+            setDeleting(false);
+            setDeleteTarget(null);
+        }
     };
 
     const handleLogout = async () => {
@@ -224,7 +256,7 @@ export default function DashboardPage() {
                                         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${selected?.id === p.id ? 'bg-indigo-400' : 'bg-gray-600 group-hover:bg-gray-400'}`} />
                                         <span className={`text-[13px] truncate font-medium ${selected?.id === p.id ? 'text-indigo-200' : 'text-gray-400 group-hover:text-gray-200'}`}>{p.name}</span>
                                     </button>
-                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}
+                                    <button onClick={(e) => { e.stopPropagation(); setDeleteTarget(p); }}
                                         className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-400 cursor-pointer transition-all ml-1 p-0.5">
                                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -425,6 +457,7 @@ export default function DashboardPage() {
 
             <CreateModal show={showCreate} onClose={() => setShowCreate(false)} onCreate={handleCreate} />
             {showKey && <ApiKeyModal apiKey={newApiKey} onDone={() => { setShowKey(false); setNewApiKey(''); }} />}
+            {deleteTarget && <DeleteConfirmModal project={deleteTarget} onConfirm={() => handleDelete(deleteTarget.id)} onCancel={() => setDeleteTarget(null)} deleting={deleting} />}
         </div>
     );
 }

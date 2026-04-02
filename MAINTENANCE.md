@@ -70,9 +70,9 @@ Tracks fixes, improvements, and open issues across the platform. Checked items a
 
 - [x] 1. Changing the time range on the dashboard fired six separate API calls simultaneously rather than a single batched request, meaning every range toggle multiplied network overhead by six.
 
-- [ ] 2. The project object type on the dashboard includes an API key field on the list view, but the list endpoint no longer returns it after the plain-text key removal change. The type is incorrect and will cause confusion when working on the dashboard going forward.
+- [x] 2. The project object type on the dashboard includes an API key field on the list view, but the list endpoint no longer returns it after the plain-text key removal change. The type is incorrect and will cause confusion when working on the dashboard going forward.
 
-- [ ] 3. Project deletion uses `window.confirm()` for the confirmation step. This is a synchronous browser dialog that freezes the main thread and looks visually inconsistent with the rest of the modal-based interface throughout the dashboard.
+- [x] 3. Project deletion uses `window.confirm()` for the confirmation step. This is a synchronous browser dialog that freezes the main thread and looks visually inconsistent with the rest of the modal-based interface throughout the dashboard.
 
 ## SDK
 

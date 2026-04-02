@@ -1,5 +1,28 @@
 [
     {
+        "version": "1.0.16",
+        "date": "2026-04-02",
+        "tag": "fix",
+        "title": "Dashboard Type Accuracy & Deletion UX",
+        "summary": "This release fixes two dashboard-level issues: an incorrect TypeScript type on the Project object that included a field no longer returned by the list API, and a blocking browser dialog used for project deletion that was inconsistent with the dashboard's modal-based interface.",
+        "whatsIncluded": [
+            {
+                "headline": "Accurate Project Type",
+                "detail": "Removed apiKey from the shared Project interface, which was never included in list endpoint responses after the plain-text key removal. A separate ProjectCreateResponse type now correctly models the one-time key returned only on project creation."
+            },
+            {
+                "headline": "Modal-Based Delete Confirmation",
+                "detail": "Replaced the synchronous window.confirm() dialog on project deletion with a styled DeleteConfirmModal component, consistent with all other modal interactions on the dashboard. The modal shows the project name, disables both buttons during deletion, and clears itself on success or cancellation."
+            }
+        ],
+        "stack": [
+            "Frontend v0.6.5",
+            "TypeScript",
+            "Dashboard UX"
+        ]
+    },
+
+    {
         "version": "1.0.15",
         "date": "2026-03-31",
         "tag": "fix",
