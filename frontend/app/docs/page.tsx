@@ -42,9 +42,9 @@ export default function DocsPage() {
                                     ['PostgreSQL', 'High-performance storage with composite indexing on (projectId, createdAt)'],
                                     ['Next.js Dashboard', 'GitHub OAuth login → Real-time SQL aggregation metrics UI'],
                                 ].map(([label, desc]) => (
-                                    <div key={label} className="flex gap-3">
-                                        <span className="text-indigo-400 font-mono shrink-0 w-36 pt-0.5">{label}</span>
-                                        <span className="text-gray-500 leading-relaxed">{desc}</span>
+                                    <div key={label} className="flex flex-col sm:flex-row sm:gap-3">
+                                        <span className="text-indigo-400 font-mono shrink-0 sm:w-36 pt-0.5">{label}</span>
+                                        <span className="text-gray-500 leading-relaxed break-words">{desc}</span>
                                     </div>
                                 ))}
                             </div>
@@ -175,9 +175,9 @@ new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</CodeB
                                     ['referrer', 'document.referrer (omitted if empty)'],
                                     ['timezone', 'Intl.DateTimeFormat().resolvedOptions().timeZone'],
                                 ].map(([k, v]) => (
-                                    <div key={k} className="flex flex-col sm:flex-row sm:gap-3">
+                                    <div key={k} className="flex flex-col sm:flex-row sm:gap-3 min-w-0">
                                         <code className="text-indigo-300 shrink-0 sm:w-44 mb-0.5 sm:mb-0">{k}</code>
-                                        <span className="text-gray-500">{v}</span>
+                                        <span className="text-gray-500 break-all">{v}</span>
                                     </div>
                                 ))}
                             </div>
@@ -212,8 +212,8 @@ new Vyzora({ apiKey: import.meta.env.VITE_VYZORA_KEY, enabled: true });`}</CodeB
                                     ['history.replaceState', 'Wrapped. Fires a pageview on replace navigations.'],
                                     ['window popstate', 'Listened. Fires on browser back/forward button presses.'],
                                 ].map(([trigger, desc]) => (
-                                    <div key={trigger} className="flex gap-3">
-                                        <code className="text-indigo-300 text-xs shrink-0 w-44 pt-0.5">{trigger}</code>
+                                    <div key={trigger} className="flex flex-col sm:flex-row sm:gap-3">
+                                        <code className="text-indigo-300 text-xs shrink-0 sm:w-44 pt-0.5">{trigger}</code>
                                         <span className="text-gray-500 text-xs leading-relaxed">{desc}</span>
                                     </div>
                                 ))}
@@ -255,9 +255,9 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                     ['Generation', 'crypto.randomUUID() with Math.random() fallback'],
                                     ['Storage failure', 'Falls back to a stable module-level in-memory variable for the page lifetime. New on next hard load.'],
                                 ].map(([k, v]) => (
-                                    <div key={k} className="flex gap-3">
-                                        <span className="text-indigo-300 shrink-0 w-32">{k}</span>
-                                        <span className="text-gray-500">{v}</span>
+                                    <div key={k} className="flex flex-col sm:flex-row sm:gap-3">
+                                        <span className="text-indigo-300 shrink-0 sm:w-32">{k}</span>
+                                        <span className="text-gray-500 break-words">{v}</span>
                                     </div>
                                 ))}
                             </div>
@@ -273,9 +273,9 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                     ['Timestamp update', 'On every getSessionId() call — including track() and pageview()'],
                                     ['Manual reset', 'vyzora.resetSession() — removes both keys. New session on next event.'],
                                 ].map(([k, v]) => (
-                                    <div key={k} className="flex gap-3">
-                                        <span className="text-indigo-300 shrink-0 w-36">{k}</span>
-                                        <span className="text-gray-500">{v}</span>
+                                    <div key={k} className="flex flex-col sm:flex-row sm:gap-3">
+                                        <span className="text-indigo-300 shrink-0 sm:w-36">{k}</span>
+                                        <span className="text-gray-500 break-words">{v}</span>
                                     </div>
                                 ))}
                             </div>
@@ -311,9 +311,9 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                     ['pagehide', 'Flushed when the pagehide window event fires (navigation away, page unload).'],
                                     ['destroy()', 'Explicit flush on SDK teardown, then clears interval and removes listeners.'],
                                 ].map(([k, v]) => (
-                                    <div key={k} className="flex gap-3">
-                                        <code className="text-indigo-300 shrink-0 w-32">{k}</code>
-                                        <span className="text-gray-500 leading-relaxed">{v}</span>
+                                    <div key={k} className="flex flex-col sm:flex-row sm:gap-3">
+                                        <code className="text-indigo-300 shrink-0 sm:w-32">{k}</code>
+                                        <span className="text-gray-500 leading-relaxed break-words">{v}</span>
                                     </div>
                                 ))}
                             </div>
@@ -337,9 +337,9 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                     ['4xx response (401, 403, 429, etc.)', 'Dropped silently. No retry.'],
                                     ['Retry failure', 'Dropped silently. Events are not re-inserted into the queue.'],
                                 ].map(([k, v]) => (
-                                    <div key={k} className="flex gap-3">
-                                        <code className="text-indigo-300 shrink-0 w-56">{k}</code>
-                                        <span className="text-gray-500">{v}</span>
+                                    <div key={k} className="flex flex-col sm:flex-row sm:gap-3">
+                                        <code className="text-indigo-300 shrink-0 sm:w-56">{k}</code>
+                                        <span className="text-gray-500 break-words">{v}</span>
                                     </div>
                                 ))}
                             </div>
@@ -470,10 +470,10 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Parameters</p>
                                             <div className="space-y-3">
                                                 {fn.params.map(([name, type, desc]) => (
-                                                    <div key={name} className="flex flex-col sm:flex-row sm:gap-3 text-xs">
-                                                        <code className="text-indigo-300 font-mono sm:w-28 mb-0.5 sm:mb-0">{name}</code>
-                                                        <span className="text-gray-600 sm:w-40 mb-0.5 sm:mb-0">{type}</span>
-                                                        <span className="text-gray-500">{desc}</span>
+                                                    <div key={name} className="flex flex-col sm:flex-row sm:gap-3 text-xs min-w-0">
+                                                        <code className="text-indigo-300 font-mono sm:w-28 mb-0.5 sm:mb-0 shrink-0">{name}</code>
+                                                        <span className="text-gray-600 sm:w-40 mb-0.5 sm:mb-0 shrink-0 break-words">{type}</span>
+                                                        <span className="text-gray-500 break-words">{desc}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -529,9 +529,9 @@ vyzora.pageview();               // defaults to current pathname + search`}</Cod
                                     ['metadata', 'JSON object, optional'],
                                     ['apiKey', 'Validated against Database Project table.'],
                                 ].map(([k, v]) => (
-                                    <div key={k} className="flex gap-3">
-                                        <code className="text-indigo-300 shrink-0 w-28">{k}</code>
-                                        <span className="text-gray-500">{v}</span>
+                                    <div key={k} className="flex flex-col sm:flex-row sm:gap-3">
+                                        <code className="text-indigo-300 shrink-0 sm:w-28">{k}</code>
+                                        <span className="text-gray-500 break-words">{v}</span>
                                     </div>
                                 ))}
                             </div>
