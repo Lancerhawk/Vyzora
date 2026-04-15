@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Backend](https://img.shields.io/badge/backend-v0.5.11-blue)](backend/package.json)
 [![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.9-blue)](backend-scalable/api/package.json)
-[![SDK](https://img.shields.io/badge/sdk-v0.2.10-violet)](runtime-sdk/package.json)
+[![SDK](https://img.shields.io/badge/sdk-v0.2.11-violet)](runtime-sdk/package.json)
 [![Frontend](https://img.shields.io/badge/frontend-v0.6.5-purple)](frontend/package.json)
 
 ---

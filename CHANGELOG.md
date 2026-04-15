@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CI/CD — Monorepo Build Verification**: Integrated comprehensive build-time validation into GitHub Actions. The pipeline now verifies that all 5 critical project components (Backend, Frontend, Runtime SDK, Scalable API, and Worker) compile successfully on every push, ensuring zero-drift architectural integrity.
 - **CI/CD — Security & Supply Chain Auditing**: Implemented automated, high-level dependency auditing in CI to detect and block vulnerable third-party packages across the monorepo.
 - **DevOps — Local Verification Hub**: Introduced `npm run verify` and `npm run security-audit` root-level commands. Developers can now run a full "pre-flight" check (Lint + Security Audit + Build) locally with a single command before pushing code.
+- **Security — Platform-Wide Vulnerability Patches**: Resolved **20+ high-severity vulnerabilities** (SSRF, Request Smuggling, Prototype Pollution) by patching Axios (v1.15.0), Next.js (v16.2.3), and Express Rate Limit (v8.3.2) across the monorepo.
+- **Security — SDK Build Safety (v0.2.11)**: Patched transitive vulnerabilities in the Runtime SDK's build-time dependency tree, ensuring a clean CI audit and safe library distribution.
 
 ### Changed
 - **CI/CD — Pipeline Consolidation**: Renamed the primary GitHub Actions workflow from `Lint` to `CI` to reflect its expanded scope as the project's central quality and security gateway.

@@ -1,5 +1,35 @@
 [
     {
+        "version": "1.0.17",
+        "date": "2026-04-15",
+        "tag": "security",
+        "title": "CI/CD & Security Hardening",
+        "summary": "A major infrastructure and security update introducing automated CI/CD pipelines, system-wide vulnerability patching, and local verification tooling across the monorepo.",
+        "whatsIncluded": [
+            {
+                "headline": "Automated CI Pipeline",
+                "detail": "Integrated multi-workspace build verification and security auditing into GitHub Actions, ensuring zero-drift architectural integrity on every push."
+            },
+            {
+                "headline": "Platform-Wide Security Patches",
+                "detail": "Resolved 20+ high-severity vulnerabilities by patching Axios (v1.15.0), Next.js (v16.2.3), and Express Rate Limit (v8.3.2) across the monorepo."
+            },
+            {
+                "headline": "SDK Build Safety (v0.2.11)",
+                "detail": "Bumped Runtime SDK to v0.2.11 with patched transitive dependencies in its build-time tree, ensuring a clean CI audit and safe library distribution."
+            },
+            {
+                "headline": "Local Verification Hub",
+                "detail": "Introduced 'npm run verify' for one-click local checks, including automated Prisma client generation to prevent build failures after dependency updates."
+            }
+        ],
+        "stack": [
+            "CI/CD Workflows",
+            "Security Audit",
+            "SDK v0.2.11"
+        ]
+    },
+    {
         "version": "1.0.16",
         "date": "2026-04-02",
         "tag": "fix",
@@ -21,7 +51,6 @@
             "Dashboard UX"
         ]
     },
-
     {
         "version": "1.0.15",
         "date": "2026-03-31",
@@ -49,7 +78,6 @@
         ]
     },
     {
-
         "version": "1.0.14",
         "date": "2026-03-30",
         "tag": "polish",

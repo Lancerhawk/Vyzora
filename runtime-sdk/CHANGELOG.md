@@ -3,6 +3,13 @@
 All notable changes to the Vyzora SDK will be documented in this file.
 
 
+## [0.2.11] - 2026-04-15
+
+### Security
+- **CI/CD Hygiene**: Patched transitive high-severity vulnerabilities in devDependencies (brace-expansion, flatted, minimatch, picomatch) by bumping internal build tools.
+
+---
+
 ## [0.2.10] - 2026-03-31
 
 ### Changed
