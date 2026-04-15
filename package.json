@@ -25,7 +25,7 @@
         "stress": "node backend-scalable/scripts/stress-test.js",
         "verify:fixes": "npm run verify:fixes --workspace=backend",
         "security-audit": "npm audit --workspaces --audit-level=high",
-        "verify": "npm run lint && npm run security-audit && npm run build"
+        "verify": "npm run lint && npm run security-audit && npm run prisma:generate --workspaces --if-present && npm run build"
     },
     "devDependencies": {
         "concurrently": "^9.0.0"
