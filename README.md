@@ -2,7 +2,7 @@
 
 > Privacy-first, developer-focused analytics service. Track events, reconstruct sessions, and query aggregated metrics — without compromising user privacy.
 
-[![Version](https://img.shields.io/badge/version-v1.0.16-indigo)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.0.17-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Backend](https://img.shields.io/badge/backend-v0.5.11-blue)](backend/package.json)
 [![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.9-blue)](backend-scalable/api/package.json)

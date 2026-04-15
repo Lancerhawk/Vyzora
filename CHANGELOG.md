@@ -5,6 +5,18 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.17] - 2026-04-15
+
+### Added
+- **CI/CD — Monorepo Build Verification**: Integrated comprehensive build-time validation into GitHub Actions. The pipeline now verifies that all 5 critical project components (Backend, Frontend, Runtime SDK, Scalable API, and Worker) compile successfully on every push, ensuring zero-drift architectural integrity.
+- **CI/CD — Security & Supply Chain Auditing**: Implemented automated, high-level dependency auditing in CI to detect and block vulnerable third-party packages across the monorepo.
+- **DevOps — Local Verification Hub**: Introduced `npm run verify` and `npm run security-audit` root-level commands. Developers can now run a full "pre-flight" check (Lint + Security Audit + Build) locally with a single command before pushing code.
+
+### Changed
+- **CI/CD — Pipeline Consolidation**: Renamed the primary GitHub Actions workflow from `Lint` to `CI` to reflect its expanded scope as the project's central quality and security gateway.
+
+---
+
 ## [1.0.16] - 2026-04-02
 
 ### Fixed

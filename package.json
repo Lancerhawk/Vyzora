@@ -1,6 +1,6 @@
 {
     "name": "vyzora",
-    "version": "1.0.16",
+    "version": "1.0.17",
     "private": true,
     "workspaces": [
         "backend",
@@ -23,7 +23,9 @@
         "lint:sdk": "npm run lint --workspace=runtime-sdk",
         "typecheck": "npm run typecheck --workspace=runtime-sdk",
         "stress": "node backend-scalable/scripts/stress-test.js",
-        "verify:fixes": "npm run verify:fixes --workspace=backend"
+        "verify:fixes": "npm run verify:fixes --workspace=backend",
+        "security-audit": "npm audit --workspaces --audit-level=high",
+        "verify": "npm run lint && npm run security-audit && npm run build"
     },
     "devDependencies": {
         "concurrently": "^9.0.0"
