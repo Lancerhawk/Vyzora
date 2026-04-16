@@ -5,6 +5,14 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.18] - 2026-04-17
+
+### Added
+- **SDK — NPM Repository Linking**: Integrated the `vyzora-sdk` (v0.2.12) with the official GitHub repository. Updated `package.json` with `repository`, `bugs`, and `homepage` fields to ensure correct visibility on the NPM registry.
+- **Documentation — NPM Badge**: Added a live NPM version badge to the project root README for improved discoverability.
+
+---
+
 ## [1.0.17] - 2026-04-15
 
 ### Added

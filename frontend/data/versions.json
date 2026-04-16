@@ -1,5 +1,27 @@
 [
     {
+        "version": "1.0.18",
+        "date": "2026-04-17",
+        "tag": "feat",
+        "title": "NPM Registry Integration",
+        "summary": "This update links the Vyzora SDK with its official GitHub repository and bug tracker, ensuring full visibility and transparency on the NPM registry.",
+        "whatsIncluded": [
+            {
+                "headline": "SDK Metadata Sync (v0.2.12)",
+                "detail": "Updated the Runtime SDK with explicit repository, bugs, and homepage fields. This metadata ensures that developers on NPM can easily find the source code and report issues."
+            },
+            {
+                "headline": "Project Root Linking",
+                "detail": "Added live NPM status badges to the project documentation, creating a tighter link between the source code and the published package distribution."
+            }
+        ],
+        "stack": [
+            "SDK v0.2.12",
+            "NPM Metadata",
+            "README Badges"
+        ]
+    },
+    {
         "version": "1.0.17",
         "date": "2026-04-15",
         "tag": "security",

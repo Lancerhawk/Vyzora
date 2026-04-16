@@ -2,9 +2,10 @@
 
 > Lightweight, production-grade analytics SDK for Vyzora. Framework-agnostic, under 7KB minified, zero dependencies, built for reliability.
 
-[![npm version](https://img.shields.io/badge/version-0.2.11-blue)](https://npmjs.com/package/vyzora-sdk)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Bundle Size](https://img.shields.io/badge/size-%3C7KB-brightgreen)](https://bundlephobia.com/package/vyzora-sdk)
+[![npm version](https://img.shields.io/npm/v/vyzora-sdk.svg?color=orange)](https://www.npmjs.com/package/vyzora-sdk)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/Lancerhawk/Vyzora/blob/main/LICENSE)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/vyzora-sdk?color=brightgreen)](https://bundlephobia.com/package/vyzora-sdk)
+[![Repo](https://img.shields.io/badge/repo-GitHub-indigo)](https://github.com/Lancerhawk/Vyzora/tree/main/runtime-sdk)
 
 ---
 
@@ -263,4 +264,4 @@ All storage access is wrapped in `try/catch`. If `localStorage` is unavailable (
 
 ## License
 
-MIT © [Vyzora](https://vyzora.io)
+MIT © [Vyzora](https://github.com/Lancerhawk/Vyzora)

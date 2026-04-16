@@ -3,6 +3,14 @@
 All notable changes to the Vyzora SDK will be documented in this file.
 
 
+## [0.2.12] - 2026-04-17
+
+### Added
+- **Repository Metadata**: Linked the SDK package with the official Vyzora repository and bug tracker in `package.json`.
+- **Documentation**: Updated the SDK README with GitHub repository badges and direct links.
+
+---
+
 ## [0.2.11] - 2026-04-15
 
 ### Security
