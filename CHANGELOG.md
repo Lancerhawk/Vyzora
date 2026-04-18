@@ -5,6 +5,16 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.19] - 2026-04-18
+
+### Added
+- **Testing — Backend Unit Test Foundation**: Implemented a comprehensive Vitest-based unit testing suite across all backend modules (@vyzora/backend, @vyzora/scalable-api, @vyzora/scalable-worker). 
+- **Testing — Unified Orchestration**: Integrated root-level test scripts (`npm run test`, `npm run coverage`) for seamless cross-workspace validation.
+- **Testing — Type-Safe Mocking**: Engineered a "Proper Fix" for Prisma and BullMQ mocks using `vi.mocked()` and official Prisma types, achieving 100% clean lint/test status without unsafe `any` casts.
+- **Worker — Refactor for Testability**: Decoupled the core ingestion logic from the BullMQ worker lifecycle, allowing for independent, high-speed unit testing of the event processing engine.
+
+---
+
 ## [1.0.18] - 2026-04-17
 
 ### Added
