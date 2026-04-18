@@ -2,13 +2,13 @@
 
 > Privacy-first, developer-focused analytics service. Track events, reconstruct sessions, and query aggregated metrics — without compromising user privacy.
 
-[![Version](https://img.shields.io/badge/version-v1.0.19-indigo)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.0.20-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Backend](https://img.shields.io/badge/backend-v0.5.12-blue)](backend/package.json)
 [![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.10-blue)](backend-scalable/api/package.json)
 [![SDK](https://img.shields.io/badge/sdk-v0.2.12-violet)](runtime-sdk/package.json)
 [![NPM](https://img.shields.io/npm/v/vyzora-sdk?color=orange&label=npm)](https://www.npmjs.com/package/vyzora-sdk)
-[![Frontend](https://img.shields.io/badge/frontend-v0.6.5-purple)](frontend/package.json)
+[![Frontend](https://img.shields.io/badge/frontend-v0.6.6-purple)](frontend/package.json)
 
 ---
 

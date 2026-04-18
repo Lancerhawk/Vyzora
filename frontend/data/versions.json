@@ -1,5 +1,36 @@
 [
     {
+        "version": "1.0.20",
+        "date": "2026-04-19",
+        "tag": "feat",
+        "title": "Professional FAQ Portal & Design Sync",
+        "summary": "This update introduces a professional, data-driven FAQ portal fully synchronized with the Vyzora documentation system. It features a complete redesign, a professional SVG icon library, and a mobile-first responsive architecture.",
+        "whatsIncluded": [
+            {
+                "headline": "Professional Sidebar Navigation",
+                "detail": "Implemented a Sidebar + Article layout matching the official documentation, moving category management to a clean, left-aligned desktop sidebar."
+            },
+            {
+                "headline": "100% Dynamic FAQ Engine",
+                "detail": "Refactored the entire FAQ architecture to be data-driven via faq.json, allowing for instant updates to hero copy, technical features, and categorized Q&A without code changes."
+            },
+            {
+                "headline": "Mobile-Responsive Category Bar",
+                "detail": "Engineered a horizontal, scrollable category navigation specifically for mobile viewports, ensuring a premium experience on small screens."
+            },
+            {
+                "headline": "Premium Icon System",
+                "detail": "Replaced 'cringe' emojis with a professional SVG icon library mapped to JSON keys, aligning the documentation with Vyzora's engineering-centric brand identity."
+            }
+        ],
+        "stack": [
+            "Frontend v0.6.6",
+            "Next.js App Router",
+            "Dynamic JSON Engine",
+            "SVG Icon System"
+        ]
+    },
+    {
         "version": "1.0.19",
         "date": "2026-04-18",
         "tag": "feat",

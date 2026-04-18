@@ -13,6 +13,7 @@ const navLinks = {
     Resources: [
         { label: 'API Reference', href: '/docs#api-reference' },
         { label: 'SDK Guides', href: '/docs#sdk-usage' },
+        { label: 'FAQ', href: '/faq' },
         { label: 'GitHub', href: 'https://github.com/Lancerhawk/Vyzora' },
     ],
 };

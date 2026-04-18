@@ -71,7 +71,11 @@ export default function Navbar() {
                 {/* Right */}
                 <div className="flex items-center gap-6">
                     <nav className="hidden md:flex items-center gap-1">
-                        {[{ label: 'Features', href: '/#features' }, { label: 'Docs', href: '/docs' }].map((link) => (
+                        {[
+                            { label: 'Features', href: '/#features' },
+                            { label: 'Docs', href: '/docs' },
+                            { label: 'FAQ', href: '/faq' }
+                        ].map((link) => (
                             <Link key={link.label} href={link.href}
                                 className="px-4 py-2 text-sm text-gray-400 hover:text-white rounded-lg hover:bg-white/[0.05] transition-all duration-200">
                                 {link.label}

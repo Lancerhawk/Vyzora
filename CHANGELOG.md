@@ -5,6 +5,17 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.20] - 2026-04-19
+
+### Added
+- **Documentation — Professional FAQ Portal**: Implemented a comprehensive, data-driven FAQ page integrated with the documentation portal.
+- **Frontend — Dynamic Design System**: Refactored the FAQ architecture to be 100% dynamic, driven by `faq.json` for all hero copy, feature cards, and categorized Q&A.
+- **Frontend — Pixel-Perfect Docs Sync**: Synchronized the FAQ layout with the main documentation site, featuring a Sidebar-based navigation system and standardized typography (H1-H3, body P).
+- **Frontend — Mobile-First Navigation**: Engineered a responsive, horizontal category bar for mobile devices while preserving the professional sidebar for desktop viewports.
+
+---
+
+
 ## [1.0.19] - 2026-04-18
 
 ### Added

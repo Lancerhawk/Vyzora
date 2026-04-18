@@ -1,0 +1,507 @@
+{
+  "hero": {
+    "title": "Frequently Asked Questions",
+    "description": "Everything you need to know about Vyzora's architecture, security, and developer-focused analytics platform."
+  },
+  "features": [
+    {
+      "title": "Sub-ms Ingestion",
+      "desc": "Events are enqueued in <1ms using our decoupled architecture.",
+      "icon": "zap"
+    },
+    {
+      "title": "Privacy First",
+      "desc": "GDPR ready. No PII storage. Full data ownership by default.",
+      "icon": "shield"
+    },
+    {
+      "title": "Zero Dependency",
+      "desc": "SDK is <3KB gzipped with zero external dependencies.",
+      "icon": "box"
+    }
+  ],
+  "sections": [
+    {
+      "heading": "General & Basics",
+      "questions": [
+        {
+          "question": "What is Vyzora?",
+          "answer": "Vyzora is a modern, high-performance event analytics platform built for engineering teams who need deep insights without sacrificing privacy or performance."
+        },
+        {
+          "question": "How does the data flow work?",
+          "answer": "It's a streamlined 4-step process: 1. Capture (SDK), 2. Ingest (Scalable API), 3. Queue (Redis/BullMQ), and 4. Persist (PostgreSQL). This decoupled flow ensures your app stays fast while data is processed reliably in the background."
+        },
+        {
+          "question": "Is it easy to integrate?",
+          "answer": "Yes. Integration takes less than 2 minutes. Just install the zero-dependency SDK, initialize it with your API key, and Vyzora automatically begins tracking page views and sessions."
+        },
+        {
+          "question": "Who is Vyzora built for?",
+          "answer": "Vyzora is built for developers and product teams who want full control over their data, sub-millisecond tracking latency, and a scalable architecture that grows with their traffic."
+        },
+        {
+          "question": "How does it handle high traffic?",
+          "answer": "Vyzora is designed for horizontal scaling. By using an asynchronous producer-consumer model, it can handle thousands of events per second by simply adding more API or worker replicas."
+        },
+        {
+          "question": "Why do you use a Queue (Redis)?",
+          "answer": "To prevent your database from becoming a bottleneck. By enqueuing events first, we can acknowledge the request in less than 1ms and let the background workers handle the heavy lifting of saving to the database."
+        },
+        {
+          "question": "What happens when an event is tracked?",
+          "answer": "The SDK captures the interaction (like a page view or click), batches it with others, and sends it to our ingestion server. We validate it instantly and push it into a high-speed Redis queue. Workers then pick it up for permanent storage."
+        },
+        {
+          "question": "What technology powers the ingestion flow?",
+          "answer": "Our stack is built for speed: Nginx for load balancing, Express for the API, Redis and BullMQ for reliable queuing, and Prisma with PostgreSQL for scalable data persistence."
+        },
+        {
+          "question": "Is my data safe during high traffic spikes?",
+          "answer": "Yes. Our system is designed with a 'Buffer First' approach. Even during massive traffic spikes, events are safely held in our high-speed Redis queue until the workers can process them, ensuring no data loss and zero impact on your application's performance."
+        }
+      ]
+    },
+    {
+      "heading": "Architecture & System Design",
+      "questions": [
+        {
+          "question": "Why did you choose a monorepo structure?",
+          "answer": "Shared TypeScript types between SDK, backend, and frontend. Single source of truth for versioning. Atomic commits across multiple packages. Easier dependency management with npm workspaces."
+        },
+        {
+          "question": "Walk me through the event ingestion flow from SDK to database.",
+          "answer": "SDK batches events → POST to Nginx → Round-robin to API replica → Zod validation → Redis LPUSH → BullMQ worker picks up → Prisma bulk insert → PostgreSQL with composite index."
+        },
+        {
+          "question": "Why did you switch from monolithic to microservices architecture?",
+          "answer": "Monolithic version had database writes blocking API responses. Decoupling into Producer (API) + Consumer (Worker) achieved sub-millisecond API response by offloading writes to background jobs."
+        },
+        {
+          "question": "How does horizontal scaling work in your system?",
+          "answer": "Docker Compose with --scale api=N --scale worker=M. Nginx load balances across API replicas. BullMQ distributes jobs across worker replicas. Each service has tuned connection pool limits."
+        },
+        {
+          "question": "Why Redis + BullMQ instead of just a database queue?",
+          "answer": "Redis LPUSH is <0.5ms vs database INSERT ~10-50ms. BullMQ provides retry logic, exponential backoff, job prioritization, and monitoring out of the box. Better separation of concerns."
+        },
+        {
+          "question": "What happens if Redis goes down?",
+          "answer": "API returns 500 errors. Events are lost (acknowledged trade-off for speed). Could add: API fallback to direct DB writes, or Redis cluster with replication for HA."
+        },
+        {
+          "question": "How do you prevent duplicate events?",
+          "answer": "SDK: Full-path guard (pathname + search), tracks lastTrackedPath, only fires on actual navigation changes. Backend: skipDuplicates: true in Prisma createMany."
+        },
+        {
+          "question": "Explain your database indexing strategy.",
+          "answer": "Composite index on (projectId, createdAt) because all queries filter by project first, then aggregate by time ranges. This makes time-series queries use index-only scans."
+        },
+        {
+          "question": "Why Nginx instead of just Docker's built-in load balancing?",
+          "answer": "Nginx provides keepalive connection pooling (32 connections), health checks, request buffering, and granular routing control. Better performance for HTTP workloads."
+        },
+        {
+          "question": "How would you handle 10x traffic growth?",
+          "answer": "Add more API/worker replicas, scale Redis (cluster mode), implement connection pooling at database, add CDN for SDK delivery, consider regional deployments for latency."
+        },
+        {
+          "question": "What's your disaster recovery strategy?",
+          "answer": "PostgreSQL: Supabase handles automated backups. Redis: Ephemeral queue, acceptable to lose in-flight jobs. Frontend: Vercel has automatic rollbacks. Backend: Docker images tagged by version."
+        },
+        {
+          "question": "Why did you choose Supabase over self-hosted PostgreSQL?",
+          "answer": "Managed connection pooling (transaction mode on port 6543), automated backups, built-in monitoring, easier to scale vertically, and focus on application logic instead of database operations."
+        },
+        {
+          "question": "Explain the Producer-Consumer pattern in your implementation.",
+          "answer": "Producer (API): Validates requests, enqueues to Redis, returns immediately. Consumer (Worker): Polls Redis, processes batches, handles retries. Decouples request handling from expensive I/O."
+        },
+        {
+          "question": "How do you ensure workers don't overwhelm the database?",
+          "answer": "Per-worker connection pool limits (5 connections), bulk inserts reduce transaction overhead, workers process jobs sequentially with concurrency limits, monitoring Redis queue depth."
+        },
+        {
+          "question": "What's the maximum events per second your system can handle?",
+          "answer": "Benchmarked ~4500 req/s on API gateway (M2 Pro, local). Production bottleneck would be worker consumption rate, depends on database IOPS. Scalable by adding workers."
+        },
+        {
+          "question": "Why separate \"backend\" and \"backend-scalable\" folders?",
+          "answer": "Legacy monolithic version kept for backwards compatibility and simpler deployment scenarios. Scalable version is production-recommended. Allows gradual migration."
+        },
+        {
+          "question": "How does session reconstruction work?",
+          "answer": "Lazy reconstruction at query time. Group events by sessionId, calculate MIN(createdAt) for start, MAX(createdAt) for end, COUNT(*) for depth. No session objects stored."
+        },
+        {
+          "question": "Why store session/visitor IDs in localStorage instead of cookies?",
+          "answer": "No server-side overhead, no HTTP header bloat, works in cross-domain scenarios, persists across tab closures, and SDK controls lifecycle directly."
+        },
+        {
+          "question": "What trade-offs did you make for performance?",
+          "answer": "Lost events if Redis crashes (no persistence), eventually consistent writes (async workers), no strict deduplication (accepted minor duplicates), simplified session model."
+        },
+        {
+          "question": "How would you add real-time analytics?",
+          "answer": "WebSocket connection from dashboard to backend, Redis Pub/Sub for event broadcasts, worker publishes to channel after DB write, frontend subscribes and updates metrics live."
+        }
+      ]
+    },
+    {
+      "heading": "SDK Design & Frontend",
+      "questions": [
+        {
+          "question": "Why is your SDK <3KB gzipped?",
+          "answer": "Zero dependencies, vanilla TypeScript, tree-shakeable ESM build, aggressive minification with tsup, batching reduces payload size, no polyfills."
+        },
+        {
+          "question": "Explain the atomic flushing mechanism.",
+          "answer": "Use splice(0, queue.length) to atomically clear the queue BEFORE transport. If transport fails, events are already gone (acceptable loss). Prevents race conditions during concurrent flushes."
+        },
+        {
+          "question": "How do you prevent double-flushing?",
+          "answer": "Boolean flushing flag set before transport, cleared in finally block. Guards against simultaneous visibilitychange + pagehide events firing and triggering multiple flushes."
+        },
+        {
+          "question": "Why sendBeacon first, then fetch with keepalive?",
+          "answer": "sendBeacon is designed for page unload (queued by browser, survives page close). fetch with keepalive: true is fallback for when sendBeacon unavailable or fails."
+        },
+        {
+          "question": "How does SPA navigation tracking work?",
+          "answer": "Wrap history.pushState and history.replaceState using monkey-patching. Listen to popstate. Fire pageview only when full path (pathname + search) changes, ignore hash-only changes."
+        },
+        {
+          "question": "What happens in private browsing mode?",
+          "answer": "localStorage blocked → SDK catches exception → uses in-memory fallback for visitor ID. Session works identically. No crashes, graceful degradation."
+        },
+        {
+          "question": "Why 30-minute session timeout?",
+          "answer": "Industry standard (Google Analytics uses 30 min). Balances between session continuity and accurate bounce rate. Configurable via SDK but defaults to 30 min."
+        },
+        {
+          "question": "How do you handle SDK initialization race conditions?",
+          "answer": "Singleton guard (historyWrapped flag) ensures window.history patched exactly once. Multiple SDK instances share global registry. First instance wins."
+        },
+        {
+          "question": "Why batch at 20 events OR 10 seconds?",
+          "answer": "20 events: Prevents unbounded queue growth on high-traffic sites. 10 seconds: Ensures timely delivery on low-traffic sites. Whichever comes first."
+        },
+        {
+          "question": "Explain the retry logic?",
+          "answer": "Single retry for 5xx or network errors only. Never retry 4xx (client error, won't succeed). No re-insertion into queue (events lost on persistent failure). Prevents infinite loops."
+        },
+        {
+          "question": "How does the SDK handle disabled state?",
+          "answer": "When enabled: false, SDK is completely inert. No listeners attached, no history patching, no localStorage access, no network calls. Zero overhead."
+        },
+        {
+          "question": "Why use tsup instead of webpack/rollup?",
+          "answer": "tsup is zero-config, built on esbuild (fast), handles ESM + CJS dual output automatically, tree-shaking by default, perfect for libraries."
+        },
+        {
+          "question": "How do you ensure type safety between SDK and backend?",
+          "answer": "Shared Zod schemas in monorepo. SDK imports validation types from backend package. Type mismatches caught at compile time."
+        },
+        {
+          "question": "Why auto-capture metadata instead of requiring user input?",
+          "answer": "Reduces integration friction (just initialize SDK). Most metadata (browser, OS, screen) is universally useful. Users can extend via custom properties."
+        },
+        {
+          "question": "How does the dashboard handle real-time updates?",
+          "answer": "Currently polling with React Query (refetch interval). Future: WebSocket connection with server-sent events for live metrics."
+        }
+      ]
+    },
+    {
+      "heading": "Security & Privacy",
+      "questions": [
+        {
+          "question": "Why SHA-256 hash API keys instead of storing plain text?",
+          "answer": "If database compromised, attackers can't use keys to ingest fake data. One-way hashing means keys are validate-only, not retrievable."
+        },
+        {
+          "question": "How do you prevent API key leakage?",
+          "answer": "Keys only returned once on project creation. Never returned in list endpoints. Frontend never stores keys (user copies immediately). Rate limiting prevents brute force."
+        },
+        {
+          "question": "Explain the CSRF protection on logout.",
+          "answer": "Logout requires Referer or Origin header matching backend domain. Prevents attacker's site from making cross-origin logout requests to force user re-authentication."
+        },
+        {
+          "question": "Why validate JWT_SECRET at startup?",
+          "answer": "Prevents deploying with default/weak secrets. Server crashes on boot if JWT_SECRET is \"your-secret-key\" or empty. Fail-fast for security misconfigurations."
+        },
+        {
+          "question": "How do you prevent prototype pollution in event metadata?",
+          "answer": "Zod schema enforces scalar values only (string, number, boolean). No nested objects allowed in metadata. Prevents __proto__ injection attacks."
+        },
+        {
+          "question": "Why 500-event cap per request?",
+          "answer": "Prevents DoS via massive payloads. 500 events is generous for batching but prevents multi-MB requests. HTTP body size also limited to 2MB at Nginx."
+        },
+        {
+          "question": "How does rate limiting work?",
+          "answer": "express-rate-limit with different limits per route: Auth (5/min), Project Creation (10/hr), Ingest (1000/min), Metrics (100/min). Sliding window, IP-based."
+        },
+        {
+          "question": "Why HttpOnly cookies for JWT?",
+          "answer": "JavaScript cannot access HttpOnly cookies, preventing XSS attacks from stealing tokens. Cookie automatically sent with requests, no localStorage exposure."
+        },
+        {
+          "question": "Explain the CORS strategy.",
+          "answer": "Ingestion endpoint: Reflected origin (accepts all). Dashboard endpoints: Strict whitelist (frontend URL only). Different policies for different security contexts."
+        },
+        {
+          "question": "How do you prevent SQL injection?",
+          "answer": "Prisma uses parameterized queries. Raw SQL uses bound parameters ($1, $2). Never string concatenation. Zod validates all inputs before queries."
+        },
+        {
+          "question": "Why no PII in default tracking?",
+          "answer": "GDPR compliance by design. Visitor/Session IDs are random UUIDs, no user emails/names. IP addresses not stored. User can opt-in to track user IDs via identify()."
+        },
+        {
+          "question": "How do you handle security vulnerabilities in dependencies?",
+          "answer": "Automated npm audit in CI/CD. Manual patches when high/critical found (Axios, Next.js, express-rate-limit). Lock files prevent unexpected updates."
+        },
+        {
+          "question": "Why suppress stack traces in production?",
+          "answer": "Prevents leaking internal database schema, file paths, environment details to attackers. Generic 500 errors only. Detailed logs go to monitoring, not API responses."
+        },
+        {
+          "question": "How would you implement API key rotation?",
+          "answer": "Allow multiple active keys per project, add expires_at field, require old key for generating new, grace period where both work, then invalidate old."
+        },
+        {
+          "question": "What's your approach to input validation?",
+          "answer": "Zod schemas at API boundary, validate before business logic, fail fast with 400 + field-level errors, whitelist approach (only allow known fields)."
+        }
+      ]
+    },
+    {
+      "heading": "Performance & Optimization",
+      "questions": [
+        {
+          "question": "Why LRU cache for API keys with 5-minute TTL?",
+          "answer": "API key validation is database lookup on every ingest request. Caching eliminates 95%+ of DB queries. 5 min balances freshness (key revocation) with hit rate."
+        },
+        {
+          "question": "Why is project ownership cache only 5 seconds?",
+          "answer": "Ownership checked on analytics queries (less frequent than ingest). 5 sec prevents race conditions when user creates/deletes projects. Shorter than API key cache."
+        },
+        {
+          "question": "How did you optimize the analytics queries?",
+          "answer": "Replaced ORM with raw SQL for aggregations, composite index on (projectId, createdAt), parallel execution with Promise.all, single batch endpoint instead of 6 separate calls."
+        },
+        {
+          "question": "Explain the 80% network reduction claim.",
+          "answer": "Originally 6 sequential requests: pageviews, visitors, sessions, top pages, top events, browser stats. Consolidated into 1 batch request returning all metrics."
+        },
+        {
+          "question": "Why batch inserts instead of individual inserts?",
+          "answer": "createMany sends single SQL statement with multiple VALUES rows. Reduces round-trips, transaction overhead, index updates. ~10x faster for bulk operations."
+        },
+        {
+          "question": "How does connection pooling work?",
+          "answer": "Prisma maintains pool of reusable connections. Workers configured for 5 connections each. Prevents \"too many clients\" error. Pool exhaustion causes queuing, not crashes."
+        },
+        {
+          "question": "Why compression middleware?",
+          "answer": "Gzip responses reduce bandwidth by 70-90% for JSON. Especially valuable for analytics responses (large arrays). Minimal CPU cost, huge transfer savings."
+        },
+        {
+          "question": "How do you prevent N+1 queries?",
+          "answer": "Use COUNT(DISTINCT) aggregations instead of fetching all records. Prisma include with caution. Raw SQL for complex joins. Dataloader pattern for batch fetching."
+        },
+        {
+          "question": "Why timezone casting at database layer?",
+          "answer": "PostgreSQL can cast timestamptz to specific timezone during aggregation. Eliminates client-side timezone math, ensures consistent day boundaries, leverages DB's optimized date functions."
+        },
+        {
+          "question": "How would you optimize for 10M events/day?",
+          "answer": "Partition events table by date, archive old data to cold storage, materialized views for common aggregations, read replicas for analytics, separate OLAP database."
+        },
+        {
+          "question": "Why Nginx keepalive connection pooling?",
+          "answer": "Reuses TCP connections to upstream API servers. Eliminates handshake overhead. 32 persistent connections handle thousands of requests. Reduces latency by ~20-40ms."
+        },
+        {
+          "question": "Explain your database index strategy for time-series data.",
+          "answer": "Composite index (projectId, createdAt) allows index-only scans for queries like \"events in last 30 days for project X\". PostgreSQL can skip table access entirely."
+        },
+        {
+          "question": "Why async/await instead of callbacks in worker?",
+          "answer": "Cleaner error handling, easier to read sequential logic, prevents callback hell, works well with Prisma promises, allows try/catch for graceful failure."
+        },
+        {
+          "question": "How do you monitor queue health?",
+          "answer": "Log warning if Redis queue depth >1000 items. Indicates workers falling behind. Trigger: add more workers, investigate slow queries, check database CPU."
+        },
+        {
+          "question": "What's the cold start time for your backend?",
+          "answer": "~2-3 seconds: Load environment, initialize Prisma, connect to Redis, compile TypeScript (if dev). Production Docker image is pre-built, so <1 second."
+        }
+      ]
+    },
+    {
+      "heading": "DevOps & CI/CD",
+      "questions": [
+        {
+          "question": "Walk me through your CI/CD pipeline.",
+          "answer": "Push → GitHub Actions triggers → Parallel jobs (lint, build, test, security audit) for each workspace → Vercel auto-deploys frontend → Manual EC2 deploy for backend."
+        },
+        {
+          "question": "Why separate lint and build jobs?",
+          "answer": "Fail fast on lint errors (cheap), don't waste time building. Parallel execution saves time. Different teams might own different jobs in production."
+        },
+        {
+          "question": "How do you handle environment variables in deployment?",
+          "answer": "Root .env for local dev. Vercel dashboard for frontend env vars. EC2 uses systemd environment files. GitHub Secrets for CI/CD. Never commit secrets."
+        },
+        {
+          "question": "Why Docker instead of deploying directly to EC2?",
+          "answer": "Reproducible builds, dependency isolation, easy rollbacks (tag versions), works locally and in prod identically, scales horizontally with docker-compose."
+        },
+        {
+          "question": "Explain your versioning strategy.",
+          "answer": "Semantic versioning (major.minor.patch). Root version tracks overall system. Each package (SDK, backend, frontend) has independent version. Synchronized via changelogs."
+        },
+        {
+          "question": "How do you handle database migrations in production?",
+          "answer": "prisma migrate deploy in CI/CD before app deployment. Migrations are forward-only, additive changes preferred. Backwards-compatible schema changes to avoid downtime."
+        },
+        {
+          "question": "Why 68 deployments in 8 weeks?",
+          "answer": "Continuous deployment. Every merged PR triggers deploy. Bug fixes, features, security patches. Averages to ~1 deployment per day. Rapid iteration."
+        },
+        {
+          "question": "How do you rollback a bad deployment?",
+          "answer": "Vercel: One-click rollback to previous deployment. EC2: Deploy previous Docker image tag. Database: Migrations are harder, requires backup restoration."
+        },
+        {
+          "question": "What's in your .gitignore?",
+          "answer": "node_modules, .env, .next, dist, build, Prisma generated client, logs, OS files (.DS_Store), IDE configs."
+        },
+        {
+          "question": "Why npm workspaces instead of Lerna/Turborepo?",
+          "answer": "Native npm support (npm 7+), no extra dependencies, simple for this scale. Turborepo overkill for 3 packages. Lerna is deprecated."
+        },
+        {
+          "question": "How do you ensure builds are reproducible?",
+          "answer": "Lock files (package-lock.json), Docker base images pinned to specific versions, Prisma schema versioned, Node.js version specified in .nvmrc."
+        },
+        {
+          "question": "Why Vitest instead of Jest?",
+          "answer": "Faster (Vite-powered), native ESM support, better TypeScript integration, less configuration, modern API. Jest works but Vitest is future."
+        },
+        {
+          "question": "How do you test the SDK?",
+          "answer": "Unit tests for queue logic, storage wrappers, metadata extraction. Integration tests with mock API. Manual testing in browser for SPA navigation."
+        },
+        {
+          "question": "What's your monitoring strategy?",
+          "answer": "Currently: Application logs, Vercel analytics, PostgreSQL metrics from Supabase. Future: Add Sentry for errors, Datadog for APM, Grafana dashboards for Redis/queue metrics."
+        },
+        {
+          "question": "How would you implement blue-green deployment?",
+          "answer": "Run two identical EC2 environments. Deploy to \"green\" while \"blue\" serves traffic. Smoke test green. Switch Nginx upstream to green. Keep blue for quick rollback."
+        }
+      ]
+    },
+    {
+      "heading": "Business Logic & Features",
+      "questions": [
+        {
+          "question": "Why limit users to 50 projects?",
+          "answer": "Prevent abuse, encourage cleanup of unused projects, simplifies UI (no pagination needed), reduces database bloat, aligns with pricing model (future paid tiers)."
+        },
+        {
+          "question": "How does the delete confirmation modal improve UX?",
+          "answer": "Replaces browser's ugly window.confirm(). Styled consistently with app theme. Shows project name for confirmation. Prevents accidental deletions."
+        },
+        {
+          "question": "Why separate \"pageview\" and custom \"events\"?",
+          "answer": "Pageviews are automatic, standard across all sites. Custom events are user-defined actions (signups, purchases). Different aggregation needs and use cases."
+        },
+        {
+          "question": "How would you implement funnels?",
+          "answer": "Define sequence of events (e.g., \"view_product → add_to_cart → purchase\"). Query events grouped by sessionId, calculate conversion at each step, aggregate across users."
+        },
+        {
+          "question": "Why auto-collect browser/OS instead of letting users specify?",
+          "answer": "User-agent parsing is consistent, accurate, no integration effort. Users might misconfigure. Auto-capture ensures data quality across all implementations."
+        },
+        {
+          "question": "How does the changelog modal work?",
+          "answer": "versions.json stores release history. Modal fetches on button click, renders version list, shows details for selected version. No backend required."
+        },
+        {
+          "question": "Why GitHub OAuth instead of email/password?",
+          "answer": "No password management, no \"forgot password\" flow, leverages trusted identity provider, developer-focused audience already has GitHub, reduces security surface."
+        },
+        {
+          "question": "How would you add team collaboration features?",
+          "answer": "Add Team model, many-to-many with Users, project ownership by team, invite system with email tokens, role-based permissions (owner/admin/viewer)."
+        },
+        {
+          "question": "Why show top pages instead of all pages?",
+          "answer": "Most sites have long tail of low-traffic pages. Top 10 pages cover 80%+ of traffic. Keeps UI focused, reduces cognitive load, faster queries."
+        },
+        {
+          "question": "How would you implement data export?",
+          "answer": "CSV endpoint: GET /api/projects/:id/export?start=X&end=Y. Stream CSV rows from cursor-based pagination. Background job for large exports, email download link."
+        }
+      ]
+    },
+    {
+      "heading": "Lessons Learned & Future",
+      "questions": [
+        {
+          "question": "What was the hardest bug to fix?",
+          "answer": "Timezone drift causing day buckets to misalign between backend aggregation and frontend rendering. Required understanding PostgreSQL timezone functions and JavaScript Date behavior."
+        },
+        {
+          "question": "What would you do differently if starting over?",
+          "answer": "Start with microservices architecture from day one. Add comprehensive tests earlier. Use TypeScript strict mode from start. Plan for observability (logging/monitoring) upfront."
+        },
+        {
+          "question": "Why did you build this instead of using Google Analytics?",
+          "answer": "Privacy-first requirement, no third-party trackers, full data ownership, learning experience, developer-friendly API, can self-host."
+        },
+        {
+          "question": "What's missing that you'd add next?",
+          "answer": "Real-time analytics via WebSockets, user retention cohorts, A/B testing framework, alerts/anomaly detection, data export API, team collaboration, custom dashboards."
+        },
+        {
+          "question": "How did you handle scope creep?",
+          "answer": "MVP first (ingestion + basic metrics), then iterate. Documented features in CHANGELOG. Resisted adding complexity until core was solid. Feedback-driven roadmap."
+        },
+        {
+          "question": "What metrics do you track for Vyzora itself?",
+          "answer": "Vyzora tracking Vyzora (dogfooding). Monitor: SDK load times, API response latency, error rates, deployment frequency, test coverage."
+        },
+        {
+          "question": "How would you monetize this?",
+          "answer": "Freemium: 10K events/month free. Paid tiers: higher limits, team features, custom domains, data retention, priority support, SLA guarantees."
+        },
+        {
+          "question": "What feedback surprised you most?",
+          "answer": "Users wanted mobile responsiveness more than advanced analytics. Taught me: solve existing problem perfectly before adding features."
+        },
+        {
+          "question": "How did you prioritize features?",
+          "answer": "Impact vs. effort matrix. Security/performance > features. User-reported bugs > nice-to-haves. Foundation (auth, ingestion) before polish (charts, animations)."
+        },
+        {
+          "question": "What's the most important lesson from this project?",
+          "answer": "Ship early, iterate based on real usage. 68 deployments taught more than any tutorial. Production bugs drive deep learning. Documentation is code too."
+        }
+      ]
+    }
+  ],
+  "cta": {
+    "title": "Still have questions?",
+    "description": "Can't find what you're looking for? Reach out to our engineering team.",
+    "buttonText": "Contact Support",
+    "buttonLink": "mailto:support@vyzora.io"
+  }
+}
