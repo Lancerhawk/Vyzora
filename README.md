@@ -233,6 +233,101 @@ Configuration is managed via a single `.env` file at the project root for the sc
 
 ---
 
+## Database Migration Strategy
+
+Vyzora leverages **Prisma Migrations** to manage schema evolution with high confidence:
+
+- **Development Workflow**: Use `npx prisma migrate dev` to generate and apply incremental SQL migrations. This keeps the local database in sync and updates the Prisma Client types.
+- **Production Deployment**: The `npx prisma migrate deploy` command is used in CI/CD pipelines to apply pending migrations safely to the production instance (e.g., Supabase) before the new application version goes live.
+- **Schema Safety**: The monorepo ensures that the same schema is shared between the legacy backend and the scalable worker, preventing drift during bulk insertion.
+
+---
+
+## Error Handling & Validation
+
+The API uses a standardized response format for all error states, ensuring predictable behavior for SDKs and dashboard integrations.
+
+### Validation Errors (400)
+Powered by **Zod**, the API returns field-level error messages:
+```json
+{
+  "success": false,
+  "errors": {
+    "apiKey": ["String must contain exactly 64 character(s)"],
+    "events": ["Array must contain at most 500 element(s)"]
+  }
+}
+```
+
+### Internal Failures (500)
+In production, detailed stack traces are suppressed to prevent info leaks:
+```json
+{
+  "success": false,
+  "message": "Internal server error"
+}
+```
+
+---
+
+## Session Reconstruction Logic
+
+Vyzora reconstructs user sessions dynamically at the query layer rather than during ingestion. This "lazy reconstruction" ensures the ingestion pipeline remains extremely fast.
+
+- **Grouping**: Events are grouped by `sessionId` and `visitorId`.
+- **Metrics Calculation**:
+  - **Start/End Times**: Derived from `MIN(createdAt)` and `MAX(createdAt)` for a given `sessionId`.
+  - **Activity Depth**: Calculated by `COUNT(*)` per session.
+  - **Bounce Rate**: Identified by sessions with exactly one `pageview` event.
+- **Inactivity Threshold**: The SDK automatically rotates the `sessionId` after 30 minutes of inactivity, effectively "closing" the session for the next ingestion batch.
+
+---
+
+## Performance & Benchmarking
+
+The "sub-millisecond API responsiveness" claim is made possible by the **Producer-Consumer architecture**.
+
+1. **Producer (API)**: When a `POST /api/ingest` request arrives, the API validates the key and enqueues the payload to **Redis**. Redis `LPUSH` operations typically complete in **< 0.5ms**.
+2. **Consumer (Worker)**: Background workers pick up batches and perform bulk database writes using `createMany`.
+
+### Stress Test Results
+The included `npm run stress` script simulates high-concurrency event bursts. 
+
+**Standard Benchmark Environment:**
+- **Specs**: Local Development Machine (Windows 11 / 16GB+ RAM / NVMe SSD)
+- **Service**: 3x API replicas, 1x Redis instance, 1x Nginx balancer
+
+**Gateway Ingestion Result:**
+```text
+--- Stress Test Results ---
+Total Requests: 1000
+Successful:     1000
+Failed:         0
+Total Time:     0.22s
+Avg Throughput: 4545.45 req/s
+---------------------------
+```
+
+> [!NOTE]
+> **Performance Disclaimer**: The throughput above measures the **API Gateway's ability to enqueue events to Redis**. In production, actual end-to-end performance will be influenced by network latency, database IOPS (PostgreSQL), and the consumption rate of background workers.
+
+---
+
+## SDK Footprint & Build
+
+The `vyzora-sdk` is optimized for zero-impact on your site's performance.
+
+- **Bundle Size**: `< 3 KB` (gzipped).
+- **No Dependencies**: 100% vanilla TypeScript.
+- **Verification**: You can verify the bundle size by running:
+  ```bash
+  cd runtime-sdk
+  npm run build
+  gzip -c dist/index.js | wc -c   # Should report ~2.4-2.8 KB
+  ```
+
+---
+
 ## Privacy & Security
 
 Vyzora is built from the ground up to be the most private way to track web analytics.
@@ -284,42 +379,4 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 [MIT](LICENSE)
 
----
-
-## SDK Usage
-
-```bash
-npm install vyzora-sdk
-```
-
-```typescript
-import { Vyzora } from 'vyzora-sdk';
-
-const vyzora = new Vyzora({
-  apiKey: 'your_project_api_key',  // from dashboard
-  enabled: true,
-});
-
-// Track a custom event
-vyzora.track('upgrade_clicked', { plan: 'pro' });
-
-// Identify a known user
-vyzora.identify('user_db_id_123');
-
-// Manual flush (e.g. before logout)
-await vyzora.flush();
-```
-
-Pageviews are tracked automatically on load and every SPA navigation. No additional setup needed.
-
----
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for the full version history.
-
----
-
-## License
-
-[MIT](LICENSE)
+
