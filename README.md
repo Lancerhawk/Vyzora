@@ -12,13 +12,11 @@
 
 ---
 
-Vyzora is a high-performance analytics service designed for modern developers. It provides:
+Vyzora is a high-performance analytics platform designed for modern web applications. It provides a lightweight tracking foundation coupled with a horizontally scalable ingestion engine.
 
-1. **[`vyzora-sdk`](./runtime-sdk)**: A lightweight TypeScript browser SDK (`< 3 KB` gzipped). Drop it into any JavaScript or TypeScript project. It auto-collects pageviews, tracks SPA navigation, and batches events before sending them to the scalable gateway.
-
-2. **Scalable Ingestion Engine**: A horizontally scalable, asynchronous backend built on **Express, Redis, and BullMQ**. It decouples event reception from database writes, ensuring sub-millisecond API responsiveness even under massive traffic spikes.
-
-3. **Developer Dashboard**: A powerful Next.js interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, and daily trend charts.
+1. **[`vyzora-sdk`](./runtime-sdk)**: A lightweight TypeScript browser SDK (`< 3 KB` gzipped). It auto-collects pageviews, tracks SPA navigation, and batches events using a resilient `sendBeacon` + `fetch` (keepalive) transport layer.
+2. **Scalable Ingestion Engine**: A horizontally scalable, asynchronous backend built on **Express 5, Redis, and BullMQ**. It decouples event reception from database writes, ensuring sub-millisecond API responsiveness even under massive traffic spikes.
+3. **Developer Dashboard**: A powerful **Next.js 16** interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, and daily trend charts with live sparklines and parallel-executed analytics.
 
 No third-party trackers. No data sampling. No invasive cookies. You own the relationship with your users' data.
 
@@ -63,7 +61,7 @@ sequenceDiagram
     SDK->>API: POST /api/ingest { apiKey, events[] }
     API->>DB: Validate apiKey → prisma.event.createMany()
     UI->>API: GET /api/projects/:id/metrics (JWT cookie)
-    API->>DB: Aggregate query (pageviews, sessions, top pages)
+    API->>DB: Parallel Aggregated queries (pageviews, sessions, top pages)
     DB-->>API: Aggregated rows
     API-->>UI: JSON metrics response
 ```
@@ -77,7 +75,7 @@ sequenceDiagram
 | **Runtime SDK** | TypeScript, tsup (ESM + CJS), sendBeacon + fetch transport |
 | **Scalable API** | Node.js 20, Express 5, BullMQ (Producer), IORedis |
 | **Scalable Worker** | Node.js 20, BullMQ (Consumer), Bulk Insertion Engine |
-| **Infrastructure** | Nginx (Load Balancer), Redis, Docker Compose |
+| **Infrastructure** | Nginx (Keepalive Tuning), Redis, Docker Compose |
 | **Database** | PostgreSQL ≥ 15 (Supabase Transaction Mode), Prisma 7 |
 | **Frontend** | Next.js 16 (App Router), Tailwind CSS v4, Zustand, React Query |
 | **Auth** | GitHub OAuth (Passport.js) for dashboard, project-scoped API keys for ingest |
@@ -89,23 +87,28 @@ sequenceDiagram
 
 The `vyzora-sdk` is designed to be zero-overhead and production-safe:
 
-- **Auto pageviews**: fires on `window.load`, `pushState`, `replaceState`, and `popstate` — full SPA support
-- **Visitor identity**: stable UUID stored in `localStorage` (`vyzora_vid`), never rotates, in-memory fallback for private browsing
-- **Session identity**: UUID (`vyzora_sid`) with 30-minute inactivity expiry, refreshed on every event
-- **Batching**: in-memory queue, flushes every 10 seconds, on batch overflow (20 events), on `visibilitychange`, and on `pagehide`
-- **Transport**: `navigator.sendBeacon` first, `fetch` with `keepalive: true` as fallback, single retry on 5xx/network errors, silent drop on 4xx
-- **Safety**: all `localStorage` access wrapped in `try/catch`, SDK never throws, no-ops in SSR (`window === undefined`)
+- **Auto pageviews**: fires on `window.load`, `pushState`, `replaceState`, and `popstate` — full SPA support.
+- **Auto-Metadata**: Automatically captures Browser/OS, Device Type, Screen Dimensions, Language, Referrer, and Timezone (IANA).
+- **Visitor identity**: stable UUID stored in `localStorage` (`vyzora_vid`), never rotates, in-memory fallback for private browsing.
+- **Session identity**: UUID (`vyzora_sid`) with 30-minute inactivity expiry, refreshed on every event.
+- **Atomic Flushing**: Uses `splice(0, length)` logic to clear the event queue atomically, ensuring zero event loss during heavy navigation.
+- **Concurrency Guard**: Implements a `flushing` lock flag to prevent redundant network requests during simultaneous `visibilitychange` and `pagehide` signals.
+- **Batching**: in-memory queue, flushes every 10 seconds, on batch overflow (20 events), on `visibilitychange`, and on `pagehide`.
+- **Transport**: `navigator.sendBeacon` first, `fetch` with `keepalive: true` as fallback, single retry on 5xx/network errors, silent drop on 4xx.
+- **Safety**: all `localStorage` access wrapped in `try/catch`, SDK never throws, no-ops in SSR (`window === undefined`).
 
 ---
 
 ## Scalable Ingestion Highlights
 
 - **Asynchronous Ingestion** (`POST /api/ingest`): The API gateway enqueues events to Redis in milliseconds. Jobs are processed in the background by specialized workers, protecting the API from database-induced latency.
+- **LRU In-Memory Caching**: API keys (5m TTL) and Project Ownership (5s TTL) are cached at the gateway layer to eliminate redundant database roundtrips.
 - **Bulk Database Writing**: Workers utilize a dedicated ingestion engine that performs bulk inserts via `prisma.event.createMany({ skipDuplicates: true })`.
 - **Database Resilience**: Configured for **Supabase Transaction Mode (Port 6543)** with explicit connection pooling limits, allowing dozens of concurrent workers to handle millions of events without connection overflows.
+- **Monitoring**: API gateway generates warning logs if Redis queue depth exceeds 1000 items, allowing for proactive scaling.
 - **Horizontal Scaling**: Fully containerized architecture allows you to scale up by simply adding replicas (`--scale api=3 --scale worker=3`).
-- **Nginx Load Balancer**: Distributes traffic across healthy API replicas and handles automatic failover.
-- **Metrics APIs**: Aggregated metrics are calculated in real-time using optimized indices on `(projectId, createdAt)`.
+- **Nginx Optimization**: Tuned with **Upstream Keepalive pooling** (32 connections) and a 2MB client body limit for optimal ingestion performance.
+- **Analytics Performance**: Aggregated metrics are calculated concurrently via `Promise.all` and optimized using `timestamptz` timezone casting in PostgreSQL.
 
 ---
 
@@ -114,9 +117,9 @@ The `vyzora-sdk` is designed to be zero-overhead and production-safe:
 ```
 vyzora/
 ├── backend-scalable/         # NEW Scalable Architecture (Recommended)
-│   ├── api/                  # API Service (Producer)
-│   ├── worker/               # Worker Service (Consumer)
-│   ├── nginx/                # Load Balancer config
+│   ├── api/                  # API Service (Producer + LRU Caching)
+│   ├── worker/               # Worker Service (Consumer + Bulk Ingestion)
+│   ├── nginx/                # Load Balancer (Keepalive + Body Config)
 │   └── scripts/              # Stress testing & maintenance
 ├── backend/                  # Legacy Monolithic API
 │   ├── src/
@@ -129,7 +132,7 @@ vyzora/
 │   │   └── schema.prisma      # User, Project, Event models
 │   └── .env.example
 │
-├── frontend/                 # Next.js dashboard + marketing site
+├── frontend/                 # Next.js 16 dashboard + marketing site
 │   ├── app/
 │   │   ├── page.tsx           # Homepage (marketing)
 │   │   ├── docs/              # SDK documentation (17 sections)
@@ -143,7 +146,7 @@ vyzora/
 │   └── data/
 │       └── versions.json      # Changelog modal data
 │
-├── runtime-sdk/              # vyzora-sdk npm package
+├── runtime-sdk/              # vyzora-sdk npm package (Atomic In-Memory Queue)
 │   ├── src/
 │   │   ├── core.ts            # Vyzora class, constructor, track, pageview
 │   │   ├── queue.ts           # In-memory event queue + flush logic
@@ -161,15 +164,13 @@ vyzora/
 
 ---
 
----
-
 ## Local Development
 
 ### Prerequisites
 
-- Node.js ≥ 18
+- Node.js ≥ 20
 - PostgreSQL ≥ 15
-- npm ≥ 9
+- npm ≥ 10
 
 ### 1. Clone
 
@@ -194,12 +195,13 @@ This command will:
 3. Start the **Redis** message bus.
 4. Launch the **Next.js Dashboard** at `http://localhost:3000`.
 
-### 3. Stress Test (Verification)
-
-Confirm the system can handle concurrent ingestion:
+### 3. Verification & CI
 
 ```bash
-npm run stress
+npm run verify           # Full pre-flight check: Lint + Security + Build
+npm run security-audit   # Scan monorepo for high-level package vulnerabilities
+npm run test             # Run unified backend Vitest suites
+npm run stress           # Simulate high-concurrency ingestion batches
 ```
 
 ### 4. SDK (for development)
@@ -229,18 +231,58 @@ Configuration is managed via a single `.env` file at the project root for the sc
 | `GITHUB_CLIENT_ID` | GitHub OAuth app client ID |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth app client secret |
 
-### Legacy Backend (`backend/.env`)
-
 ---
 
 ## Privacy & Security
 
 Vyzora is built from the ground up to be the most private way to track web analytics.
 
+- **Data Integrity**: All API keys are secured using deterministic **SHA-256 hashing**. Original keys are never stored in plain text.
+- **Ingest Safeguards**: Strict **500-event request caps** and **scalar-only metadata sanitization** to prevent floods and prototype pollution.
+- **Auth Resilience**: GitHub OAuth flow protected by **random state verification** and logout endpoints secured against CSRF via origin/referer validation.
 - **No Third-Party Cookies**: Vyzora uses standard first-party identification.
 - **GDPR Ready**: We don't track PII by default. Identifiers (Visitor/Session IDs) are anonymous UUIDs.
-- **Data Integrity**: Our ingest API uses 64-character cryptographic API keys to ensure only your data reaches your dashboard.
 - **Secure Auth**: Dashboard access is protected by GitHub OAuth and secure JWT-based sessions.
+
+---
+
+## SDK Usage
+
+```bash
+npm install vyzora-sdk
+```
+
+```typescript
+import { Vyzora } from 'vyzora-sdk';
+
+const vyzora = new Vyzora({
+  apiKey: 'your_project_api_key',  // from dashboard
+  enabled: true,
+});
+
+// Track a custom event
+vyzora.track('upgrade_clicked', { plan: 'pro' });
+
+// Identify a known user
+vyzora.identify('user_db_id_123');
+
+// Manual flush (e.g. before logout)
+await vyzora.flush();
+```
+
+Pageviews are tracked automatically on load and every SPA navigation. No additional setup needed.
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the full version history.
+
+---
+
+## License
+
+[MIT](LICENSE)
 
 ---
 
