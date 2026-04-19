@@ -1,5 +1,36 @@
 [
     {
+        "version": "1.0.21",
+        "date": "2026-04-19",
+        "tag": "feat",
+        "title": "Visual Stress Engine & Performance Preview",
+        "summary": "This update introduces a professional, visual stress testing engine to Vyzora, along with automated data cleanup utilities and a comprehensive visual showcase in the project documentation.",
+        "whatsIncluded": [
+            {
+                "headline": "Visual Stress Testing Engine",
+                "detail": "Engineered a high-concurrency stress testing dashboard (npm run stress) that provides real-time RPS, P95 latency, and success metrics with a premium terminal aesthetic."
+            },
+            {
+                "headline": "Automated Metadata Cleanup",
+                "detail": "Implemented a Prisma-powered cleanup utility (npm run stress:clean) that safely targets and wipes only test-tagged data using the new isStressTest metadata flag."
+            },
+            {
+                "headline": "Architectural Load Validation",
+                "detail": "Confirmed that the horizontally scaled API (3x replicas) correctly enforces rate-limiting policies (300 req/min) once thresholds are exceeded, ensuring zero-drift reliability under massive load."
+            },
+            {
+                "headline": "Visual Documentation Showcase",
+                "detail": "Updated the project README with a high-fidelity visual preview gallery, including stress test benchmarks and dashboard analytics screenshots."
+            }
+        ],
+        "stack": [
+            "Node.js 20",
+            "Prisma 7",
+            "Scalable API v0.1.11",
+            "Stress Engine v2.0"
+        ]
+    },
+    {
         "version": "1.0.20",
         "date": "2026-04-19",
         "tag": "feat",

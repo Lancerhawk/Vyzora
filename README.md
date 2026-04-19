@@ -2,10 +2,10 @@
 
 > Privacy-first, developer-focused analytics service. Track events, reconstruct sessions, and query aggregated metrics — without compromising user privacy.
 
-[![Version](https://img.shields.io/badge/version-v1.0.20-indigo)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.0.21-indigo)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Backend](https://img.shields.io/badge/backend-v0.5.12-blue)](backend/package.json)
-[![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.10-blue)](backend-scalable/api/package.json)
+[![Scalable-API](https://img.shields.io/badge/scalable--api-v0.1.11-blue)](backend-scalable/api/package.json)
 [![SDK](https://img.shields.io/badge/sdk-v0.2.12-violet)](runtime-sdk/package.json)
 [![NPM](https://img.shields.io/npm/v/vyzora-sdk?color=orange&label=npm)](https://www.npmjs.com/package/vyzora-sdk)
 [![Frontend](https://img.shields.io/badge/frontend-v0.6.6-purple)](frontend/package.json)
@@ -19,6 +19,22 @@ Vyzora is a high-performance analytics platform designed for modern web applicat
 3. **Developer Dashboard**: A powerful **Next.js 16** interface. Log in with GitHub, create projects, and immediately see pageviews, session counts, top pages, and daily trend charts with live sparklines and parallel-executed analytics.
 
 No third-party trackers. No data sampling. No invasive cookies. You own the relationship with your users' data.
+
+---
+
+## Visual Preview
+
+### 🏠 Modern Landing Page
+![Homepage](./frontend/public/screenshot-1.png)
+
+### 🖥️ Professional Dashboard
+![Dashboard](./frontend/public/screenshot-2.png)
+
+### 📚 Integrated Documentation
+![Documentation](./frontend/public/screenshot-3.png)
+
+### 🚀 High-Performance Stress Testing
+![Stress Test Results](./frontend/public/stress.png)
 
 ---
 
@@ -299,14 +315,18 @@ The included `npm run stress` script simulates high-concurrency event bursts.
 
 **Gateway Ingestion Result:**
 ```text
---- Stress Test Results ---
-Total Requests: 1000
-Successful:     1000
-Failed:         0
-Total Time:     0.22s
-Avg Throughput: 4545.45 req/s
----------------------------
+VYZORA STRESS ENGINE v2.0
+────────────────────────────────────────────────
+Progress:    100.0% (1000/1000)
+Success:     899
+Failures:    101
+Throughput:  333.7 req/s
+Latency:     Avg: 131.6ms | P95: 1041ms
+────────────────────────────────────────────────
 ```
+
+> [!TIP]
+> **Rate-Limiting in Action**: The 101 failures observed above are **intentional**. The Vyzora scalable architecture (3x API replicas) correctly enforced a 300 req/min/instance threshold, protecting the infrastructure from the 1,000-request burst.
 
 > [!NOTE]
 > **Performance Disclaimer**: The throughput above measures the **API Gateway's ability to enqueue events to Redis**. In production, actual end-to-end performance will be influenced by network latency, database IOPS (PostgreSQL), and the consumption rate of background workers.

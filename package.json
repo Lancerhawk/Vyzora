@@ -1,6 +1,6 @@
 {
     "name": "vyzora",
-    "version": "1.0.20",
+    "version": "1.0.21",
     "private": true,
     "workspaces": [
         "backend",
@@ -24,6 +24,8 @@
         "lint:sdk": "npm run lint --workspace=runtime-sdk",
         "typecheck": "npm run typecheck --workspace=runtime-sdk",
         "stress": "node backend-scalable/scripts/stress-test.js",
+        "stress:clean": "cd backend-scalable/api && npx ts-node scripts/cleanup-test-data.ts",
+        "stress:all": "npm run stress && npm run stress:clean",
         "verify:fixes": "npm run verify:fixes --workspace=backend",
         "test": "npm run test --workspaces --if-present",
         "test:backend": "npm run test --workspace=@vyzora/backend",

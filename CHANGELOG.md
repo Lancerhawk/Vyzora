@@ -5,7 +5,16 @@ All notable changes to Vyzora are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.20] - 2026-04-19
+## [1.0.21] - 2026-04-19
+
+### Added
+- **Testing — Professional Stress Engine**: Engineered a visual, high-concurrency stress testing dashboard (`npm run stress`) capable of simulating thousands of events per second with real-time throughput and P95 latency metrics.
+- **DevOps — Automated Data Cleanup**: Implemented a Prisma-powered cleanup utility (`npm run stress:clean`) that safely targets and wipes only test-tagged data (`isStressTest: true`) without affecting real user metrics.
+- **System — Rate-Limiting Validation**: Verified architectural resilience under load; confirmed that the horizontally scaled API (3x replicas) correctly enforces rate-limiting policies (300 req/min/instance) once thresholds are exceeded.
+- **Documentation — Visual Showcase**: Updated the root README with a new "Visual Preview" gallery featuring the high-fidelity design system, dashboard analytics, and stress test results.
+
+---
+
 
 ### Added
 - **Documentation — Professional FAQ Portal**: Implemented a comprehensive, data-driven FAQ page integrated with the documentation portal.

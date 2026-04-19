@@ -1,6 +1,6 @@
 {
     "name": "@vyzora/scalable-api",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "description": "Vyzora Scalable API — Express + BullMQ",
     "main": "dist/index.js",
     "scripts": {
